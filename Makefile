@@ -13,27 +13,63 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+ifeq ($(TAG),)
+TAG := latest
+endif
+
+ifeq ($(TARGET_TAG),)
+TARGET_TAG := latest
+endif
+
+ifneq ($(http_proxy)$(https_proxy),)
+# Include proxies from the environment
+DOCKER_PROXY_ARGS = \
+       --build-arg http_proxy=$(http_proxy) \
+       --build-arg https_proxy=$(https_proxy) \
+       --build-arg ftp_proxy=$(ftp_proxy) \
+       --build-arg no_proxy=$(no_proxy) \
+       --build-arg HTTP_PROXY=$(HTTP_PROXY) \
+       --build-arg HTTPS_PROXY=$(HTTPS_PROXY) \
+       --build-arg FTP_PROXY=$(FTP_PROXY) \
+       --build-arg NO_PROXY=$(NO_PROXY)
+endif
+
+DOCKER_BUILD_ARGS = \
+        --build-arg TAG=$(TAG) \
+        --build-arg REGISTRY=$(REGISTRY) \
+        --build-arg REPOSITORY=$(REPOSITORY) \
+        $(DOCKER_PROXY_ARGS) $(DOCKER_CACHE_ARG) \
+         --rm --force-rm \
+        $(DOCKER_BUILD_EXTRA_ARGS)
+
+DOCKER_IMAGE_LIST = \
+	pyvoltha-base \
+        pyvoltha
+
 VENVDIR := venv-$(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 VENV_BIN ?= virtualenv
 VENV_OPTS ?=
 
-.PHONY: $(DIRS) $(DIRS_CLEAN) $(DIRS_FLAKE8) flake8 protos venv rebuild-venv clean distclean build test
+.PHONY: $(DIRS) $(DIRS_CLEAN) $(DIRS_FLAKE8) flake8 protos venv rebuild-venv clean distclean build test docker_base_img docker_image
 
 # This should to be the first and default target in this Makefile
 help:
 	@echo "Usage: make [<target>]"
 	@echo "where available targets are:"
 	@echo
-	@echo "build        : Build the protos"
-	@echo "dist         : Build the protos and create the python package"
-	@echo "test         : Run all unit test"
-	@echo "clean        : Remove files created by the build and tests"
-	@echo "distclean    : Remove venv directory"
-	@echo "help         : Print this help"
-	@echo "protos       : Compile all grpc/protobuf files"
-	@echo "rebuild-venv : Rebuild local Python virtualenv from scratch"
-	@echo "venv         : Build local Python virtualenv if did not exist yet"
+	@echo "build                : Build the protos"
+	@echo "dist                 : Build the protos and create the python package"
+	@echo "docker_base_img      : Build a base docker image with a modern version of pip and requirements.txt installed"
+	@echo "docker_image         : Build a docker image with pyvoltha installed"
+	@echo "test                 : Run all unit test"
+	@echo "clean                : Remove files created by the build and tests"
+	@echo "distclean            : Remove venv directory"
+	@echo "help                 : Print this help"
+	@echo "protos               : Compile all grpc/protobuf files"
+	@echo "rebuild-venv         : Rebuild local Python virtualenv from scratch"
+	@echo "venv                 : Build local Python virtualenv if did not exist yet"
 	@echo
 
 ## New directories can be added here
@@ -76,6 +112,12 @@ upload: dist
 	@ echo "Uploading PyPi artifacts"
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 	twine upload dist/*
+
+docker_base_img:
+	docker build $(DOCKER_BUILD_ARGS) -t ${REGISTRY}${REPOSITORY}pyvoltha-base:${TAG} -f docker/Dockerfile.base .
+
+docker_image: docker_base_img dist
+	docker build $(DOCKER_BUILD_ARGS) -t ${REGISTRY}${REPOSITORY}pyvoltha:${TAG} -f docker/Dockerfile.pyvoltha .
 
 install-protoc:
 	make -C pyvoltha/protos install-protoc
