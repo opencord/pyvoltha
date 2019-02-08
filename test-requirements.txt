@@ -1,0 +1,9 @@
+# pytest>=3.0.6,<4.0.0
+# pytest-cov>=2.4.0,<3.0.0
+# ylama>=7.0.6,<8.0.0
+# pylama-pylint>=3.0.1,<4.0.0
+# black>=18.6b4
+sphinx>=1.8.1,<2.0.0
+mock==2.0.0
+nose-exclude==0.5.0
+nose-testconfig==0.10
