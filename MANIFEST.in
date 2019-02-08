@@ -1,0 +1,2 @@
+include requirements.txt license.txt
+recursive-include pyvoltha *.proto VERSION
