@@ -138,9 +138,7 @@ clean:
 	find . -name '*.pyc' | xargs rm -f
 	find . -name 'coverage.xml' | xargs rm -f
 	find . -name 'nosetests.xml' | xargs rm -f
-	rm -f pyvoltha/protos/*_pb2.py
-	rm -f pyvoltha/protos/*_pb2_grpc.py
-	rm -f pyvoltha/protos/*.desc
+	make -C pyvoltha/protos clean
 	rm -rf PyVoltha.egg-info
 	rm -rf dist
 
