@@ -82,5 +82,10 @@ def _get_my_primary_local_ipv4(ifname=None):
     except Exception as e:
         return None
 
+
+def mac_str_to_tuple(mac):
+    return tuple(int(d, 16) for d in mac.split(':'))
+
+
 if __name__ == '__main__':
     print get_my_primary_local_ipv4()
