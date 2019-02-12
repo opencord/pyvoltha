@@ -44,24 +44,28 @@ third_party: google_api
 google_api:
 	@echo "Building protocol buffer artifacts from third_party google api"
 	cd third_party ; \
-	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) protoc -I. \
-	    --python_out=. \
-	    --descriptor_set_out=google/api/annotations.desc \
-	    --include_imports \
-	    --include_source_info \
-        google/api/annotations.proto google/api/http.proto
+	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc.tools.protoc \
+		-I. \
+		--python_out=. \
+		--grpc_python_out=. \
+		--descriptor_set_out=google/api/annotations.desc \
+		--include_imports \
+		--include_source_info \
+		google/api/annotations.proto google/api/http.proto
 
 build: $(PROTOC) $(PROTO_PB2_FILES)
 
 %_pb2.py: %.proto Makefile
-	@echo "Building Python protocol buffer artifacts from $<"
-	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) protoc -I.  \
-	    --python_out=. \
-	    -I./third_party \
-	    --descriptor_set_out=./$(basename $(notdir $<)).desc \
-	    --include_imports \
-	    --include_source_info \
-	    $<
+	@echo "Building protocol buffer artifacts from $<"
+	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc.tools.protoc \
+            -I. \
+            -I./third_party \
+            --python_out=. \
+            --grpc_python_out=. \
+            --descriptor_set_out=./$(basename $(notdir $<)).desc \
+            --include_imports \
+            --include_source_info \
+            $<
 
 clean:
 	rm -f *.desc *_pb2* \
