@@ -20,6 +20,7 @@ import structlog
 # from pyvoltha.protos.voltha_pb2 import VolthaInstance
 # from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame
 
+
 class MockProxyAddress(object):
     def __init__(self, device_id, pon_id, onu_id):
         self.device_id = device_id  # Device ID of proxy (OLT)
@@ -44,6 +45,10 @@ class MockDevice(object):
 class MockCore(object):
     def __init__(self):
         self.root = None   # ConfigRoot(VolthaInstance())
+        if self.root is None:
+            from nose import SkipTest
+            msg = "TODO: Unit tests involving the kv-store are not yet supported by pyvoltha"
+            raise SkipTest(msg)
 
     def get_proxy(self, path):
         return self.root.get_proxy(path)

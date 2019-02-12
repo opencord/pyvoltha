@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 import binascii
-from common.frameio.frameio import hexify
+from pyvoltha.adapters.common.frameio.frameio import hexify
 from twisted.python.failure import Failure
 from unittest import TestCase, main, skip
 from mock.mock_adapter_agent import MockAdapterAgent

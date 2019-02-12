@@ -29,7 +29,7 @@ from pyvoltha.adapters.extensions.omci.omci_messages import \
 from pyvoltha.protos.voltha_pb2 import ImageDownload
 from pyvoltha.protos.device_pb2 import Device
 
-from tests.utests.voltha.extensions.omci.mock.mock_adapter_agent import MockAdapterAgent, MockCore
+from test.unit.extensions.omci.mock.mock_adapter_agent import MockAdapterAgent, MockCore
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.internet.epollreactor import EPollReactor

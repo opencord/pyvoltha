@@ -44,7 +44,7 @@ third_party: google_api
 google_api:
 	@echo "Building protocol buffer artifacts from third_party google api"
 	cd third_party ; \
-	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc.tools.protoc \
+	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc_tools.protoc \
 		-I. \
 		--python_out=. \
 		--grpc_python_out=. \
@@ -57,7 +57,7 @@ build: $(PROTOC) $(PROTO_PB2_FILES)
 
 %_pb2.py: %.proto Makefile
 	@echo "Building protocol buffer artifacts from $<"
-	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc.tools.protoc \
+	env LD_LIBRARY_PATH=$(PROTOC_LIBDIR) python -m grpc_tools.protoc \
             -I. \
             -I./third_party \
             --python_out=. \
@@ -82,7 +82,7 @@ $(PROTOC):
 
 install-protoc: $(PROTOC)
 	@echo "Downloading and installing protocol buffer support."
-	@echo "Installation will require sodo priviledges"
+	@echo "Installation will require sudo privileges"
 	@echo "This will take a few minutes."
 	mkdir -p $(PROTOC_BUILD_TMP_DIR)
 	@echo "We ask for sudo credentials now so we can install at the end"; \

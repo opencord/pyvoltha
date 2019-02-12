@@ -63,7 +63,8 @@ help:
 	@echo "dist                 : Build the protos and create the python package"
 	@echo "docker_base_img      : Build a base docker image with a modern version of pip and requirements.txt installed"
 	@echo "docker_image         : Build a docker image with pyvoltha installed"
-	@echo "test                 : Run all unit test"
+	@echo "utest                : Run all unit test"
+	@echo "utest-with-coverage  : Run all unit test with coverage reporting"
 	@echo "clean                : Remove files created by the build and tests"
 	@echo "distclean            : Remove venv directory"
 	@echo "help                 : Print this help"
@@ -102,7 +103,7 @@ $(DIRS_FLAKE8):
 build: protos
 
 protos:
-	make -C pyvoltha/protos
+	@ . ${VENVDIR}/bin/activate && make -C pyvoltha/protos
 
 dist: venv protos
 	@ echo "Creating PyPi artifacts"
@@ -124,23 +125,24 @@ install-protoc:
 
 test: venv protos
 	@ echo "Executing all unit tests"
-	@ . ${VENVDIR}/bin/activate && tox
-#	@ . ${VENVDIR}/bin/activate && make -C test utest
+	@ tox -- --with-xunit
 
-COVERAGE_OPTS=--with-xcoverage --with-xunit --cover-package=voltha,common,ofagent --cover-html\
-              --cover-html-dir=tmp/cover
+COVERAGE_OPTS=--with-coverage --with-xunit --cover-branches --cover-html --cover-html-dir=tmp/cover \
+              --cover-package=pyvoltha.adapters,pyvoltha.common
 
 utest-with-coverage: venv protos
 	@ echo "Executing all unit tests and producing coverage results"
-	@ . ${VENVDIR}/bin/activate && nosetests $(COVERAGE_OPTS) pyvoltha/tests/utests
+	@ tox -- $(COVERAGE_OPTS)
 
 clean:
 	find . -name '*.pyc' | xargs rm -f
 	find . -name 'coverage.xml' | xargs rm -f
 	find . -name 'nosetests.xml' | xargs rm -f
 	make -C pyvoltha/protos clean
-	rm -rf PyVoltha.egg-info
+	rm -rf pyvoltha.egg-info
 	rm -rf dist
+	rm -rf .tox
+	rm -rf test/unit/tmp
 
 distclean: clean
 	rm -rf ${VENVDIR}
