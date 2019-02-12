@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5b181903_11cc79e9",
+        "filename": "test/unit/extensions/omci/mock/mock_adapter_agent.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000182
+      },
+      "writtenOn": "2019-02-12T19:55:27Z",
+      "side": 1,
+      "message": "I wanted to point out that any Unit tests that need the KV store will be skipped until we can mock that up.  Once that is done, we can remove this test and assert",
+      "revId": "ce2daf6728da22533fed293319e11df2d95a318a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
