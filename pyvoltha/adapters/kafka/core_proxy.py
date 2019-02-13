@@ -35,9 +35,10 @@ def createSubTopic(*args):
 
 class CoreProxy(ContainerProxy):
 
-    def __init__(self, kafka_proxy, core_topic, my_listening_topic):
+    def __init__(self, kafka_proxy, core_topic, my_listening_topic, adapter_name):
         super(CoreProxy, self).__init__(kafka_proxy, core_topic,
                                         my_listening_topic)
+	self.adapter_name = adapter_name;
 
     @ContainerProxy.wrap_request(CoreInstance)
     @inlineCallbacks
