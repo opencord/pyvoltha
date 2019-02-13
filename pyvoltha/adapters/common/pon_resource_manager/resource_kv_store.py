@@ -17,12 +17,11 @@
 """Resource KV store - interface between Resource Manager and backend store."""
 import structlog
 
-# from pyvoltha.core.config.config_backend import ConsulStore
-# from pyvoltha.core.config.config_backend import EtcdStore
-from pyvoltha.adapters.common.kvstore.kvstore import create_kv_client
+from pyvoltha.common.config.config_backend import ConsulStore
+from pyvoltha.common.config.config_backend import EtcdStore
 
 # KV store uses this prefix to store resource info
-PATH_PREFIX = 'resource_manager/{}'
+PATH_PREFIX = 'service/voltha/resource_manager/{}'
 
 
 class ResourceKvStore(object):
@@ -45,25 +44,18 @@ class ResourceKvStore(object):
         # logger
         self._log = structlog.get_logger()
 
-        self._path_prefix = PATH_PREFIX.format(technology)
+        path = PATH_PREFIX.format(technology)
         try:
-            self._kv_store = create_kv_client(backend, host, port)
-            if self._kv_store is None:
+            if backend == 'consul':
+                self._kv_store = ConsulStore(host, port, path)
+            elif backend == 'etcd':
+                self._kv_store = EtcdStore(host, port, path)
+            else:
                 self._log.error('Invalid-backend')
                 raise Exception("Invalid-backend-for-kv-store")
-            # if backend == 'consul':
-            #     self._kv_store = ConsulStore(host, port, path)
-            # elif backend == 'etcd':
-            #     self._kv_store = EtcdStore(host, port, path)
-            # else:
-            #     self._log.error('Invalid-backend')
-            #     raise Exception("Invalid-backend-for-kv-store")
         except Exception as e:
             self._log.exception("exception-in-init")
             raise Exception(e)
-
-    def _make_path(self, key):
-        return '{}/{}'.format(self._path_prefix, key)
 
     def update_to_kv_store(self, path, resource):
         """
@@ -73,8 +65,7 @@ class ResourceKvStore(object):
         :param resource: updated resource
         """
         try:
-            # self._kv_store[path] = str(resource)
-            self._kv_store.put(self._make_path(path), str(resource))
+            self._kv_store[path] = str(resource)
             self._log.debug("Resource-updated-in-kv-store", path=path)
             return True
         except BaseException:
@@ -90,8 +81,7 @@ class ResourceKvStore(object):
         """
         resource = None
         try:
-            # resource = self._kv_store[path]
-            resource = self._kv_store.get(self._make_path(path))
+            resource = self._kv_store[path]
             self._log.debug("Got-resource-from-kv-store", path=path)
         except KeyError:
             self._log.info("Resource-not-found-updating-resource",
@@ -108,8 +98,7 @@ class ResourceKvStore(object):
         :param path: path to remove the resource
         """
         try:
-            # del self._kv_store[path]
-            self._kv_store.delete(self._make_path(path))
+            del self._kv_store[path]
             self._log.debug("Resource-deleted-in-kv-store", path=path)
             return True
         except BaseException:
