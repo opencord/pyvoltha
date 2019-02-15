@@ -49,7 +49,7 @@ class AdapterAlarms:
         self.adapter_agent = adapter_agent
         self.device_id = device_id
         self.logical_device_id = logical_device_id
-        self.adapter_name = adapter_agent.adapter_name
+        self.adapter_name = adapter_agent.listening_topic
         self.lc = None
 
     def format_id(self, alarm):

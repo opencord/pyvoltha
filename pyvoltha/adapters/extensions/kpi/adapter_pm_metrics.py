@@ -53,9 +53,8 @@ class AdapterPmMetrics(object):
         self.log = structlog.get_logger(device_id=device_id)
         self.device_id = device_id
         self.adapter_agent = adapter_agent
-        self.name = adapter_agent.adapter_name
-        # Sanitize the vcore ID in the logical device ID
-        self.logical_device_id = '0000' + logical_device_id[4:]
+        self.name = adapter_agent.listening_topic
+        self.logical_device_id = logical_device_id
         device = self.adapter_agent.get_device(self.device_id)
         self.serial_number = device.serial_number
 
