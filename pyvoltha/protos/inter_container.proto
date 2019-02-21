@@ -110,9 +110,16 @@ message InterAdapterHeader {
     int64 timestamp = 7;
 }
 
+message InterAdapterOmciMessage {
+    bytes message = 1; // OMCI_REQUEST or OMCI_RESPONSE
+}
+
 message InterAdapterResponseBody {
     bool status = 1;
-    google.protobuf.Any body = 2;
+    oneof payload {
+        google.protobuf.Any body = 2;
+        InterAdapterOmciMessage omci = 3; // OMCI_REQUEST or OMCI_RESPONSE
+    }
 }
 
 message InterAdapterMessage {
