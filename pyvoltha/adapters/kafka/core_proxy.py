@@ -94,7 +94,18 @@ class CoreProxy(ContainerProxy):
     @ContainerProxy.wrap_request(Device)
     @inlineCallbacks
     def get_child_device(self, parent_device_id, **kwargs):
-        raise NotImplementedError()
+        log.debug("get-child-device")
+        id = ID()
+        id.id = parent_device_id
+        to_topic = self.get_core_topic(parent_device_id)
+        reply_topic = self.get_adapter_topic()
+        args = self._to_proto(**kwargs)
+        res = yield self.invoke(rpc="GetChildDevice",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=id,
+                                **args)
+        returnValue(res)
 
     @ContainerProxy.wrap_request(Ports)
     @inlineCallbacks
