@@ -37,7 +37,7 @@ KAFKA_OFFSET_EARLIEST = 'earliest'
 ARG_FROM_TOPIC = 'fromTopic'
 
 
-class KafkaMessagingError(BaseException):
+class KafkaMessagingError(Exception):
     def __init__(self, error):
         self.error = error
 
@@ -553,24 +553,32 @@ class IKafkaMessagingProxy(object):
 
             yield self._send_kafka_message(to_topic, request)
             log.debug("message-sent", to_topic=to_topic,
-                      from_topic=reply_topic)
+                      from_topic=reply_topic, kafka_request=request)
 
             if response_required:
                 res = yield wait_for_result
 
-                if res is None or not res.success:
-                    raise KafkaMessagingError(error="Failed-response:{"
-                                                    "}".format(res))
-
                 # Remove the transaction from the transaction map
                 del self.transaction_id_deferred_map[transaction_id]
 
-                log.debug("send-message-response", rpc=rpc, result=res)
-
-                if callback:
-                    callback((res.success, res.result))
+                if res is not None:
+                    if res.success:
+                        log.debug("send-message-response", rpc=rpc, result=res)
+                        if callback:
+                            callback((res.success, res.result))
+                        else:
+                            returnValue((res.success, res.result))
+                    else:
+                        # this is the case where the core API returns a grpc code.NotFound.  Return or callback
+                        # so the caller can act appropriately (i.e add whatever was not found)
+                        log.warn("send-message-response-error-result", kafka_request=request, kafka_result=res)
+                        if callback:
+                            callback((res.success, None))
+                        else:
+                            returnValue((res.success, None))
                 else:
-                    returnValue((res.success, res.result))
+                    raise KafkaMessagingError(error="failed-response-for-request:{}".format(request))
+
         except Exception as e:
             log.exception("Exception-sending-request", e=e)
             raise KafkaMessagingError(error=e)
