@@ -16,6 +16,24 @@
       "revId": "15ee2cc8c2928152e84eede93bf05f58fc29f7dd",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "84735bff_78508d38",
+        "filename": "pyvoltha/adapters/kafka/kafka_inter_container_library.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-03-01T19:16:28Z",
+      "side": 1,
+      "message": "I tried that originally.  The problem was res.result was \"something\", grpc fault details i think. Tried returning that res.result and adapter code had to open up the result to figure out what it was.  I felt it made more sense to keep return result as None given other code expected None if nothing was found.  Also it seemed those grpc details should not go beyond the library.",
+      "parentUuid": "825ea6c0_ffa93ebd",
+      "revId": "15ee2cc8c2928152e84eede93bf05f58fc29f7dd",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
