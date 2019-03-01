@@ -34,6 +34,24 @@
       "revId": "15ee2cc8c2928152e84eede93bf05f58fc29f7dd",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "284493c3_b94289f1",
+        "filename": "pyvoltha/adapters/kafka/kafka_inter_container_library.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2019-03-01T19:58:13Z",
+      "side": 1,
+      "message": "The return result in the case of a failure is a inter_container.Error() message (from the inter_container.proto).   It provides some insights into on the failure (limited info now).   For now, I think it\u0027s ok returning None with a warning log.   We can revisit it if we get into scenarios where the actual error reason is required.",
+      "parentUuid": "84735bff_78508d38",
+      "revId": "15ee2cc8c2928152e84eede93bf05f58fc29f7dd",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
