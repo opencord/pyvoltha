@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "825ea6c0_ffa93ebd",
+        "filename": "pyvoltha/adapters/kafka/kafka_inter_container_library.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2019-03-01T18:57:21Z",
+      "side": 1,
+      "message": "You can still return res.result in this scenario as in the unsuccessful scenario and error will be returned.   Sorry, missed that earlier.",
+      "revId": "15ee2cc8c2928152e84eede93bf05f58fc29f7dd",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
