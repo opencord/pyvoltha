@@ -29,8 +29,7 @@ from google.protobuf.descriptor import Descriptor
 from simplejson import dumps
 
 from pyvoltha.common.utils.json_format import MessageToJson
-from pyvoltha.protos import third_party
-from pyvoltha.protos import meta_pb2
+from voltha_protos import meta_pb2
 
 import structlog
 

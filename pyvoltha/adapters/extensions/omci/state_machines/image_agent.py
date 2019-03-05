@@ -21,8 +21,8 @@ from transitions.extensions.nesting import HierarchicalMachine as HMachine
 from twisted.python import failure
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred, CancelledError
-from pyvoltha.protos.voltha_pb2 import ImageDownload
-from pyvoltha.protos.omci_mib_db_pb2 import OpenOmciEventType
+from voltha_protos.voltha_pb2 import ImageDownload
+from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 from pyvoltha.adapters.extensions.omci.omci_defs import ReasonCodes, OmciSectionDataSize
 from pyvoltha.adapters.extensions.omci.omci_entities import SoftwareImage
 from pyvoltha.adapters.extensions.omci.omci_cc import DEFAULT_OMCI_TIMEOUT

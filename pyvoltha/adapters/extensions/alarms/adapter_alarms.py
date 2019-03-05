@@ -15,7 +15,7 @@
 
 import structlog
 import arrow
-from pyvoltha.protos.events_pb2 import AlarmEventType, AlarmEventSeverity,\
+from voltha_protos.events_pb2 import AlarmEventType, AlarmEventSeverity,\
     AlarmEventState, AlarmEventCategory
 log = structlog.get_logger()
 
