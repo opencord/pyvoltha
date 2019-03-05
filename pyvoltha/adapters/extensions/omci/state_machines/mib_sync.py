@@ -27,7 +27,7 @@ from pyvoltha.adapters.extensions.omci.onu_device_entry import OnuDeviceEvents, 
     SUPPORTED_MESSAGE_ENTITY_KEY, SUPPORTED_MESSAGE_TYPES_KEY
 from pyvoltha.adapters.extensions.omci.omci_entities import OntData
 from pyvoltha.common.event_bus import EventBusClient
-from pyvoltha.protos.omci_mib_db_pb2 import OpenOmciEventType
+from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 
 RxEvent = OmciCCRxEvents
 DevEvent = OnuDeviceEvents

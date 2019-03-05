@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 from mib_db_api import *
-from pyvoltha.protos.omci_alarm_db_pb2 import AlarmInstanceData, AlarmClassData, \
+from voltha_protos.omci_alarm_db_pb2 import AlarmInstanceData, AlarmClassData, \
     AlarmDeviceData, AlarmAttributeData
 
 

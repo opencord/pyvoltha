@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from random import uniform, shuffle
 from twisted.internet import reactor
 from pyvoltha.common.utils.indexpool import IndexPool
-from pyvoltha.protos.omci_mib_db_pb2 import OpenOmciEventType
+from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 from pyvoltha.adapters.extensions.omci.omci_defs import EntityOperations, ReasonCodes
 from pyvoltha.adapters.extensions.omci.omci_cc import OmciCCRxEvents, OMCI_CC, TX_REQUEST_KEY, \
     RX_RESPONSE_KEY
