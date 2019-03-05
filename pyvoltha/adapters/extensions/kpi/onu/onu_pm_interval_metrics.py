@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import arrow
-from pyvoltha.protos.device_pb2 import PmConfig, PmGroupConfig
-from pyvoltha.protos.events_pb2 import KpiEvent2, MetricInformation, MetricMetaData, KpiEventType
+from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
+from voltha_protos.events_pb2 import KpiEvent2, MetricInformation, MetricMetaData, KpiEventType
 from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
 from pyvoltha.adapters.extensions.omci.omci_entities import \
     EthernetFrameUpstreamPerformanceMonitoringHistoryData, \

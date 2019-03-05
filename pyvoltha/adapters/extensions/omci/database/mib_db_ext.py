@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 from mib_db_api import *
-from pyvoltha.protos.omci_mib_db_pb2 import MibInstanceData, MibClassData, \
+from voltha_protos.omci_mib_db_pb2 import MibInstanceData, MibClassData, \
     MibDeviceData, MibAttributeData, MessageType, ManagedEntity
 from pyvoltha.adapters.extensions.omci.omci_entities import *
 from pyvoltha.adapters.extensions.omci.omci_fields import *

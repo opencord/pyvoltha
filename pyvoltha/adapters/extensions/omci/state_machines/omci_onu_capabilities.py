@@ -17,7 +17,7 @@ import structlog
 from transitions import Machine
 from twisted.internet import reactor
 from pyvoltha.adapters.extensions.omci.onu_device_entry import OnuDeviceEntry, OnuDeviceEvents, IN_SYNC_KEY
-from pyvoltha.protos.omci_mib_db_pb2 import OpenOmciEventType
+from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 
 
 class OnuOmciCapabilities(object):

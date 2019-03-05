@@ -15,8 +15,8 @@
 import structlog
 import arrow
 from twisted.internet.task import LoopingCall
-from pyvoltha.protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
-from pyvoltha.protos.device_pb2 import PmConfig
+from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
+from voltha_protos.device_pb2 import PmConfig
 
 
 class AdapterPmMetrics(object):

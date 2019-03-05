@@ -26,8 +26,7 @@ from pyvoltha.common.config.config_rev import is_proto_message, children_fields,
     ConfigRevision, access_rights
 from pyvoltha.common.config.config_rev_persisted import PersistedConfigRevision
 from pyvoltha.common.config.merge_3way import merge_3way
-from pyvoltha.protos import third_party
-from pyvoltha.protos import meta_pb2
+from voltha_protos import meta_pb2
 
 import structlog
 

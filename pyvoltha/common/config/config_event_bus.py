@@ -19,8 +19,7 @@ from simplejson import dumps
 
 from pyvoltha.common.event_bus import EventBusClient
 from pyvoltha.common.config.config_proxy import CallbackType
-from pyvoltha.protos import third_party
-from pyvoltha.protos.events_pb2 import ConfigEvent, ConfigEventType
+from voltha_protos.events_pb2 import ConfigEvent, ConfigEventType
 
 IGNORED_CALLBACKS = [CallbackType.PRE_ADD, CallbackType.GET,
                      CallbackType.POST_LISTCHANGE, CallbackType.PRE_REMOVE,
