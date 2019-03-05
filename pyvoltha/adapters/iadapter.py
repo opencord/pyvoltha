@@ -23,12 +23,12 @@ from twisted.internet import reactor
 from zope.interface import implementer
 
 from interface import IAdapterInterface
-from pyvoltha.protos.adapter_pb2 import Adapter
-from pyvoltha.protos.adapter_pb2 import AdapterConfig
-from pyvoltha.protos.common_pb2 import AdminState
-from pyvoltha.protos.common_pb2 import LogLevel
-from pyvoltha.protos.device_pb2 import DeviceType, DeviceTypes
-from pyvoltha.protos.health_pb2 import HealthStatus
+from voltha_protos.adapter_pb2 import Adapter
+from voltha_protos.adapter_pb2 import AdapterConfig
+from voltha_protos.common_pb2 import AdminState
+from voltha_protos.common_pb2 import LogLevel
+from voltha_protos.device_pb2 import DeviceType, DeviceTypes
+from voltha_protos.health_pb2 import HealthStatus
 
 
 log = structlog.get_logger()

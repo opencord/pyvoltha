@@ -15,7 +15,7 @@
 #
 import structlog
 
-from pyvoltha.protos.device_pb2 import Image
+from voltha_protos.device_pb2 import Image
 from omci_entities import *
 from database.mib_db_api import *
 from enum import IntEnum

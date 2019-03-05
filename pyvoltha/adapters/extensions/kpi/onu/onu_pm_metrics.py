@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyvoltha.protos.device_pb2 import PmConfig, PmConfigs, PmGroupConfig
+from voltha_protos.device_pb2 import PmConfig, PmConfigs, PmGroupConfig
 from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
 from pyvoltha.adapters.extensions.kpi.onu.onu_omci_pm import OnuOmciPmMetrics
 

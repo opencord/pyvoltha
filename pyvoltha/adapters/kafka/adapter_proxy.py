@@ -22,12 +22,10 @@ import structlog
 from uuid import uuid4
 from twisted.internet.defer import inlineCallbacks, returnValue
 from container_proxy import ContainerProxy
-from pyvoltha.protos import third_party
-from pyvoltha.protos.inter_container_pb2 import InterAdapterHeader, \
+from voltha_protos.inter_container_pb2 import InterAdapterHeader, \
     InterAdapterMessage
 import time
 
-_ = third_party
 log = structlog.get_logger()
 
 

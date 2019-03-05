@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pyvoltha.adapters.extensions.alarms.adapter_alarms import AlarmBase
-from pyvoltha.protos.events_pb2 import AlarmEventType, AlarmEventSeverity, AlarmEventCategory
+from voltha_protos.events_pb2 import AlarmEventType, AlarmEventSeverity, AlarmEventCategory
 
 
 class OnuActiveAlarm(AlarmBase):

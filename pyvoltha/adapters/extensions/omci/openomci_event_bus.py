@@ -17,8 +17,8 @@ from google.protobuf.json_format import MessageToDict
 from google.protobuf.message import Message
 from simplejson import dumps
 from pyvoltha.common.event_bus import EventBusClient
-from pyvoltha.protos.omci_mib_db_pb2 import OpenOmciEvent
-from pyvoltha.protos.omci_alarm_db_pb2 import AlarmOpenOmciEvent
+from voltha_protos.omci_mib_db_pb2 import OpenOmciEvent
+from voltha_protos.omci_alarm_db_pb2 import AlarmOpenOmciEvent
 from pyvoltha.common.utils.json_format import MessageToDict
 
 

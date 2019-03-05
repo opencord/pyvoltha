@@ -15,7 +15,7 @@
 #
 import structlog
 
-from pyvoltha.protos import openflow_13_pb2 as ofp
+from voltha_protos import openflow_13_pb2 as ofp
 from hashlib import md5
 
 log = structlog.get_logger()

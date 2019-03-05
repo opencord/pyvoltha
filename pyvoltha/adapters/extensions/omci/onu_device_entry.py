@@ -16,7 +16,7 @@
 
 import structlog
 from copy import deepcopy
-from pyvoltha.protos.device_pb2 import ImageDownload
+from voltha_protos.device_pb2 import ImageDownload
 from pyvoltha.adapters.extensions.omci.omci_defs import EntityOperations, ReasonCodes
 import pyvoltha.adapters.extensions.omci.omci_entities as omci_entities
 from pyvoltha.adapters.extensions.omci.omci_cc import OMCI_CC

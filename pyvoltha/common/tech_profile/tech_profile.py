@@ -23,7 +23,7 @@ from enum import Enum
 # from pyvoltha.core.config.config_backend import EtcdStore
 from pyvoltha.adapters.common.kvstore.kvstore import create_kv_client
 from pyvoltha.common.utils.registry import registry
-from pyvoltha.protos import openolt_pb2
+from voltha_protos import openolt_pb2
 
 # logger
 log = structlog.get_logger()

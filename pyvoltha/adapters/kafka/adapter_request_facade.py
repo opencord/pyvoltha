@@ -25,9 +25,9 @@ from twisted.internet import reactor
 
 from afkak.consumer import OFFSET_LATEST, OFFSET_EARLIEST
 from pyvoltha.adapters.interface import IAdapterInterface
-from pyvoltha.protos.inter_container_pb2 import IntType, InterAdapterMessage, StrType, Error, ErrorCode
-from pyvoltha.protos.device_pb2 import Device, ImageDownload
-from pyvoltha.protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
+from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrType, Error, ErrorCode
+from voltha_protos.device_pb2 import Device, ImageDownload
+from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
 from pyvoltha.adapters.kafka.kafka_inter_container_library import IKafkaMessagingProxy, \
     get_messaging_proxy, KAFKA_OFFSET_LATEST, KAFKA_OFFSET_EARLIEST, ARG_FROM_TOPIC

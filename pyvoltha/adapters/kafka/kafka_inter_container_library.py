@@ -26,7 +26,7 @@ from zope.interface import implementer
 from pyvoltha.common.utils import asleep
 from pyvoltha.common.utils.registry import IComponent
 from kafka_proxy import KafkaProxy, get_kafka_proxy
-from pyvoltha.protos.inter_container_pb2 import MessageType, Argument, \
+from voltha_protos.inter_container_pb2 import MessageType, Argument, \
     InterContainerRequestBody, InterContainerMessage, Header, \
     InterContainerResponseBody, StrType
 

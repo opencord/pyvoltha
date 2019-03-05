@@ -26,7 +26,7 @@ from pyvoltha.adapters.extensions.omci.database.mib_db_api import ATTRIBUTES_KEY
 from pyvoltha.adapters.extensions.omci.omci_entities import CircuitPack, PptpEthernetUni, OntG, AniG
 
 from pyvoltha.common.event_bus import EventBusClient
-from pyvoltha.protos.omci_alarm_db_pb2 import AlarmOpenOmciEventType
+from voltha_protos.omci_alarm_db_pb2 import AlarmOpenOmciEventType
 
 RxEvent = OmciCCRxEvents
 RC = ReasonCodes

@@ -52,15 +52,14 @@ VENVDIR := venv-$(shell uname -s | tr '[:upper:]' '[:lower:]')
 VENV_BIN ?= virtualenv
 VENV_OPTS ?=
 
-.PHONY: $(DIRS) $(DIRS_CLEAN) $(DIRS_FLAKE8) flake8 protos venv rebuild-venv clean distclean build test docker_base_img docker_image
+.PHONY: $(DIRS) $(DIRS_CLEAN) $(DIRS_FLAKE8) flake8 venv rebuild-venv clean distclean build test docker_base_img docker_image
 
 # This should to be the first and default target in this Makefile
 help:
 	@echo "Usage: make [<target>]"
 	@echo "where available targets are:"
 	@echo
-	@echo "build                : Build the protos"
-	@echo "dist                 : Build the protos and create the python package"
+	@echo "dist                 : Create the python package"
 	@echo "docker_base_img      : Build a base docker image with a modern version of pip and requirements.txt installed"
 	@echo "docker_image         : Build a docker image with pyvoltha installed"
 	@echo "utest                : Run all unit test"
@@ -68,7 +67,6 @@ help:
 	@echo "clean                : Remove files created by the build and tests"
 	@echo "distclean            : Remove venv directory"
 	@echo "help                 : Print this help"
-	@echo "protos               : Compile all grpc/protobuf files"
 	@echo "rebuild-venv         : Rebuild local Python virtualenv from scratch"
 	@echo "venv                 : Build local Python virtualenv if did not exist yet"
 	@echo
@@ -100,12 +98,7 @@ $(DIRS_FLAKE8):
 	@echo "    FLAKE8 $(basename $@)"
 	-$(Q)$(MAKE) -C $(basename $@) flake8
 
-build: protos
-
-protos:
-	@ . ${VENVDIR}/bin/activate && make -C pyvoltha/protos
-
-dist: venv protos
+dist: venv 
 	@ echo "Creating PyPi artifacts"
 	python setup.py sdist
 
@@ -120,10 +113,7 @@ docker_base_img:
 docker_image: docker_base_img dist
 	docker build $(DOCKER_BUILD_ARGS) -t ${REGISTRY}${REPOSITORY}pyvoltha:${TAG} -f docker/Dockerfile.pyvoltha .
 
-install-protoc:
-	make -C pyvoltha/protos install-protoc
-
-test: venv protos
+test: venv
 	@ echo "Executing all unit tests"
 	@ tox -- --with-xunit
 

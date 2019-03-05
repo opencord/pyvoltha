@@ -16,7 +16,7 @@
 import structlog
 from task import Task
 from twisted.internet import reactor
-from pyvoltha.protos.voltha_pb2 import ImageDownload
+from voltha_protos.voltha_pb2 import ImageDownload
 
 
 class OmciSwImageUpgradeTask(Task):
