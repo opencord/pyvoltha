@@ -24,7 +24,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from container_proxy import ContainerProxy
 from pyvoltha.protos.common_pb2 import ID, ConnectStatus, OperStatus
 from pyvoltha.protos.inter_container_pb2 import StrType, BoolType, IntType, Packet
-from pyvoltha.protos.device_pb2 import Device, Ports
+from pyvoltha.protos.device_pb2 import Device, Ports, Devices
 from pyvoltha.protos.voltha_pb2 import CoreInstance
 
 log = structlog.get_logger()
@@ -126,11 +126,33 @@ class CoreProxy(ContainerProxy):
                                 port_type=p_type)
         returnValue(res)
 
+    @ContainerProxy.wrap_request(Devices)
+    @inlineCallbacks
     def get_child_devices(self, parent_device_id):
-        raise NotImplementedError()
+        log.debug("get-child-devices")
+        id = ID()
+        id.id = parent_device_id
+        to_topic = self.get_core_topic(parent_device_id)
+        reply_topic = self.get_adapter_topic()
+        res = yield self.invoke(rpc="GetChildDevices",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=id)
+        returnValue(res)
 
+    @ContainerProxy.wrap_request(Device)
+    @inlineCallbacks
     def get_child_device_with_proxy_address(self, proxy_address):
-        raise NotImplementedError()
+        log.debug("get-child-device-with-proxy-address")
+        id = ID()
+        id.id = proxy_address.device_id
+        to_topic = self.get_core_topic(proxy_address.device_id)
+        reply_topic = self.get_adapter_topic()
+        res = yield self.invoke(rpc="GetChildDeviceWithProxyAddress",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                proxy_address=proxy_address)
+        returnValue(res)
 
     def _to_proto(self, **kwargs):
         encoded = {}
