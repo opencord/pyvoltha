@@ -25,7 +25,7 @@ from container_proxy import ContainerProxy
 
 from voltha_protos.common_pb2 import ID, ConnectStatus, OperStatus
 from voltha_protos.inter_container_pb2 import StrType, BoolType, IntType, Packet
-from voltha_protos.device_pb2 import Device, Portsi, Devices
+from voltha_protos.device_pb2 import Device, Ports, Devices
 from voltha_protos.voltha_pb2 import CoreInstance
 
 log = structlog.get_logger()

@@ -120,7 +120,7 @@ test: venv
 COVERAGE_OPTS=--with-coverage --with-xunit --cover-branches --cover-html --cover-html-dir=tmp/cover \
               --cover-package=pyvoltha.adapters,pyvoltha.common
 
-utest-with-coverage: venv protos
+utest-with-coverage: venv
 	@ echo "Executing all unit tests and producing coverage results"
 	@ tox -- $(COVERAGE_OPTS)
 
@@ -128,7 +128,6 @@ clean:
 	find . -name '*.pyc' | xargs rm -f
 	find . -name 'coverage.xml' | xargs rm -f
 	find . -name 'nosetests.xml' | xargs rm -f
-	make -C pyvoltha/protos clean
 	rm -rf pyvoltha.egg-info
 	rm -rf dist
 	rm -rf .tox
