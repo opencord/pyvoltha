@@ -55,14 +55,15 @@ class OnuDeviceEntry(object):
     """
     An ONU Device entry in the MIB
     """
-    def __init__(self, omci_agent, device_id, adapter_agent, custom_me_map,
+    def __init__(self, omci_agent, device_id, core_proxy, adapter_proxy, custom_me_map,
                  mib_db, alarm_db, support_classes, clock=None):
         """
         Class initializer
 
         :param omci_agent: (OpenOMCIAgent) Reference to OpenOMCI Agent
         :param device_id: (str) ONU Device ID
-        :param adapter_agent: (AdapterAgent) Adapter agent for ONU
+        :param core_proxy: (CoreProxy) Remote API to VOLTHA Core
+        :param adapter_proxy: (AdapterProxy) Remote API to other Adapters via VOLTHA Core
         :param custom_me_map: (dict) Additional/updated ME to add to class map
         :param mib_db: (MibDbApi) MIB Database reference
         :param alarm_db: (MibDbApi) Alarm Table/Database reference
@@ -73,7 +74,8 @@ class OnuDeviceEntry(object):
         self._started = False
         self._omci_agent = omci_agent         # OMCI AdapterAgent
         self._device_id = device_id           # ONU Device ID
-        self._adapter_agent = adapter_agent
+        self._core_proxy = core_proxy
+        self._adapter_proxy = adapter_proxy
         self._runner = TaskRunner(device_id, clock=clock)  # OMCI_CC Task runner
         self._deferred = None
         # self._img_download_deferred = None    # deferred of image file download from server
@@ -167,7 +169,7 @@ class OnuDeviceEntry(object):
         self.event_bus = EventBusClient()
 
         # Create OMCI communications channel
-        self._omci_cc = OMCI_CC(adapter_agent, self.device_id, self._me_map, clock=clock)
+        self._omci_cc = OMCI_CC(core_proxy, adapter_proxy, self.device_id, self._me_map, clock=clock)
 
     @staticmethod
     def event_bus_topic(device_id, event):
@@ -190,8 +192,8 @@ class OnuDeviceEntry(object):
         return self._omci_cc
 
     @property
-    def adapter_agent(self):
-        return self._adapter_agent
+    def core_proxy(self):
+        return self._core_proxy
         
     @property
     def task_runner(self):

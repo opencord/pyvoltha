@@ -105,7 +105,7 @@ class MibDbExternal(MibDbApi):
         :param omci_agent: (OpenOMCIAgent) OpenOMCI Agent
         """
         super(MibDbExternal, self).__init__(omci_agent)
-        self._core = omci_agent.core
+        self._core = omci_agent.core_proxy
         # Some statistics to help with debug/tuning/...
         self._statistics = {
             'get': MibDbStatistic('get'),
