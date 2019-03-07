@@ -104,15 +104,17 @@ class OpenOMCIAgent(object):
     This will become the primary interface into OpenOMCI for ONU Device Adapters
     in VOLTHA v1.3 sprint 3 time frame.
     """
-    def __init__(self, core, support_classes=OpenOmciAgentDefaults, clock=None):
+    def __init__(self, core_proxy, adapter_proxy, support_classes=OpenOmciAgentDefaults, clock=None):
         """
         Class initializer
 
-        :param core: (VolthaCore) VOLTHA Core
+        :param core_proxy: (CoreProxy) Remote API to VOLTHA Core
+        :param adapter_proxy: (AdapterProxy) Remote API to other adapters via VOLTHA Core
         :param support_classes: (Dict) Classes to support OMCI
         """
         self.log = structlog.get_logger()
-        self._core = core
+        self._core_proxy = core_proxy
+        self._adapter_proxy = adapter_proxy
         self.reactor = clock if clock is not None else reactor
         self._started = False
         self._devices = dict()       # device-id -> DeviceEntry
@@ -130,9 +132,9 @@ class OpenOMCIAgent(object):
         self._alarm_database_cls = support_classes['alarm-synchronizer']['database']
 
     @property
-    def core(self):
+    def core_proxy(self):
         """ Return a reference to the VOLTHA Core component"""
-        return self._core
+        return self._core_proxy
 
     @property
     def database_class(self):
@@ -214,7 +216,7 @@ class OpenOMCIAgent(object):
             except Exception as e:
                 self.log.exception('advertise-failure', e=e)
 
-    def add_device(self, device_id, adapter_agent, custom_me_map=None,
+    def add_device(self, device_id, core_proxy, adapter_proxy, custom_me_map=None,
                    support_classes=OpenOmciAgentDefaults):
         """
         Add a new ONU to be managed.
@@ -227,7 +229,8 @@ class OpenOMCIAgent(object):
         for this object.
 
         :param device_id: (str) Device ID of ONU to add
-        :param adapter_agent: (AdapterAgent) Adapter agent for ONU
+        :param core_proxy: (CoreProxy) Remote API to VOLTHA core
+        :param adapter_proxy: (AdapterProxy) Remote API to other adapters via VOLTHA core
         :param custom_me_map: (dict) Additional/updated ME to add to class map
         :param support_classes: (dict) State machines and tasks for this ONU
 
@@ -238,7 +241,7 @@ class OpenOMCIAgent(object):
         device = self._devices.get(device_id)
 
         if device is None:
-            device = OnuDeviceEntry(self, device_id, adapter_agent, custom_me_map,
+            device = OnuDeviceEntry(self, device_id, core_proxy, adapter_proxy, custom_me_map,
                                     self._mib_db, self._alarm_db, support_classes, clock=self.reactor)
 
             self._devices[device_id] = device

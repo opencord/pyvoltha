@@ -48,7 +48,7 @@ class AlarmDbExternal(MibDbApi):
         :param omci_agent: (OpenOMCIAgent) OpenOMCI Agent
         """
         super(AlarmDbExternal, self).__init__(omci_agent)
-        self._core = omci_agent.core
+        self._core = omci_agent.core_proxy
 
     def start(self):
         """

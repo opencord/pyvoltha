@@ -28,6 +28,7 @@ from pyvoltha.adapters.extensions.omci.me_frame import MEFrame
 from pyvoltha.adapters.extensions.omci.omci_defs import EntityOperations, ReasonCodes
 from pyvoltha.adapters.extensions.omci.omci_entities import entity_id_to_class_map
 from pyvoltha.common.event_bus import EventBusClient
+from voltha_protos.inter_container_pb2 import InterAdapterMessageType, InterAdapterOmciMessage
 from enum import IntEnum
 from binascii import hexlify
 
@@ -102,11 +103,13 @@ class OMCI_CC(object):
         OmciGetAllAlarmsNextResponse.message_id: RxEvent.Get_ALARM_Get_Next
     }
 
-    def __init__(self, adapter_agent, device_id, me_map=None,
+    def __init__(self, core_proxy, adapter_proxy, device_id, me_map=None,
                  clock=None):
         self.log = structlog.get_logger(device_id=device_id)
-        self._adapter_agent = adapter_agent
+        self._core_proxy = core_proxy
+        self._adapter_proxy = adapter_proxy
         self._device_id = device_id
+        self._device = None
         self._proxy_address = None
         self._enabled = False
         self._extended_messaging = False
@@ -261,6 +264,7 @@ class OMCI_CC(object):
     def max_lp_tx_queue(self):
         return self._max_lp_tx_queue
 
+    @inlineCallbacks
     def _start(self):
         """
         Start the OMCI Communications Channel
@@ -268,8 +272,8 @@ class OMCI_CC(object):
         assert self._enabled, 'Start should only be called if enabled'
         self.flush()
 
-        device = self._adapter_agent.get_device(self._device_id)
-        self._proxy_address = device.proxy_address
+        self._device = yield self._core_proxy.get_device(self._device_id)
+        self._proxy_address = self._device.proxy_address
 
     def _stop(self):
         """
@@ -858,6 +862,7 @@ class OMCI_CC(object):
         other_msg_type = self._tx_request[other][OMCI_CC.REQUEST_FRAME].fields['message_type'] & 0x1f
         return other_msg_type not in not_allowed
 
+    @inlineCallbacks
     def _send_next_request(self, high_priority):
         """
         Pull next tx request and send it
@@ -896,8 +901,20 @@ class OMCI_CC(object):
                 ts = arrow.utcnow().float_timestamp
                 try:
                     self._rx_response[index] = None
-                    self._adapter_agent.send_proxied_message(self._proxy_address,
-                                                             hexify(str(frame)))
+
+                    omci_msg = InterAdapterOmciMessage(message=hexify(str(frame)))
+
+                    self.log.debug('inter-adapter-send-omci', omci_msg=omci_msg)
+
+                    yield self._adapter_proxy.send_inter_adapter_message(
+                        msg=omci_msg,
+                        type=InterAdapterMessageType.OMCI_REQUEST,
+                        from_adapter=self._device.type,
+                        to_adapter=self._proxy_address.device_type,
+                        to_device_id=self._device_id,
+                        proxy_device_id=self._proxy_address.device_id
+                    )
+
                 finally:
                     global entity_id_to_class_map
                     entity_id_to_class_map = saved_me_map
