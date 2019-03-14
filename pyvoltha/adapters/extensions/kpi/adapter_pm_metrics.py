@@ -37,12 +37,12 @@ class AdapterPmMetrics(object):
     # for collection.
     TIMESTAMP_ATTRIBUTE = 'timestamp'
 
-    def __init__(self, adapter_agent, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared Device Adapter PM metrics manager
 
-        :param adapter_agent: (AdapterAgent) Adapter agent for the device
+        :param core_proxy: (CoreProxy) Gateway between CORE and an adapter
         :param device_id: (str) Device ID
         :param logical_device_id: (str) VOLTHA Logical Device ID
         :param grouped: (bool) Flag indicating if statistics are managed as a group
@@ -52,10 +52,10 @@ class AdapterPmMetrics(object):
         """
         self.log = structlog.get_logger(device_id=device_id)
         self.device_id = device_id
-        self.adapter_agent = adapter_agent
-        self.name = adapter_agent.listening_topic
+        self.core_proxy = core_proxy
+        self.name = core_proxy.listening_topic
         self.logical_device_id = logical_device_id
-        device = self.adapter_agent.get_device(self.device_id)
+        device = yield self.core_proxy.get_device(self.device_id)
         self.serial_number = device.serial_number
 
         self.default_freq = kwargs.get(AdapterPmMetrics.DEFAULT_FREQUENCY_KEY,
