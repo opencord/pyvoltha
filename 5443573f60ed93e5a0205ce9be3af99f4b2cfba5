@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63fa4424_4dbb6504",
+        "filename": "pyvoltha/adapters/extensions/kpi/adapter_pm_metrics.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-03-14T22:51:18Z",
+      "side": 1,
+      "message": "This call may need to yield.  The returned value is a deferred and not the actual device object.   And given a constructor cannot yield this may need to be moved to a separate member function that the constructor calls.",
+      "range": {
+        "startLine": 58,
+        "startChar": 8,
+        "endLine": 58,
+        "endChar": 43
+      },
+      "revId": "5443573f60ed93e5a0205ce9be3af99f4b2cfba5",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
