@@ -18,6 +18,7 @@
 Agent to play gateway between CORE and an adapter.
 """
 import structlog
+import arrow
 from google.protobuf.message import Message
 from twisted.internet.defer import inlineCallbacks, returnValue
 
@@ -26,8 +27,10 @@ from container_proxy import ContainerProxy
 from voltha_protos.common_pb2 import ID, ConnectStatus, OperStatus
 from voltha_protos.inter_container_pb2 import StrType, BoolType, IntType, Packet
 from voltha_protos.device_pb2 import Device, Ports, Devices
-from voltha_protos.voltha_pb2 import CoreInstance
-
+from voltha_protos.voltha_pb2 import CoreInstance, AlarmFilterRuleKey
+from voltha_protos.events_pb2 import AlarmEvent, AlarmEventType, \
+    AlarmEventState, AlarmEventCategory, AlarmEventSeverity
+    
 log = structlog.get_logger()
 
 
@@ -426,3 +429,102 @@ class CoreProxy(ContainerProxy):
                                 port=p,
                                 packet=pac)
         returnValue(res)
+        
+    # ~~~~~~~~~~~~~~~~~~~ Handle alarm submissions ~~~~~~~~~~~~~~~~~~~~~
+
+    def create_alarm(self, id=None, resource_id=None, description=None,
+                     raised_ts=0, changed_ts=0,
+                     type=AlarmEventType.EQUIPMENT,
+                     category=AlarmEventCategory.PON,
+                     severity=AlarmEventSeverity.MINOR,
+                     state=AlarmEventState.RAISED,
+                     context=None,
+                     logical_device_id=None,
+                     alarm_type_name=None):
+        # Construct the ID if it is not provided
+        if id is None:
+            id = 'voltha.{}.{}'.format(self.adapter_name, resource_id)
+        log.debug('create alarmevent', id=id,
+            resource_id=resource_id,
+            type=type,
+            category=category,
+            severity=severity,
+            state=state,
+            description=description,
+            reported_ts=arrow.utcnow().timestamp,
+            raised_ts=raised_ts,
+            changed_ts=changed_ts,
+            context=context,
+            logical_device_id=logical_device_id,
+            alarm_type_name=alarm_type_name)
+        return AlarmEvent(
+            id=id,
+            resource_id=resource_id,
+            type=type,
+            category=category,
+            severity=severity,
+            state=state,
+            description=description,
+            reported_ts=arrow.utcnow().timestamp,
+            raised_ts=raised_ts,
+            changed_ts=changed_ts,
+            context=context,
+            logical_device_id=logical_device_id,
+            alarm_type_name=alarm_type_name
+        )
+
+    def filter_alarm(self, device_id, alarm_event):
+        '''
+        TODO
+        alarm filtering functionality is not implemented
+        in Voltha 1.x 
+        '''
+        log.warn('filter_alarm is not implemented')
+        return 
+        #alarm_filters = self.root_proxy.get('/alarm_filters')
+        
+        rule_values = {
+            'id': alarm_event.id,
+            'type': AlarmEventType.AlarmEventType.Name(alarm_event.type),
+            'category': AlarmEventCategory.AlarmEventCategory.Name(
+                alarm_event.category),
+            'severity': AlarmEventSeverity.AlarmEventSeverity.Name(
+                alarm_event.severity),
+            'resource_id': alarm_event.resource_id,
+            'device_id': device_id
+        }
+
+        for alarm_filter in alarm_filters:
+            if alarm_filter.rules:
+                exclude = True
+                for rule in alarm_filter.rules:
+                    log.debug("compare-alarm-event",
+                                   key=AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                       rule.key),
+                                   actual=rule_values[
+                                       AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                           rule.key)].lower(),
+                                   expected=rule.value.lower())
+                    exclude = exclude and \
+                              (rule_values[
+                                   AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                       rule.key)].lower() == rule.value.lower())
+                    if not exclude:
+                        break
+
+                if exclude:
+                    log.info("filtered-alarm-event", alarm=alarm_event)
+                    return True
+
+        return False
+
+    @inlineCallbacks
+    def submit_alarm(self, device_id, alarm_event_msg):
+        try:
+            assert isinstance(alarm_event_msg, AlarmEvent)
+            if not self.filter_alarm(device_id, alarm_event_msg):
+                res = yield self.kafka_proxy._send_kafka_message('alarms', alarm_event_msg)
+                returnValue(res)
+        except Exception as e:
+            log.exception('failed-alarm-submission',
+                        type=type(alarm_event_msg), e=e)

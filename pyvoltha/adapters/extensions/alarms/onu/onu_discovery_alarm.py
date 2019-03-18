@@ -29,7 +29,8 @@ class OnuDiscoveryAlarm(AlarmBase):
     def get_context_data(self):
         return {
             'pon-id': self._pon_id,
-            'serial-number': self._serial_number
+            'serial-number': self._serial_number,
+            'device-type': 'onu'
         }
 
     def clear_alarm(self):
