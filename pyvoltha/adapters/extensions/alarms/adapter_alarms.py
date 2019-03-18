@@ -37,18 +37,20 @@ class AdapterAlarms:
     """
     Class for managing Alarms within a given Device Handler instance
     """
-    def __init__(self, adapter_agent, device_id, logical_device_id):
+    def __init__(self, adapter_agent, device_id, logical_device_id, serial_number):
         """
         Adapter alarm manager initializer
 
         :param adapter_agent: (AdapterAgent) Adapter agent reference
         :param device_id: (str) Device handler's unique device id
         :param logical_device_id: (str) Logical Device that the device is a member of
+        :param serial_number: (str) Serial number of the device(OLT) that created this instance
         """
         self.log = structlog.get_logger(device_id=device_id)
         self.adapter_agent = adapter_agent
         self.device_id = device_id
         self.logical_device_id = logical_device_id
+        self.serial_number = serial_number
         self.adapter_name = adapter_agent.listening_topic
         self.lc = None
 
@@ -91,17 +93,11 @@ class AdapterAlarms:
             if isinstance(context_data, dict):
                 for key, value in context_data.iteritems():
                     current_context[key] = str(value)
-            ser_num = None
-            device = self.adapter_agent.get_device(device_id=self.device_id)
-            ser_num = device.serial_number
+            #Always insert serial number of the OLT, ONU serial number comes in the context
+            current_context["serial-number"] = self.serial_number
 
-
-            """
-            Only put in the onu serial numbers since the OLT does not currently have a serial number and the
-            value is the ip:port address.
-            """
-            if isinstance(context_data, dict) and '_onu' in device.type.lower():
-                current_context["onu_serial_number"] = ser_num
+            self.log.debug('send_alarm', alarm_data=alarm_data)
+            
             alarm_event = self.adapter_agent.create_alarm(
                 id=alarm_data.get('id', 'voltha.{}.{}.olt'.format(self.adapter_name,
                                                                   self.device_id)),

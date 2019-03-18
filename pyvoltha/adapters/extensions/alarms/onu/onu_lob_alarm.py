@@ -16,7 +16,7 @@ from pyvoltha.adapters.extensions.alarms.adapter_alarms import AlarmBase
 
 
 class OnuLobAlarm(AlarmBase):
-    def __init__(self, alarm_mgr, onu_id, intf_id):
+    def __init__(self, alarm_mgr, onu_id, intf_id, serial_number):
         super(OnuLobAlarm, self).__init__(alarm_mgr, object_type='onu LOB',
                                           alarm='ONU_LOB',
                                           alarm_category=AlarmEventCategory.ONU,
@@ -24,7 +24,10 @@ class OnuLobAlarm(AlarmBase):
                                           alarm_severity=AlarmEventSeverity.MAJOR)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number
+        }

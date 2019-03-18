@@ -25,7 +25,7 @@ class OnuWindowDriftAlarm(AlarmBase):
             fixed32 new_eqd = 5;
         }
     """
-    def __init__(self, alarm_mgr, onu_id, intf_id, drift, new_eqd):
+    def __init__(self, alarm_mgr, onu_id, intf_id, drift, new_eqd, serial_number):
         super(OnuWindowDriftAlarm, self).__init__(alarm_mgr, object_type='onu WINDOW DRIFT',
                                           alarm='ONU_WINDOW_DRIFT',
                                           alarm_category=AlarmEventCategory.ONU,
@@ -35,9 +35,12 @@ class OnuWindowDriftAlarm(AlarmBase):
         self._intf_id = intf_id
         self._drift = drift
         self._new_eqd = new_eqd
+        self._serial_number = serial_number
+        
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
                 'onu-intf-id': self._intf_id,
                 'drift': self._drift,
-                'new-eqd': self._new_eqd}
+                'new-eqd': self._new_eqd,
+                'onu-serial-number': self._serial_number}

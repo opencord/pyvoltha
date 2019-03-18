@@ -23,7 +23,7 @@ from pyvoltha.adapters.extensions.alarms.adapter_alarms import AlarmBase
 """
 
 class OnuSignalFailAlarm(AlarmBase):
-    def __init__(self, alarm_mgr, onu_id, intf_id, inverse_bit_error_rate):
+    def __init__(self, alarm_mgr, onu_id, intf_id, inverse_bit_error_rate, serial_number):
         super(OnuSignalFailAlarm, self).__init__(alarm_mgr, object_type='onu SIGNAL FAIL',
                                           alarm='ONU_SIGNAL_FAIL',
                                           alarm_category=AlarmEventCategory.ONU,
@@ -32,8 +32,10 @@ class OnuSignalFailAlarm(AlarmBase):
         self._onu_id = onu_id
         self._intf_id = intf_id
         self._inverse_bit_error_rate = inverse_bit_error_rate
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
                 'onu-intf-id': self._intf_id,
-                'inverse-bit-error-rate': self._inverse_bit_error_rate}
+                'inverse-bit-error-rate': self._inverse_bit_error_rate,
+                 'onu-serial-number': self._serial_number}
