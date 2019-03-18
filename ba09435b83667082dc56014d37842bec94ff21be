@@ -22,6 +22,30 @@
       "revId": "ba09435b83667082dc56014d37842bec94ff21be",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e98601c_ff2596bb",
+        "filename": "pyvoltha/adapters/kafka/core_proxy.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-03-18T17:56:01Z",
+      "side": 1,
+      "message": "Is there any harm in merging anyway?   We can talk about it next thursday.  Im not sure how the alarm injection works either.",
+      "parentUuid": "647269ab_c928d3ee",
+      "range": {
+        "startLine": 526,
+        "startChar": 33,
+        "endLine": 526,
+        "endChar": 44
+      },
+      "revId": "ba09435b83667082dc56014d37842bec94ff21be",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
