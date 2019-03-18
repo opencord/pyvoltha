@@ -46,6 +46,30 @@
       "revId": "ba09435b83667082dc56014d37842bec94ff21be",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3b1bbd5_44d2e731",
+        "filename": "pyvoltha/adapters/kafka/core_proxy.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1000404
+      },
+      "writtenOn": "2019-03-18T20:21:10Z",
+      "side": 1,
+      "message": "There is no harm, it sends the alarm to the kafka but not sure if I\u0027m doing it correctly. It may need to be sent in a readable format other than the serializing it as protobuf.",
+      "parentUuid": "2e98601c_ff2596bb",
+      "range": {
+        "startLine": 526,
+        "startChar": 33,
+        "endLine": 526,
+        "endChar": 44
+      },
+      "revId": "ba09435b83667082dc56014d37842bec94ff21be",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
