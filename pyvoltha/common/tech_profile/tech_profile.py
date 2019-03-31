@@ -19,9 +19,8 @@ from collections import namedtuple
 import structlog
 from enum import Enum
 
-# from pyvoltha.core.config.config_backend import ConsulStore
-# from pyvoltha.core.config.config_backend import EtcdStore
-from pyvoltha.adapters.common.kvstore.kvstore import create_kv_client
+from pyvoltha.common.config.config_backend  import ConsulStore
+from pyvoltha.common.config.config_backend import EtcdStore
 from pyvoltha.common.utils.registry import registry
 from voltha_protos import openolt_pb2
 
@@ -168,30 +167,24 @@ class TechProfile(object):
         try:
             self.args = registry('main').get_args()
             self.resource_mgr = resource_mgr
-            self._path_prefix = TechProfile.KV_STORE_TECH_PROFILE_PATH_PREFIX
 
             if self.args.backend == 'etcd':
                 # KV store's IP Address and PORT
                 host, port = self.args.etcd.split(':', 1)
-                self._kv_store = create_kv_client('etcd', host, port)
-                # self._kv_store = EtcdStore(
-                #     host, port, TechProfile.
-                #     KV_STORE_TECH_PROFILE_PATH_PREFIX)
+                self._kv_store = EtcdStore(
+                    host, port, TechProfile.
+                    KV_STORE_TECH_PROFILE_PATH_PREFIX)
             elif self.args.backend == 'consul':
                 # KV store's IP Address and PORT
                 host, port = self.args.consul.split(':', 1)
-                self._kv_store = create_kv_client('consul', host, port)
-                # self._kv_store = ConsulStore(
-                #     host, port, TechProfile.
-                #     KV_STORE_TECH_PROFILE_PATH_PREFIX)
+                self._kv_store = ConsulStore(
+                    host, port, TechProfile.
+                    KV_STORE_TECH_PROFILE_PATH_PREFIX)
 
             # self.tech_profile_instance_store = dict()
         except Exception as e:
             log.exception("exception-in-init")
             raise Exception(e)
-
-    def _make_path(self, key):
-        return '{}/{}'.format(self._path_prefix, key)
 
     class DefaultTechProfile(object):
         def __init__(self, name, **kwargs):
@@ -212,8 +205,11 @@ class TechProfile(object):
                               indent=4)
 
     def get_tp_path(self, table_id, uni_port_name):
-        return TechProfile.TECH_PROFILE_INSTANCE_PATH.format(
+        path = TechProfile.TECH_PROFILE_INSTANCE_PATH.format(
             self.resource_mgr.technology, table_id, uni_port_name)
+        log.debug("constructed-tp-path", table_id=table_id, technology=self.resource_mgr.technology,
+                  uni_port_name=uni_port_name, path=path)
+        return path
 
     def create_tech_profile_instance(self, table_id, uni_port_name, intf_id):
         tech_profile_instance = None
@@ -246,8 +242,7 @@ class TechProfile(object):
             self.resource_mgr.technology, table_id, uni_port_name)
 
         try:
-            # tech_profile_instance = self._kv_store[path]
-            tech_profile_instance = self._kv_store.get(self._make_path(path))
+            tech_profile_instance = self._kv_store[path]
             log.debug("Tech-profile-instance-present-in-kvstore", path=path,
                       tech_profile_instance=tech_profile_instance)
 
@@ -267,8 +262,7 @@ class TechProfile(object):
     def delete_tech_profile_instance(self, tp_path):
 
         try:
-            # del self._kv_store[tp_path]
-            self._kv_store.delete(self._make_path(tp_path))
+            del self._kv_store[tp_path]
             log.debug("Delete-tech-profile-instance-success", path=tp_path)
             return True
         except Exception as e:
@@ -287,8 +281,7 @@ class TechProfile(object):
         path = TechProfile.TECH_PROFILE_PATH.format(self.resource_mgr.technology,
                                                     table_id)
         try:
-            # tech_profile = self._kv_store[path]
-            tech_profile = self._kv_store(self._make_path(path))
+            tech_profile = self._kv_store[path]
             if tech_profile != '':
                 log.debug("Get-tech-profile-success", tech_profile=tech_profile)
                 return json.loads(tech_profile)
@@ -424,8 +417,7 @@ class TechProfile(object):
         :param tech_profile_instance: tech profile instance need to be added
         """
         try:
-            # self._kv_store[path] = str(tech_profile_instance)
-            self._kv_store.put(self._make_path(path), str(tech_profile_instance))
+            self._kv_store[path] = str(tech_profile_instance)
             log.debug("Add-tech-profile-instance-success", path=path,
                       tech_profile_instance=tech_profile_instance)
             return True

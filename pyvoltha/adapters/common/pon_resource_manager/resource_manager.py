@@ -850,6 +850,7 @@ class PONResourceManager(object):
             self.device_id, str(pon_intf_onu_id)
         )
         current_flow_ids = self.get_current_flow_ids_for_onu(pon_intf_onu_id)
+        self._log.debug("update-flow-info-before", current_flow_ids=current_flow_ids, path=path)
         if not isinstance(current_flow_ids, list):
             # When the first flow_id is being added, the current_flow_ids is None
             current_flow_ids = list()
@@ -862,6 +863,7 @@ class PONResourceManager(object):
                 current_flow_ids.remove(flow_id)
 
         self._kv_store.update_to_kv_store(path, current_flow_ids)
+        self._log.debug("update-flow-info-after", current_flow_ids=current_flow_ids, path=path)
 
     def update_flow_id_info_for_onu(self, pon_intf_onu_id, flow_id, flow_data):
         """
