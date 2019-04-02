@@ -30,7 +30,8 @@ from voltha_protos.device_pb2 import Device, Ports, Devices
 from voltha_protos.voltha_pb2 import CoreInstance, AlarmFilterRuleKey
 from voltha_protos.events_pb2 import AlarmEvent, AlarmEventType, \
     AlarmEventState, AlarmEventCategory, AlarmEventSeverity
-    
+from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
+
 log = structlog.get_logger()
 
 
@@ -528,3 +529,13 @@ class CoreProxy(ContainerProxy):
         except Exception as e:
             log.exception('failed-alarm-submission',
                         type=type(alarm_event_msg), e=e)
+
+    @inlineCallbacks
+    def submit_kpis(self, kpi_event_msg):
+        try:
+            assert isinstance(kpi_event_msg, KpiEvent2)
+            res = yield self.kafka_proxy._send_kafka_message('kpis', kpi_event_msg)
+            returnValue(res)
+        except Exception as e:
+            log.exception('failed-kpis-submission',
+                        type=type(kpi_event_msg), e=e)

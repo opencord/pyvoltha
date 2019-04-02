@@ -24,7 +24,7 @@ class OltPmMetrics(AdapterPmMetrics):
     specific PM (OMCI, PON, UNI) is supported in encapsulated classes accessible
     from this object
     """
-    def __init__(self, core_proxy, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared ONU Device Adapter PM metrics
@@ -42,7 +42,7 @@ class OltPmMetrics(AdapterPmMetrics):
                               'nni-ports': List of objects that provide NNI (northbound) port statistics
                               'pon-ports': List of objects that provide PON port statistics
         """
-        super(OltPmMetrics, self).__init__(core_proxy, device_id, logical_device_id,
+        super(OltPmMetrics, self).__init__(core_proxy, device_id, logical_device_id, serial_number,
                                            grouped=grouped, freq_override=freq_override,
                                            **kwargs)
 

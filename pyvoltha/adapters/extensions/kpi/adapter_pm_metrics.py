@@ -37,7 +37,7 @@ class AdapterPmMetrics(object):
     # for collection.
     TIMESTAMP_ATTRIBUTE = 'timestamp'
 
-    def __init__(self, core_proxy, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared Device Adapter PM metrics manager
@@ -55,9 +55,7 @@ class AdapterPmMetrics(object):
         self.core_proxy = core_proxy
         self.name = core_proxy.listening_topic
         self.logical_device_id = logical_device_id
-        device = yield self.core_proxy.get_device(self.device_id)
-        self.serial_number = device.serial_number
-
+        self.serial_number = serial_number
         self.default_freq = kwargs.get(AdapterPmMetrics.DEFAULT_FREQUENCY_KEY,
                                        AdapterPmMetrics.DEFAULT_COLLECTION_FREQUENCY)
         self.grouped = grouped
@@ -205,7 +203,7 @@ class AdapterPmMetrics(object):
                     ts=arrow.utcnow().float_timestamp,
                     slice_data=data
                 )
-                self.adapter_agent.submit_kpis(kpi_event)
+                self.core_proxy.submit_kpis(kpi_event)
 
             except Exception as e:
                 self.log.exception('failed-to-submit-kpis', e=e)
