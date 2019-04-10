@@ -26,7 +26,7 @@ from twisted.internet import reactor
 from afkak.consumer import OFFSET_LATEST, OFFSET_EARLIEST
 from pyvoltha.adapters.interface import IAdapterInterface
 from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrType, Error, ErrorCode
-from voltha_protos.device_pb2 import Device, ImageDownload
+from voltha_protos.device_pb2 import Device, ImageDownload, SimulateAlarmRequest
 from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
 from pyvoltha.adapters.kafka.kafka_inter_container_library import IKafkaMessagingProxy, \
@@ -343,4 +343,20 @@ class AdapterRequestFacade(object):
             return (True, self.adapter.receive_packet_out(d_id.val, op.val, p))
         except Exception as e:
             log.exception("error-processing-receive_packet_out", e=e)
+            
+    def simulate_alarm(self, device, request, **kwargs):
+        d = Device()
+        if device:
+            device.Unpack(d)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="device-invalid")
+        req = SimulateAlarmRequest()
+        if request:
+            request.Unpack(req)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="simulate-alarm-request-invalid")
+
+        return True, self.adapter.simulate_alarm(d, req) 
 
