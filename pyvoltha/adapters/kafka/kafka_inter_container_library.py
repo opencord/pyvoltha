@@ -550,9 +550,10 @@ class IKafkaMessagingProxy(object):
                 wait_for_result = Deferred()
                 self.transaction_id_deferred_map[
                     self._to_string(request.header.id)] = wait_for_result
-
+            log.debug("message-send", transaction_id=transaction_id, to_topic=to_topic,
+                                          from_topic=reply_topic, kafka_request=request)
             yield self._send_kafka_message(to_topic, request)
-            log.debug("message-sent", to_topic=to_topic,
+            log.debug("message-sent", transaction_id=transaction_id, to_topic=to_topic,
                       from_topic=reply_topic, kafka_request=request)
 
             if response_required:
