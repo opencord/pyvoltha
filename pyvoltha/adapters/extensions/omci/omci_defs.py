@@ -15,14 +15,12 @@
 #
 from enum import Enum, IntEnum
 
-
 class OmciUninitializedFieldError(Exception):
     pass
 
 
 class OmciInvalidTypeError(Exception):
     pass
-
 
 def bitpos_from_mask(mask, lsb_pos=0, increment=1):
     """

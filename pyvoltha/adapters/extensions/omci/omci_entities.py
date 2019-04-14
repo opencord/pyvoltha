@@ -256,7 +256,7 @@ class Cardholder(EntityClass):
             optional=True),
         ECA(ByteField("invoke_protection_switch", None), {AA.R, AA.W},
             optional=True, range_check=lambda x: 0 <= x <= 3),
-        ECA(ByteField("alarm_reporting_control", 0), {AA.R, AA.W},
+        ECA(ByteField("arc", 0), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 1, optional=True, avc=True),
         ECA(ByteField("arc_interval", 0), {AA.R, AA.W}, optional=True),
     ]
@@ -294,7 +294,7 @@ class CircuitPack(EntityClass):
             optional=True),  # not really mandatory, see spec ITU-T G.988, 9.1.6
         ECA(ByteField("total_traffic_scheduler_number", None), {AA.R},
             optional=True),  # not really mandatory, see spec ITU-T G.988, 9.1.6
-        ECA(IntField("power_shed_override", None), {AA.R, AA.W},
+        ECA(IntField("power_sched_override", None), {AA.R, AA.W},
             optional=True)
     ]
     mandatory_operations = {OP.Get, OP.Set, OP.Reboot}
@@ -338,23 +338,23 @@ class PptpEthernetUni(EntityClass):
             range_check=lambda x: 0 <= x <= 254),
         ECA(ByteField("sensed_type", 0), {AA.R}, optional=True, avc=True),
         # TODO: For sensed_type AVC, see note in AT&T OMCI Specification, V3.0, page 123
-        ECA(ByteField("auto_detection_configuration", 0), {AA.R, AA.W},
+        ECA(ByteField("autodetection_config", 0), {AA.R, AA.W},
             range_check=lambda x: x in [0, 1, 2, 3, 4, 5,
                                         0x10, 0x11, 0x12, 0x13, 0x14,
                                         0x20, 0x30], optional=True),  # See ITU-T G.988
-        ECA(ByteField("ethernet_loopback_configuration", 0), {AA.R, AA.W},
+        ECA(ByteField("ethernet_loopback_config", 0), {AA.R, AA.W},
             range_check=lambda x: x in [0, 3]),
         ECA(ByteField("administrative_state", 1), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 1),
         ECA(ByteField("operational_state", 1), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 1, optional=True, avc=True),
-        ECA(ByteField("configuration_ind", 0), {AA.R},
+        ECA(ByteField("config_ind", 0), {AA.R},
             range_check=lambda x: x in [0, 1, 2, 3, 4, 0x11, 0x12, 0x13]),
         ECA(ShortField("max_frame_size", 1518), {AA.R, AA.W}, optional=True),
-        ECA(ByteField("dte_or_dce_ind", 0), {AA.R, AA.W},
+        ECA(ByteField("dte_dce_ind", 0), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 2),
         ECA(ShortField("pause_time", 0), {AA.R, AA.W}, optional=True),
-        ECA(ByteField("bridged_or_ip_ind", 2), {AA.R, AA.W},
+        ECA(ByteField("bridged_ip_ind", 2), {AA.R, AA.W},
             optional=True, range_check=lambda x: 0 <= x <= 2),
         ECA(ByteField("arc", 0), {AA.R, AA.W}, optional=True,
             range_check=lambda x: 0 <= x <= 1, avc=True),
@@ -511,7 +511,7 @@ class OltG(EntityClass):
         ECA(StrFixedLenField("olt_vendor_id", None, 4), {AA.R, AA.W}),
         ECA(StrFixedLenField("equipment_id", None, 20), {AA.R, AA.W}),
         ECA(StrFixedLenField("version", None, 14), {AA.R, AA.W}),
-        ECA(StrFixedLenField("time_of_day_information", None, 14), {AA.R, AA.W})
+        ECA(StrFixedLenField("time_of_day", None, 14), {AA.R, AA.W})
     ]
     mandatory_operations = {OP.Get, OP.Set}
 
@@ -521,7 +521,7 @@ class OntPowerShedding(EntityClass):
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R},
             range_check=lambda x: x == 0),
-        ECA(ShortField("restore_power_timer_reset_interval", 0),
+        ECA(ShortField("restore_power_time_reset_interval", 0),
             {AA.R, AA.W}),
         ECA(ShortField("data_class_shedding_interval", 0), {AA.R, AA.W}),
         ECA(ShortField("voice_class_shedding_interval", 0), {AA.R, AA.W}),
@@ -684,9 +684,9 @@ class OntG(EntityClass):
         ECA(StrFixedLenField("vendor_id", None, 4), {AA.R}),
         ECA(StrFixedLenField("version", None, 14), {AA.R}),
         ECA(OmciSerialNumberField("serial_number"), {AA.R}),
-        ECA(ByteField("traffic_management_option", None), {AA.R},
+        ECA(ByteField("traffic_management_options", None), {AA.R},
             range_check=lambda x: 0 <= x <= 2),
-        ECA(ByteField("deprecated", 0), {AA.R},
+        ECA(ByteField("vp_vc_cross_connection_option", 0), {AA.R},
             optional=True, deprecated=True),
         ECA(ByteField("battery_backup", None), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 1),
@@ -742,7 +742,7 @@ class Ont2G(EntityClass):
             range_check=lambda x: 0 <= x <= 1),
         ECA(ShortField("total_priority_queue_number", None), {AA.R}),
         ECA(ByteField("total_traffic_scheduler_number", None), {AA.R}),
-        ECA(ByteField("deprecated", None), {AA.R}, deprecated=True),
+        ECA(ByteField("mode", None), {AA.R}, deprecated=True),
         ECA(ShortField("total_gem_port_id_number", None), {AA.R}),
         ECA(IntField("sys_uptime", None), {AA.R}),
         ECA(BitField("connectivity_capability", None, size=16), {AA.R}),
@@ -762,7 +762,7 @@ class Tcont(EntityClass):
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R}),
         ECA(ShortField("alloc_id", None), {AA.R, AA.W}),
-        ECA(ByteField("deprecated", 1), {AA.R}, deprecated=True),
+        ECA(ByteField("mode_indicator", 1), {AA.R}, deprecated=True),
         ECA(ByteField("policy", None), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 2),
     ]
@@ -778,7 +778,8 @@ class AniG(EntityClass):
         ECA(ShortField("gem_block_length", None), {AA.R, AA.W}),
         ECA(ByteField("piggyback_dba_reporting", None), {AA.R},
             range_check=lambda x: 0 <= x <= 4),
-        ECA(ByteField("deprecated", None), {AA.R}, deprecated=True),
+        ECA(ByteField("whole_ont_dba_reporting", None), {AA.R},
+            deprecated=True),
         ECA(ByteField("sf_threshold", 5), {AA.R, AA.W}),
         ECA(ByteField("sd_threshold", 9), {AA.R, AA.W}),
         ECA(ByteField("arc", 0), {AA.R, AA.W},
@@ -787,7 +788,7 @@ class AniG(EntityClass):
         ECA(ShortField("optical_signal_level", None), {AA.R}),
         ECA(ByteField("lower_optical_threshold", 0xFF), {AA.R, AA.W}),
         ECA(ByteField("upper_optical_threshold", 0xFF), {AA.R, AA.W}),
-        ECA(ShortField("onu_response_time", None), {AA.R}),
+        ECA(ShortField("ont_response_time", None), {AA.R}),
         ECA(ShortField("transmit_optical_level", None), {AA.R}),
         ECA(ByteField("lower_transmit_power_threshold", 0x81), {AA.R, AA.W}),
         ECA(ByteField("upper_transmit_power_threshold", 0x81), {AA.R, AA.W}),
@@ -809,7 +810,8 @@ class UniG(EntityClass):
     class_id = 264
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R}),
-        ECA(ShortField("deprecated", None), {AA.R, AA.W}, deprecated=True),
+        ECA(ShortField("configuration_option_status", None), {AA.R, AA.W},
+            deprecated=True),
         ECA(ByteField("administrative_state", None), {AA.R, AA.W}),
         ECA(ByteField("management_capability", None), {AA.R},
             range_check=lambda x: 0 <= x <= 2),
@@ -1160,6 +1162,64 @@ class VirtualEthernetInterfacePt(EntityClass):
     }
 
 
+class OmciMeTypeTable(Packet):
+    """
+    OMCI ME Supported Types Table
+    """
+    name = "OmciMeTypeTable"
+    fields_desc = [
+        ShortField("me_type", None)
+    ]
+
+    def to_json(self):
+        return json.dumps(self.fields, separators=(',', ':'))
+
+    @staticmethod
+    def json_from_value(value):
+        data = int(value)
+        temp = OmciMeTypeTable(me_type=data)
+        return json.dumps(temp.fields, separators=(',', ':'))
+
+    def index(self):
+        return '{:04}'.format(self.fields.get('me_type', 0))
+
+    def is_delete(self):
+        return self.fields.get('me_type', 0) == 0
+
+    def delete(self):
+        self.fields['me_type'] = 0
+        return self
+
+
+class OmciMsgTypeTable(Packet):
+    """
+    OMCI Supported Message Types Table
+    """
+    name = "OmciMsgTypeTable"
+    fields_desc = [
+        ByteField("msg_type", None)
+    ]
+
+    def to_json(self):
+        return json.dumps(self.fields, separators=(',', ':'))
+
+    @staticmethod
+    def json_from_value(value):
+        data = int(value)
+        temp = OmciMeTypeTable(me_type=data)
+        return json.dumps(temp.fields, separators=(',', ':'))
+
+    def index(self):
+        return '{:02}'.format(self.fields.get('msg_type', 0))
+
+    def is_delete(self):
+        return self.fields.get('me_type', 0) == 0
+
+    def delete(self):
+        self.fields['me_type'] = 0
+        return self
+
+
 class Omci(EntityClass):
     class_id = 287
     hidden = True
@@ -1167,21 +1227,15 @@ class Omci(EntityClass):
         ECA(ShortField("managed_entity_id", None), {AA.R},
             range_check=lambda x: x == 0),
 
-        # TODO: Can this be expressed better in SCAPY, probably not?
-        # On the initial, Get request for either the me_type or message_type
-        # attributes, you will receive a 4 octet value (big endian) that is
-        # the number of octets to 'get-next' to fully load the desired
-        # attribute.  For a basic OMCI formatted message, that will be 29
-        # octets per get-request.
-        #
-        # For the me_type_table, these are 16-bit values (ME Class IDs)
-        #
-        # For the message_type_table, these are 8-bit values (Actions)
+        ECA(OmciTableField(
+            PacketLenField("me_type_table", None,
+                           OmciMeTypeTable, length_from=lambda pkt: 2)),
+            {AA.R}),
 
-        ECA(FieldListField("me_type_table", None, ByteField('', 0),
-                           count_from=lambda _: 29), {AA.R}),
-        ECA(FieldListField("message_type_table", None, ByteField('', 0),
-                           count_from=lambda _: 29), {AA.R}),
+        ECA(OmciTableField(
+            PacketLenField("message_type_table", None,
+                           OmciMsgTypeTable, length_from=lambda pkt: 1)),
+            {AA.R}),
     ]
     mandatory_operations = {OP.Get, OP.GetNext}
 

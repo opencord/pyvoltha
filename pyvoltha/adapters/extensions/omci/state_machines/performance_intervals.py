@@ -64,15 +64,12 @@ class PerformanceIntervals(object):
         {'trigger': 'add_me', 'source': 'idle', 'dest': 'create_pm_me'},
         {'trigger': 'delete_me', 'source': 'idle', 'dest': 'delete_pm_me'},
 
-        # TODO: Can these be combined into one?
         {'trigger': 'success', 'source': 'create_pm_me', 'dest': 'idle'},
         {'trigger': 'failure', 'source': 'create_pm_me', 'dest': 'idle'},
 
-        # TODO: Can these be combined into one?
         {'trigger': 'success', 'source': 'delete_pm_me', 'dest': 'idle'},
         {'trigger': 'failure', 'source': 'delete_pm_me', 'dest': 'idle'},
 
-        # TODO: Can these be combined into one?
         {'trigger': 'success', 'source': 'collect_data', 'dest': 'idle'},
         {'trigger': 'failure', 'source': 'collect_data', 'dest': 'idle'},
 

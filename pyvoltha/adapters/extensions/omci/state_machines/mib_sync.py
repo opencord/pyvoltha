@@ -25,7 +25,7 @@ from pyvoltha.adapters.extensions.omci.omci_cc import OmciCCRxEvents, OMCI_CC, T
     RX_RESPONSE_KEY
 from pyvoltha.adapters.extensions.omci.onu_device_entry import OnuDeviceEvents, OnuDeviceEntry, \
     SUPPORTED_MESSAGE_ENTITY_KEY, SUPPORTED_MESSAGE_TYPES_KEY
-from pyvoltha.adapters.extensions.omci.omci_entities import OntData
+from pyvoltha.adapters.extensions.omci.omci_entities import OntData, Omci
 from pyvoltha.common.event_bus import EventBusClient
 from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 
@@ -667,11 +667,11 @@ class MibSynchronizer(object):
                     class_id = omci_msg['object_entity_class']
                     entity_id = omci_msg['object_entity_id']
 
-                    # Filter out the 'mib_data_sync' from the database. We save that at
-                    # the device level and do not want it showing up during a re-sync
-                    # during data compares
+                    # Filter out the 'mib_data_sync' and 'omci' from the database. We save
+                    # that at the device level and do not want it showing up during a
+                    # re-sync during data compares
 
-                    if class_id == OntData.class_id:
+                    if class_id in {OntData.class_id, Omci.class_id}:
                         return
 
                     attributes = {k: v for k, v in omci_msg['object_data'].items()}
@@ -855,11 +855,6 @@ class MibSynchronizer(object):
                 pass            # NOP
             except Exception as e:
                 self.log.exception('set', e=e)
-
-    # TODO: Future -> Monitor Software download start, section, activate, and commit responses
-    #                 and increment MIB Data Sync per Table 11.2.2-1 of ITUT-T G.988 (11/2017)
-    #                 on page 515.  Eventually also monitor set-table responses once the
-    #                 extended message set is supported.
     def on_capabilities_event(self, _topic, msg):
         """
         Process a OMCI capabilties event

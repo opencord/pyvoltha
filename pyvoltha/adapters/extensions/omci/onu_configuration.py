@@ -170,7 +170,7 @@ class OnuConfiguration(object):
         if ontg is None or ATTRIBUTES_KEY not in ontg:
             return None
 
-        return ontg[ATTRIBUTES_KEY].get('traffic_management_option')
+        return ontg[ATTRIBUTES_KEY].get('traffic_management_options')
 
     @property
     def onu_survival_time(self):
@@ -186,7 +186,7 @@ class OnuConfiguration(object):
         if ontg is None or ATTRIBUTES_KEY not in ontg:
             return None
 
-        return ontg[ATTRIBUTES_KEY].get('onu_survival_time', 0)
+        return ontg[ATTRIBUTES_KEY].get('ont_survival_time', 0)
 
     @property
     def equipment_id(self):
@@ -471,15 +471,15 @@ class OnuConfiguration(object):
                         'entity-id':                inst,
                         'expected-type':            inst_data[ATTRIBUTES_KEY].get('expected_type', 0),
                         'sensed-type':              inst_data[ATTRIBUTES_KEY].get('sensed_type', 0),
-                        'autodetection-config':     inst_data[ATTRIBUTES_KEY].get('auto_detection_configuration', 0),
-                        'ethernet-loopback-config': inst_data[ATTRIBUTES_KEY].get('ethernet_loopback_configuration', 0),
+                        'autodetection-config':     inst_data[ATTRIBUTES_KEY].get('autodetection_config', 0),
+                        'ethernet-loopback-config': inst_data[ATTRIBUTES_KEY].get('ethernet_loopback_config', 0),
                         'administrative-state':     inst_data[ATTRIBUTES_KEY].get('administrative_state', 0),
                         'operational-state':        inst_data[ATTRIBUTES_KEY].get('operational_state', 0),
-                        'config-ind':               inst_data[ATTRIBUTES_KEY].get('configuration_ind', 0),
+                        'config-ind':               inst_data[ATTRIBUTES_KEY].get('config_ind', 0),
                         'max-frame-size':           inst_data[ATTRIBUTES_KEY].get('max_frame_size', 0),
-                        'dte-dce-ind':              inst_data[ATTRIBUTES_KEY].get('dte_or_dce_ind', 0),
+                        'dte-dce-ind':              inst_data[ATTRIBUTES_KEY].get('dte_dce_ind', 0),
                         'pause-time':               inst_data[ATTRIBUTES_KEY].get('pause_time', 0),
-                        'bridged-ip-ind':           inst_data[ATTRIBUTES_KEY].get('bridged_or_ip_ind', 0),
+                        'bridged-ip-ind':           inst_data[ATTRIBUTES_KEY].get('bridged_ip_ind', 0),
                         'arc':                      inst_data[ATTRIBUTES_KEY].get('arc', 0),
                         'arc-interval':             inst_data[ATTRIBUTES_KEY].get('arc_interval', 0),
                         'pppoe-filter':             inst_data[ATTRIBUTES_KEY].get('ppoe_filter', 0),
