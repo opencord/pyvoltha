@@ -26,8 +26,7 @@ from pyvoltha.adapters.extensions.omci.omci_messages import \
         OmciDownloadSection, OmciDownloadSectionLast, OmciDownloadSectionResponse, \
         OmciActivateImage, OmciActivateImageResponse,  \
         OmciCommitImage, OmciCommitImageResponse
-from pyvoltha.protos.voltha_pb2 import ImageDownload
-from pyvoltha.protos.device_pb2 import Device
+from voltha_protos.device_pb2 import Device, ImageDownload
 
 from test.unit.extensions.omci.mock.mock_adapter_agent import MockAdapterAgent, MockCore
 from twisted.internet import reactor

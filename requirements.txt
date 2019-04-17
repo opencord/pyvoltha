@@ -50,5 +50,5 @@ twine==1.12.1
 Twisted==18.7.0
 txaioetcd==0.3.0
 urllib3==1.22
-voltha-protos==0.1.0
+voltha-protos==0.1.2
 afkak==3.0.0.dev20181106
