@@ -457,3 +457,19 @@ class ICoreSouthBoundInterface(Interface):
         :param packet: The actual packet
          :return: None
         """
+
+    def add_peer_port_reference(device_id, port):
+        """
+        Creates peer port
+        :param device_id: The OLT device ID
+        :param port: The port
+         :return: None
+        """
+
+    def delete_peer_port_reference(device_id, port):
+        """
+        Deletes peer port
+        :param device_id: The OLT device ID
+        :param port: The port
+         :return: None
+        """

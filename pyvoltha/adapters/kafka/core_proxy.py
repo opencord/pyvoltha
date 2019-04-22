@@ -391,6 +391,45 @@ class CoreProxy(ContainerProxy):
                                 port=port)
         returnValue(res)
 
+
+    @ContainerProxy.wrap_request(None)
+    @inlineCallbacks
+    def add_peer_port_reference(self, device_id, port):
+        log.debug("add_peer_port_reference")
+        proto_id = ID()
+        proto_id.id = device_id
+        to_topic = self.get_core_topic(device_id)
+        reply_topic = self.get_adapter_topic()
+
+        # to_topic = createSubTopic(self.core_topic, device_id)
+        # reply_topic = createSubTopic(self.listening_topic, device_id)
+        res = yield self.invoke(rpc="AddPeerPortReference",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=proto_id,
+                                port=port)
+        returnValue(res)
+
+    @ContainerProxy.wrap_request(None)
+    @inlineCallbacks
+    def delete_peer_port_reference(self, device_id, port):
+        log.debug("delete_peer_port_reference")
+        proto_id = ID()
+        proto_id.id = device_id
+        to_topic = self.get_core_topic(device_id)
+        reply_topic = self.get_adapter_topic()
+
+        # to_topic = createSubTopic(self.core_topic, device_id)
+        # reply_topic = createSubTopic(self.listening_topic, device_id)
+        res = yield self.invoke(rpc="DeletePeerPortReference",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=proto_id,
+                                port=port)
+        returnValue(res)
+
+
+
     def port_removed(device_id, port):
         raise NotImplementedError()
 
