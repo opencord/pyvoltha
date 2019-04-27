@@ -309,7 +309,7 @@ def pbb_isid(_pbb_isid):
 
 
 def tunnel_id(_tunnel_id):
-    return ofb_field(type=TUNNEL_ID, arp_tha=_tunnel_id)
+    return ofb_field(type=TUNNEL_ID, tunnel_id=_tunnel_id)
 
 
 def ipv6_exthdr(_ipv6_exthdr):
@@ -355,6 +355,13 @@ def get_goto_table_id(flow):
     for instruction in flow.instructions:
         if instruction.type == ofp.OFPIT_GOTO_TABLE:
             return instruction.goto_table.table_id
+    return None
+
+
+def get_tunnelid(flow):
+    for field in get_ofb_fields(flow):
+        if field.type == TUNNEL_ID:
+            return field.tunnel_id
     return None
 
 
@@ -413,6 +420,20 @@ def get_inner_tag_from_metadata(flow):
         return md
 
     return (md >> 32) & 0xffffffff
+
+
+def get_child_port_from_tunnelid(flow):
+    """
+    Extract the child device port from a flow that contains the parent device peer port.  Typically the UNI port of an
+    ONU child device.  Per TST agreement this will be the lower 32 bits of tunnel id reserving upper 32 bits for later
+    use
+    """
+    tid = get_tunnelid(flow)
+
+    if tid is None:
+        return None
+
+    return int(tid & 0xffffffff)
 
 
 # test and extract next table and group information

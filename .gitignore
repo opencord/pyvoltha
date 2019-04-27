@@ -8,3 +8,6 @@ test/unit/tmp
 # python distribution related
 dist
 *.egg-info
+
+# ide workspace
+.idea
