@@ -22,7 +22,6 @@ import sys
 import arrow
 from twisted.internet import reactor, defer
 from twisted.internet.defer import TimeoutError, CancelledError, failure, fail, succeed, inlineCallbacks
-from pyvoltha.adapters.common.frameio.frameio import hexify
 from pyvoltha.adapters.extensions.omci.omci import *
 from pyvoltha.adapters.extensions.omci.omci_me import OntGFrame, OntDataFrame, SoftwareImageFrame
 from pyvoltha.adapters.extensions.omci.me_frame import MEFrame
@@ -337,7 +336,7 @@ class OMCI_CC(object):
 
             try:
                 rx_frame = msg if isinstance(msg, OmciFrame) else OmciFrame(msg)
-                self.log.debug('omci-frame-decoded', omci_msg=hexlify(msg))
+                self.log.debug('recv-omci-msg', omci_msg=hexlify(msg))
             except KeyError as e:
                 # Unknown, Unsupported, or vendor-specific ME. Key is the unknown classID
                 self.log.debug('frame-decode-key-error', omci_msg=hexlify(msg), e=e)
@@ -839,11 +838,11 @@ class OMCI_CC(object):
                                        errbackArgs=(tx_tid, high_priority))
 
                     omci_msg = InterAdapterOmciMessage(
-                        message=hexify(frame),
+                        message=bytes(frame),
                         proxy_address=self._proxy_address,
                         connect_status=self._device.connect_status)
 
-                    self.log.debug('inter-adapter-send-omci', tid=tx_tid, omci_msg=omci_msg.message)
+                    self.log.debug('sent-omci-msg', tid=tx_tid, omci_msg=hexlify(bytes(frame)))
 
                     yield self._adapter_proxy.send_inter_adapter_message(
                         msg=omci_msg,
