@@ -804,9 +804,9 @@ class OMCI_CC(object):
                 try:
                     self._rx_response[index] = None
 
-                    omci_msg = InterAdapterOmciMessage(message=hexify(str(frame)))
+                    omci_msg = InterAdapterOmciMessage(message=bytes(frame))
 
-                    self.log.debug('inter-adapter-send-omci', omci_msg=omci_msg)
+                    self.log.debug('inter-adapter-send-omci', omci_msg=hexify(str(frame)))
 
                     yield self._adapter_proxy.send_inter_adapter_message(
                         msg=omci_msg,
@@ -903,7 +903,7 @@ class OMCI_CC(object):
     def send_start_software_download(self, image_inst_id, image_size, window_size, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
         frame = SoftwareImageFrame(image_inst_id).start_software_download(image_size, window_size-1)
         return self.send(frame, timeout, 3, high_priority=high_priority)
-        
+
     def send_download_section(self, image_inst_id, section_num, data, size=DEFAULT_OMCI_DOWNLOAD_SECTION_SIZE, timeout=0, high_priority=False):
         """
         # timeout=0 indicates no repons needed
@@ -914,10 +914,10 @@ class OMCI_CC(object):
         else:
             frame = SoftwareImageFrame(image_inst_id).download_section(False, section_num, data)
         return self.send(frame, timeout, high_priority=high_priority)
-        
+
         # if timeout > 0:
-        #     self.reactor.callLater(0, self.sim_receive_download_section_resp, 
-        #                            frame.fields["transaction_id"], 
+        #     self.reactor.callLater(0, self.sim_receive_download_section_resp,
+        #                            frame.fields["transaction_id"],
         #                            frame.fields["omci_message"].fields["section_number"])
         # return d
 
