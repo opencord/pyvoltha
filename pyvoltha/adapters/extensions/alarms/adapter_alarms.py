@@ -15,6 +15,7 @@
 
 import structlog
 import arrow
+from twisted.internet.defer import inlineCallbacks, returnValue
 from voltha_protos.events_pb2 import AlarmEventType, AlarmEventSeverity,\
     AlarmEventState, AlarmEventCategory
 log = structlog.get_logger()
@@ -37,21 +38,21 @@ class AdapterAlarms:
     """
     Class for managing Alarms within a given Device Handler instance
     """
-    def __init__(self, adapter_agent, device_id, logical_device_id, serial_number):
+    def __init__(self, core_proxy, device_id, logical_device_id, serial_number):
         """
         Adapter alarm manager initializer
 
-        :param adapter_agent: (AdapterAgent) Adapter agent reference
+        :param core_proxy: (CoreProxy) Core proxy reference
         :param device_id: (str) Device handler's unique device id
         :param logical_device_id: (str) Logical Device that the device is a member of
         :param serial_number: (str) Serial number of the device(OLT) that created this instance
         """
         self.log = structlog.get_logger(device_id=device_id)
-        self.adapter_agent = adapter_agent
+        self.core_proxy = core_proxy
         self.device_id = device_id
         self.logical_device_id = logical_device_id
         self.serial_number = serial_number
-        self.adapter_name = adapter_agent.listening_topic
+        self.adapter_name = core_proxy.listening_topic
         self.lc = None
 
     def format_id(self, alarm):
@@ -80,7 +81,7 @@ class AdapterAlarms:
         return '{} Alarm - {} - {}'.format(_object.upper(),
                                            alarm.upper(),
                                            'Raised' if status else 'Cleared')
-
+    @inlineCallbacks
     def send_alarm(self, context_data, alarm_data):
         """
         Send the alarm to the event bus
@@ -98,7 +99,7 @@ class AdapterAlarms:
 
             self.log.debug('send_alarm', alarm_data=alarm_data)
             
-            alarm_event = self.adapter_agent.create_alarm(
+            alarm_event = self.core_proxy.create_alarm(
                 id=alarm_data.get('id', 'voltha.{}.{}.olt'.format(self.adapter_name,
                                                                   self.device_id)),
                 resource_id=str(alarm_data.get('resource_id', self.device_id)),
@@ -113,7 +114,7 @@ class AdapterAlarms:
                 logical_device_id=self.logical_device_id,
                 alarm_type_name=alarm_data.get('alarm_type_name')
             )
-            self.adapter_agent.submit_alarm(self.device_id, alarm_event)
+            yield self.core_proxy.submit_alarm(self.device_id, alarm_event)
 
         except Exception as e:
             self.log.exception('failed-to-send-alarm', e=e)

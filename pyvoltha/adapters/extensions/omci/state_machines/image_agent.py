@@ -872,7 +872,7 @@ class ImageAgent(object):
         # onu_dev = self._omci_agent.get_device(self._device_id)
         # assert device
         
-        # self._local_dir = DEFAULT_LOCAL_ROOT + onu_dev.adapter_agent.name
+        # self._local_dir = DEFAULT_LOCAL_ROOT + onu_dev.core_proxy.name
         # self.log.debug("ImageAgent", local_dir=self._local_dir)
         
         
@@ -907,9 +907,9 @@ class ImageAgent(object):
         #     onu_dev = self._omci_agent.get_device(self._device_id)
         #     assert onu_dev
         #     if image_download.local_dir is None:
-        #         self._local_dir = ImageAgent.DEFAULT_LOCAL_ROOT + onu_dev.adapter_agent.name
+        #         self._local_dir = ImageAgent.DEFAULT_LOCAL_ROOT + onu_dev.core_proxy.name
         #     else:
-        #         self._local_dir = image_download.local_dir + '/' + onu_dev.adapter_agent.name
+        #         self._local_dir = image_download.local_dir + '/' + onu_dev.core_proxy.name
             
             # self.log.debug("ImageAgent", local_dir=self._local_dir)
         #     image_download.local_dir = self._local_dir

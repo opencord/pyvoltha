@@ -35,12 +35,12 @@ class OnuPmMetrics(AdapterPmMetrics):
     # the KPI shared library supports individual collection.
     DEFAULT_ONU_COLLECTION_FREQUENCY = 60 * 10      # 1 minute
 
-    def __init__(self, adapter_agent, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared ONU Device Adapter PM metrics
 
-        :param adapter_agent: (AdapterAgent) Adapter agent for the device
+        :param core_proxy: (CoreProxy) Core proxy for the device
         :param device_id: (str) Device ID
         :param logical_device_id: (str) VOLTHA Logical Device ID
         :param grouped: (bool) Flag indicating if statistics are managed as a group
@@ -53,7 +53,7 @@ class OnuPmMetrics(AdapterPmMetrics):
                               'heartbeat': Reference to the a class that provides an ONU heartbeat
                                            statistics.   TODO: This should be standardized across adapters
         """
-        super(OnuPmMetrics, self).__init__(adapter_agent, device_id, logical_device_id,
+        super(OnuPmMetrics, self).__init__(core_proxy, device_id, logical_device_id,
                                            grouped=grouped, freq_override=freq_override,
                                            **kwargs)
 
@@ -77,7 +77,7 @@ class OnuPmMetrics(AdapterPmMetrics):
         self.health_metrics_config = {m: PmConfig(name=m, type=t, enabled=True)
                                       for (m, t) in self.health_pm_names}
 
-        self.omci_pm = OnuOmciPmMetrics(adapter_agent, device_id, logical_device_id,
+        self.omci_pm = OnuOmciPmMetrics(core_proxy, device_id, logical_device_id,
                                         grouped=grouped, freq_override=freq_override,
                                         **kwargs)
 
