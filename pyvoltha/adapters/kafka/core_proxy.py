@@ -391,6 +391,30 @@ class CoreProxy(ContainerProxy):
                                 port=port)
         returnValue(res)
 
+    @ContainerProxy.wrap_request(None)
+    @inlineCallbacks
+    def ports_state_update(self,
+                          device_id,
+                          oper_status):
+        log.debug("ports_state_update", device_id=device_id, oper_status=oper_status)
+        id = ID()
+        id.id = device_id
+        o_status = IntType()
+        o_status.val = oper_status
+
+        to_topic = self.get_core_topic(device_id)
+        reply_topic = self.get_adapter_topic()
+
+        # to_topic = createSubTopic(self.core_topic, device_id)
+        # reply_topic = createSubTopic(self.listening_topic, device_id)
+        res = yield self.invoke(rpc="PortsStateUpdate",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=id,
+                                oper_status=o_status)
+        log.debug("ports_state_update_response", device_id=device_id, oper_status=oper_status, response=res)
+        returnValue(res)
+
     def port_removed(device_id, port):
         raise NotImplementedError()
 
