@@ -29,7 +29,7 @@ register PM Metric manager. This is typically performed in the device handler's
 2. Create the ProtoBuf message for your metrics by calling the newly created _manager's_
    **_make_proto_**() method. 
    
-3. Register the ProtoBuf message configuration with the adapter agent via the 
+3. Register the ProtoBuf message configuration with the core_proxy via the 
    _update_device_pm_config_() method with the optional init parameter set to **True**.
    
 4. Request the manager to schedule the first PM collection interval by calling the
@@ -51,7 +51,7 @@ device adapter
         'nni-ports': self.northbound_ports.values(),
         'pon-ports': self.southbound_ports.values()
     }
-    self.pm_metrics = OltPmMetrics(self.adapter_agent, self.device_id, self.logical_device_id,
+    self.pm_metrics = OltPmMetrics(self.core_proxy, self.device_id, self.logical_device_id,
                                    grouped=True, freq_override=False,
                                    **kwargs)
 
@@ -59,8 +59,8 @@ device adapter
     pm_config = self.pm_metrics.make_proto()
     self.log.debug("initial-pm-config", pm_config=pm_config)
     
-    # Create the PM information in the adapter agent
-    self.adapter_agent.update_device_pm_config(pm_config, init=True)
+    # Create the PM information in the core_proxy
+    self.core_proxy.update_device_pm_config(pm_config, init=True)
         
     # Start collecting stats from the device after a brief pause
     reactor.callLater(10, self.pm_metrics.start_collector)
@@ -80,7 +80,7 @@ shared library.
         'heartbeat': self.heartbeat,
         'omci-cc': self.openomci.omci_cc
     }
-    self.pm_metrics = OnuPmMetrics(self.adapter_agent, self.device_id, self.logical_device_id,
+    self.pm_metrics = OnuPmMetrics(self.core_proxy, self.device_id, self.logical_device_id,
                                    grouped=True, freq_override=False,
                                    **kwargs)
                                    
@@ -90,8 +90,8 @@ shared library.
     # Register the OMCI history intervals with OpenOMCI
     self.openomci.set_pm_config(self.pm_metrics.omci_pm.openomci_interval_pm)
     
-    # Create the PM information in the adapter agent
-    self.adapter_agent.update_device_pm_config(pm_config, init=True)
+    # Create the PM information in the core_proxy
+    self.core_proxy.update_device_pm_config(pm_config, init=True)
     
     # Start collecting stats from the device after a brief pause
     reactor.callLater(30, self.pm_metrics.start_collector)

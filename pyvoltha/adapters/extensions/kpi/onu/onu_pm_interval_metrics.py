@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import arrow
+from twisted.internet.defer import inlineCallbacks, returnValue 
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
 from voltha_protos.events_pb2 import KpiEvent2, MetricInformation, MetricMetaData, KpiEventType
 from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
@@ -55,8 +56,8 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
     XGPON_DOWNSTREAM_HISTORY = False
     XGPON_UPSTREAM_HISTORY = False
 
-    def __init__(self, adapter_agent, device_id, logical_device_id, **kwargs):
-        super(OnuPmIntervalMetrics, self).__init__(adapter_agent, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id, **kwargs):
+        super(OnuPmIntervalMetrics, self).__init__(core_proxy, device_id, logical_device_id,
                                                    grouped=True, freq_override=False,
                                                    **kwargs)
         ethernet_bridge_history = {
@@ -324,6 +325,7 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
 
         return pm_config
 
+    @inlineCallbacks
     def publish_metrics(self, interval_data):
         """
         Collect the metrics for this ONU PM Interval
@@ -377,7 +379,7 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
                     kpi_event = KpiEvent2(type=KpiEventType.slice,
                                           ts=now.float_timestamp,
                                           slice_data=slice_data)
-                    self.adapter_agent.submit_kpis(kpi_event)
+                    yield self.core_proxy.submit_kpis(kpi_event)
 
         except Exception as e:
             self.log.exception('failed-to-submit-kpis', e=e)
