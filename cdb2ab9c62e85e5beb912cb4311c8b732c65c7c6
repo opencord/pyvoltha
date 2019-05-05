@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a702243f_ad0b2162",
+        "filename": "pyvoltha/adapters/extensions/alarms/adapter_alarms.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-05-05T19:52:24Z",
+      "side": 1,
+      "message": "need to update the comment to match the change",
+      "range": {
+        "startLine": 45,
+        "startChar": 28,
+        "endLine": 45,
+        "endChar": 65
+      },
+      "revId": "cdb2ab9c62e85e5beb912cb4311c8b732c65c7c6",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9cdf5197_478182d7",
+        "filename": "pyvoltha/adapters/extensions/kpi/onu/onu_omci_pm.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-05-05T19:52:24Z",
+      "side": 1,
+      "message": "update comment",
+      "range": {
+        "startLine": 49,
+        "startChar": 27,
+        "endLine": 49,
+        "endChar": 70
+      },
+      "revId": "cdb2ab9c62e85e5beb912cb4311c8b732c65c7c6",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6aea012c_14911561",
+        "filename": "pyvoltha/adapters/extensions/kpi/onu/onu_pm_metrics.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-05-05T19:52:24Z",
+      "side": 1,
+      "message": "update comment",
+      "range": {
+        "startLine": 43,
+        "startChar": 27,
+        "endLine": 43,
+        "endChar": 70
+      },
+      "revId": "cdb2ab9c62e85e5beb912cb4311c8b732c65c7c6",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
