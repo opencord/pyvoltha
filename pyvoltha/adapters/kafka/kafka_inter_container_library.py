@@ -499,6 +499,9 @@ class IKafkaMessagingProxy(object):
         except Exception as e:
             log.exception("Failed-to-process-message", message=m, e=e)
 
+    # This api is used for publishing alarms, KPI data as well as inter-container messages
+    # on to the Kafka bus. The proto message is serialized and sent to the kafka bus.
+    # The receiving entity has to deserialize the data to get the original proto message.
     @inlineCallbacks
     def _send_kafka_message(self, topic, msg):
         try:

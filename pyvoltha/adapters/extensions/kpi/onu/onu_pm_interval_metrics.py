@@ -56,8 +56,8 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
     XGPON_DOWNSTREAM_HISTORY = False
     XGPON_UPSTREAM_HISTORY = False
 
-    def __init__(self, core_proxy, device_id, logical_device_id, **kwargs):
-        super(OnuPmIntervalMetrics, self).__init__(core_proxy, device_id, logical_device_id,
+    def __init__(self, core_proxy, device_id, logical_device_id, serial_number, **kwargs):
+        super(OnuPmIntervalMetrics, self).__init__(core_proxy, device_id, logical_device_id, serial_number,
                                                    grouped=True, freq_override=False,
                                                    **kwargs)
         ethernet_bridge_history = {
