@@ -18,8 +18,9 @@ from voltha_protos.omci_mib_db_pb2 import MibInstanceData, MibClassData, \
     MibDeviceData, MibAttributeData, MessageType, ManagedEntity
 from pyvoltha.adapters.extensions.omci.omci_entities import *
 from pyvoltha.adapters.extensions.omci.omci_fields import *
+from pyvoltha.common.config.config_backend import EtcdStore
 from scapy.fields import StrField, FieldListField, PacketField
-
+from pyvoltha.common.utils.registry import registry
 
 class MibDbStatistic(object):
     """
@@ -86,18 +87,17 @@ class MibDbExternal(MibDbApi):
 
     # Paths from root proxy
     MIB_PATH = '/omci_mibs'
-    DEVICE_PATH = MIB_PATH + '/{}'            # .format(device_id)
+    DEVICE_PATH = '{}'            # .format(device_id)
 
     # Classes, Instances, and Attributes as lists from root proxy
-    CLASSES_PATH = DEVICE_PATH + '/classes'                                # .format(device_id)
-    INSTANCES_PATH = DEVICE_PATH + '/classes/{}/instances'                 # .format(device_id, class_id)
-    ATTRIBUTES_PATH = DEVICE_PATH + '/classes/{}/instances/{}/attributes'  # .format(device_id, class_id, instance_id)
+    CLASS_PATH = DEVICE_PATH + '/classes/{}'                                # .format(device_id)
+    INSTANCE_PATH = DEVICE_PATH + '/classes/{}/instances/{}'                 # .format(device_id, class_id)
+    ATTRIBUTE_PATH = DEVICE_PATH + '/classes/{}/instances/{}/attributes/{}'  # .format(device_id, class_id, instance_id)
 
     # Single Class, Instance, and Attribute as objects from device proxy
-    CLASS_PATH = '/classes/{}'                                 # .format(class_id)
-    INSTANCE_PATH = '/classes/{}/instances/{}'                 # .format(class_id, instance_id)
-    ATTRIBUTE_PATH = '/classes/{}/instances/{}/attributes/{}'  # .format(class_id, instance_id
-                                                               #         attribute_name)
+    #CLASS_PATH = '/classes/{}'                                 # .format(class_id)
+    #INSTANCE_PATH = '/classes/{}/instances/{}'                 # .format(class_id, instance_id)
+    #ATTRIBUTE_PATH = '/classes/{}/instances/{}/attributes/{}'  # .format(class_id, instance_id
 
     def __init__(self, omci_agent):
         """
@@ -113,6 +113,9 @@ class MibDbExternal(MibDbApi):
             'create': MibDbStatistic('create'),
             'delete': MibDbStatistic('delete')
         }
+        self.args = registry('main').get_args()
+        host, port = self.args.etcd.split(':', 1)
+        self._kv_store = EtcdStore(host, port, MibDbExternal.MIB_PATH)
 
     def start(self):
         """
@@ -122,12 +125,9 @@ class MibDbExternal(MibDbApi):
 
         if not self._started:
             super(MibDbExternal, self).start()
-            root_proxy = self._core.get_proxy('/')
-
+            
             try:
-                base = root_proxy.get(MibDbExternal.MIB_PATH)
-                self.log.info('db-exists', num_devices=len(base))
-
+                self.log.info('db-exists')
             except Exception as e:
                 self.log.exception('start-failure', e=e)
                 raise
@@ -140,7 +140,7 @@ class MibDbExternal(MibDbApi):
 
         if self._started:
             super(MibDbExternal, self).stop()
-            # TODO: Delete this method if nothing else is done except calling the base class
+            # TODO: Delete this method if 6nothing else is done except calling the base class
 
     def _time_to_string(self, time):
         return time.strftime(MibDbExternal._TIME_FORMAT) if time is not None else ''
@@ -300,32 +300,34 @@ class MibDbExternal(MibDbApi):
 
         now = datetime.utcnow()
         found = False
-        root_proxy = self._core.get_proxy('/')
 
         data = MibDeviceData(device_id=device_id,
                              created=self._time_to_string(now),
                              last_sync_time='',
                              mib_data_sync=0,
                              version=MibDbExternal.CURRENT_VERSION)
+        path = self._get_device_path(device_id)
+        self.log.debug("add-device-path", device_id=device_id, path=path)
         try:
-            dev_proxy = self._device_proxy(device_id)
-            found = True
+            #raises KeyError if not found
+            device = self._kv_store[path]
 
+            #device is found at this point
+            found = True
             if not overwrite:
                 # Device already exists
                 raise KeyError('Device with ID {} already exists in MIB database'.
                                format(device_id))
 
-            # Overwrite with new data
-            data = dev_proxy.get('/', depth=0)
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id), data)
+            self._kv_store[path] = data.SerializeToString()
             self._modified = now
 
         except KeyError:
+            #KeyError after finding the device should be raised
             if found:
                 raise
             # Did not exist, add it now
-            root_proxy.add(MibDbExternal.MIB_PATH, data)
+            self._kv_store[path] = data.SerializeToString()
             self._created = now
             self._modified = now
 
@@ -344,8 +346,8 @@ class MibDbExternal(MibDbApi):
             raise TypeError('Device ID should be an string')
 
         try:
-            # self._root_proxy.get(MibDbExternal.DEVICE_PATH.format(device_id))
-            self._root_proxy.remove(MibDbExternal.DEVICE_PATH.format(device_id))
+            path = self._get_device_path(device_id)
+            del self._kv_store[path]
             self._modified = datetime.utcnow()
 
         except KeyError:
@@ -356,27 +358,21 @@ class MibDbExternal(MibDbApi):
             self.log.exception('remove-exception', device_id=device_id, e=e)
             raise
 
-    @property
-    def _root_proxy(self):
-        return self._core.get_proxy('/')
+    def _get_device_path(self, device_id):
+        return MibDbExternal.DEVICE_PATH.format(device_id)
 
-    def _device_proxy(self, device_id):
-        """
-        Return a config proxy to the OMCI MIB_DB leaf for a given device
-
-        :param device_id: (str) ONU Device ID
-        :return: (ConfigProxy) Configuration proxy rooted at OMCI MIB DB
-        :raises KeyError: If the device does not exist in the database
-        """
-        if not isinstance(device_id, basestring):
-            raise TypeError('Device ID should be an string')
-
+    def _get_class_path(self, device_id, class_id):        
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        return self._core.get_proxy(MibDbExternal.DEVICE_PATH.format(device_id))
+        if not 0 <= class_id <= 0xFFFF:
+            raise ValueError('class-id is 0..0xFFFF')
 
-    def _class_proxy(self, device_id, class_id, create=False):
+        fmt = MibDbExternal.CLASS_PATH
+        return fmt.format(device_id, class_id)
+
+
+    def _get_class(self, device_id, class_id, create=False):
         """
         Get a config proxy to a specific managed entity class
         :param device_id: (str) ONU Device ID
@@ -387,17 +383,11 @@ class MibDbExternal(MibDbApi):
         :raises DatabaseStateError: If database is not started
         :raises KeyError: If Instance does not exist and 'create' is False
         """
-        if not self._started:
-            raise DatabaseStateError('The Database is not currently active')
 
-        if not 0 <= class_id <= 0xFFFF:
-            raise ValueError('class-id is 0..0xFFFF')
-
-        fmt = MibDbExternal.DEVICE_PATH + MibDbExternal.CLASS_PATH
-        path = fmt.format(device_id, class_id)
+        path = self._get_class_path(device_id, class_id)
 
         try:
-            return self._core.get_proxy(path)
+            return self._kv_store[path]
 
         except KeyError:
             if not create:
@@ -412,23 +402,12 @@ class MibDbExternal(MibDbApi):
 
         # Create class
         data = MibClassData(class_id=class_id)
-        root_path = MibDbExternal.CLASSES_PATH.format(device_id)
-        self._root_proxy.add(root_path, data)
+        root_path = MibDbExternal.CLASS_PATH.format(device_id, class_id)
+        self._kv_store[root_path] = data
 
-        return self._core.get_proxy(path)
+        return data
 
-    def _instance_proxy(self, device_id, class_id, instance_id, create=False):
-        """
-        Get a config proxy to a specific managed entity instance
-        :param device_id: (str) ONU Device ID
-        :param class_id: (int) Class ID
-        :param instance_id: (int) Instance ID
-        :param create: (bool) If true, create default instance (and class)
-        :return: (ConfigProxy) Instance configuration proxy
-
-        :raises DatabaseStateError: If database is not started
-        :raises KeyError: If Instance does not exist and 'create' is False
-        """
+    def _get_instance_path(self, device_id, class_id, instance_id):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
@@ -441,11 +420,26 @@ class MibDbExternal(MibDbApi):
         if not 0 <= instance_id <= 0xFFFF:
             raise ValueError('instance-id is 0..0xFFFF')
 
-        fmt = MibDbExternal.DEVICE_PATH + MibDbExternal.INSTANCE_PATH
-        path = fmt.format(device_id, class_id, instance_id)
+        fmt = MibDbExternal.INSTANCE_PATH
+        return fmt.format(device_id, class_id, instance_id)
+
+    def _get_instance(self, device_id, class_id, instance_id, create=False):
+        """
+        Get a config proxy to a specific managed entity instance
+        :param device_id: (str) ONU Device ID
+        :param class_id: (int) Class ID
+        :param instance_id: (int) Instance ID
+        :param create: (bool) If true, create default instance (and class)
+        :return: (ConfigProxy) Instance configuration proxy
+
+        :raises DatabaseStateError: If database is not started
+        :raises KeyError: If Instance does not exist and 'create' is False
+        """
+
+        path = self._get_instance_path(device_id, class_id, instance_id)
 
         try:
-            return self._core.get_proxy(path)
+            return self._kv_store[path]
 
         except KeyError:
             if not create:
@@ -459,14 +453,14 @@ class MibDbExternal(MibDbApi):
                 raise
 
         # Create instance, first make sure class exists
-        self._class_proxy(device_id, class_id, create=True)
+        self._get_class(device_id, class_id, create=True)
 
         now = self._time_to_string(datetime.utcnow())
         data = MibInstanceData(instance_id=instance_id, created=now, modified=now)
-        root_path = MibDbExternal.INSTANCES_PATH.format(device_id, class_id)
-        self._root_proxy.add(root_path, data)
+        root_path = MibDbExternal.INSTANCE_PATH.format(device_id, class_id)
+        self._kv_store[root_path] = data
 
-        return self._core.get_proxy(path)
+        return data
 
     def on_mib_reset(self, device_id):
         """
@@ -478,16 +472,19 @@ class MibDbExternal(MibDbApi):
         """
         self.log.debug('on-mib-reset', device_id=device_id)
 
-        try:
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=2)
+        data = MibDeviceData()
 
-            # Wipe out any existing class IDs
+        try:
+            path = self._get_device_path(device_id)
+            data.ParseFromString(self._kv_store[path])
+
+            #  data = MibDeviceData(Wipe out any existing class IDs
             class_ids = [c.class_id for c in data.classes]
 
             if len(class_ids):
                 for class_id in class_ids:
-                    device_proxy.remove(MibDbExternal.CLASS_PATH.format(class_id))
+                    classpath = MibDbExternal.CLASS_PATH.format(device_id, class_id)
+                    del self._kv_store[classpath]
 
             # Reset MIB Data Sync to zero
             now = datetime.utcnow()
@@ -497,14 +494,15 @@ class MibDbExternal(MibDbApi):
                                  mib_data_sync=0,
                                  version=MibDbExternal.CURRENT_VERSION)
             # Update
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id),
-                                    data)
+            self._kv_store[path] = data.SerializeToString()
             self._modified = now
             self.log.debug('mib-reset-complete', device_id=device_id)
 
         except Exception as e:
             self.log.exception('mib-reset-exception', device_id=device_id, e=e)
             raise
+        except KeyError as e:
+            self.log.debug("mib-reset-no-data-to-reset", device_id=device_id)
 
     def save_mib_data_sync(self, device_id, value):
         """
@@ -522,15 +520,16 @@ class MibDbExternal(MibDbApi):
             if not 0 <= value <= 255:
                 raise ValueError('Invalid MIB-data-sync value {}.  Must be 0..255'.
                                  format(value))
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
+            data = MibDeviceData()
+            path = self._get_device_path(device_id)
+                                    
+            data.ParseFromString(self._kv_store[path])
 
             now = datetime.utcnow()
             data.mib_data_sync = value
 
             # Update
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id),
-                                    data)
+            self._kv_store[path] = data.SerializeToString()
             self._modified = now
             self.log.debug('save-mds-complete', device_id=device_id)
 
@@ -548,8 +547,9 @@ class MibDbExternal(MibDbApi):
         self.log.debug('get-mds', device_id=device_id)
 
         try:
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
+            data = MibDeviceData()
+            path = get_device_path(device_id)
+            data.ParseFromString(self._kv_store[path])
             return int(data.mib_data_sync)
 
         except KeyError:
@@ -572,16 +572,15 @@ class MibDbExternal(MibDbApi):
             if not isinstance(value, datetime):
                 raise TypeError('Expected a datetime object, got {}'.
                                 format(type(datetime)))
-
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
+            data = MibDeviceData()
+            path = self._get_device_path(device_id)
+            data.ParseFromString(self._kv_store[path])
 
             now = datetime.utcnow()
             data.last_sync_time = self._time_to_string(value)
 
             # Update
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id),
-                                    data)
+            self._kv_store[path] = data.SerializeToString()
             self._modified = now
             self.log.debug('save-mds-complete', device_id=device_id)
 
@@ -599,8 +598,9 @@ class MibDbExternal(MibDbApi):
         self.log.debug('get-last-sync', device_id=device_id)
 
         try:
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
+            data = MibDeviceData()
+            path = self._get_device_path(device_id)
+            data.ParseFromString(self.kv_store[path])
             return self._string_to_time(data.last_sync_time)
 
         except KeyError:
@@ -622,7 +622,7 @@ class MibDbExternal(MibDbApi):
         :returns: (bool) True if the value was saved to the database. False if the
                          value was identical to the current instance
         """
-        self.log.debug('add', device_id=device_id, class_id=class_id,
+        self.log.debug('add-new-class', device_id=device_id, class_id=class_id,
                        instance_id=instance_id, attributes=attributes)
 
         now = self._time_to_string(datetime.utcnow())
@@ -644,12 +644,13 @@ class MibDbExternal(MibDbApi):
                                                              modified=now,
                                                              attributes=attrs)])
 
-        self._root_proxy.add(MibDbExternal.CLASSES_PATH.format(device_id), class_data)
+        classpath = MibDbExternal.CLASS_PATH.format(device_id, class_id)
+        self._kv_store[classpath] = class_data.SerializeToString()
         self.log.debug('set-complete', device_id=device_id, class_id=class_id,
                        entity_id=instance_id, attributes=attributes)
         return True
 
-    def _add_new_instance(self,  device_id, class_id, instance_id, attributes):
+    def _create_new_instance(self,  device_id, class_id, instance_id, attributes):
         """
         Create an entry for a instance of an existing class in the external database
 
@@ -658,10 +659,9 @@ class MibDbExternal(MibDbApi):
         :param instance_id: (int) ME Entity ID
         :param attributes: (dict) Attribute dictionary
 
-        :returns: (bool) True if the value was saved to the database. False if the
-                         value was identical to the current instance
+        :returns: (MibInstanceDate) The new instance object
         """
-        self.log.debug('add', device_id=device_id, class_id=class_id,
+        self.log.debug('create-new-instance', device_id=device_id, class_id=class_id,
                        instance_id=instance_id, attributes=attributes)
 
         now = self._time_to_string(datetime.utcnow())
@@ -682,12 +682,18 @@ class MibDbExternal(MibDbApi):
                                         modified=now,
                                         attributes=attrs)
 
-        self._root_proxy.add(MibDbExternal.INSTANCES_PATH.format(device_id, class_id),
-                             instance_data)
+        #update class with instance
+        #class_path = self._get_class_path(device_id, class_id)
+        #class_data = MibClassData()
+        #class_data.ParseFromString(self._kv_store[class_path])
+        
+        #class_data.instances.extend([instance_data])
 
-        self.log.debug('set-complete', device_id=device_id, class_id=class_id,
+        #self._kv_store[class_path] = class_data.SerializeToString()
+
+        self.log.debug('create-new-instance-complete', device_id=device_id, class_id=class_id,
                        entity_id=instance_id, attributes=attributes)
-        return True
+        return instance_data
 
     def set(self, device_id, class_id, instance_id, attributes):
         """
@@ -723,65 +729,67 @@ class MibDbExternal(MibDbApi):
             if not self._started:
                 raise DatabaseStateError('The Database is not currently active')
 
-            # Determine the best strategy to add the information
-            dev_proxy = self._device_proxy(device_id)
-
             operation = 'set'
             start_time = None
             try:
-                class_data = dev_proxy.get(MibDbExternal.CLASS_PATH.format(class_id), deep=True)
+                class_data = MibClassData()
+                class_path = MibDbExternal.CLASS_PATH.format(device_id, class_id)
+                class_data.ParseFromString(self._kv_store[class_path])
 
                 inst_data = next((inst for inst in class_data.instances
                                  if inst.instance_id == instance_id), None)
-
+                modified = False
+                new_data = None
                 if inst_data is None:
                     operation = 'create'
                     start_time = datetime.utcnow()
-                    return self._add_new_instance(device_id, class_id, instance_id, attributes)
+                    new_data = self._create_new_instance(device_id, class_id, instance_id, attributes)
+                    modified = True
+                else:
 
-                # Possibly adding to or updating an existing instance
-                # Get instance proxy, creating it if needed
+                    # Possibly adding to or updating an existing instance
+                    # Get instance proxy, creating it if needed
+                    new_attributes = []
+                    exist_attr_indexes = dict()
+                    attr_len = len(inst_data.attributes)
 
-                modified = False
-                new_attributes = []
-                exist_attr_indexes = dict()
-                attr_len = len(inst_data.attributes)
+                    for index in xrange(0, attr_len):
+                        name = inst_data.attributes[index].name
+                        value = inst_data.attributes[index].value
+                        exist_attr_indexes[name] = index
+                        new_attributes.append(MibAttributeData(name=name, value=value))
 
-                for index in xrange(0, attr_len):
-                    name = inst_data.attributes[index].name
-                    value = inst_data.attributes[index].value
-                    exist_attr_indexes[name] = index
-                    new_attributes.append(MibAttributeData(name=name, value=value))
+                    for k, v in attributes.items():
+                        try:
+                            old_value = None if k not in exist_attr_indexes \
+                                else new_attributes[exist_attr_indexes[k]].value
 
-                for k, v in attributes.items():
-                    try:
-                        old_value = None if k not in exist_attr_indexes \
-                            else new_attributes[exist_attr_indexes[k]].value
+                            str_value = self._attribute_to_string(device_id, class_id, k, v, old_value)
 
-                        str_value = self._attribute_to_string(device_id, class_id, k, v, old_value)
+                            if k not in exist_attr_indexes:
+                                new_attributes.append(MibAttributeData(name=k, value=str_value))
+                                modified = True
 
-                        if k not in exist_attr_indexes:
-                            new_attributes.append(MibAttributeData(name=k, value=str_value))
-                            modified = True
+                            elif new_attributes[exist_attr_indexes[k]].value != str_value:
+                                new_attributes[exist_attr_indexes[k]].value = str_value
+                                modified = True
 
-                        elif new_attributes[exist_attr_indexes[k]].value != str_value:
-                            new_attributes[exist_attr_indexes[k]].value = str_value
-                            modified = True
-
-                    except Exception as e:
-                        self.log.exception('save-error', e=e, class_id=class_id,
+                        except Exception as e:
+                            self.log.exception('save-error', e=e, class_id=class_id,
                                            attr=k, value_type=type(v))
-
-                if modified:
                     now = datetime.utcnow()
                     start_time = now
                     new_data = MibInstanceData(instance_id=instance_id,
                                                created=inst_data.created,
                                                modified=self._time_to_string(now),
                                                attributes=new_attributes)
-                    dev_proxy.remove(MibDbExternal.INSTANCE_PATH.format(class_id, instance_id))
-                    self._root_proxy.add(MibDbExternal.INSTANCES_PATH.format(device_id,
-                                                                             class_id), new_data)
+
+                if modified:
+                    inst_index = next((index for index in range(len(class_data.instances)) if class_data.instances[index].instance_id == instance_id), None)
+                    if not inst_index is None:
+                        del class_data.instances[inst_index]
+                    class_data.instances.extend([new_data])
+                    self._kv_store[class_path] = class_data.SerializeToString()
                 return modified
 
             except KeyError:
@@ -835,15 +843,17 @@ class MibDbExternal(MibDbApi):
         start_time = datetime.utcnow()
         try:
             # Remove instance
-            self._instance_proxy(device_id, class_id, entity_id).remove('/')
+            instpath = self._get_instance_path(device_id, class_id, entity_id)
+            del self._kv_store[instpath]
             now = datetime.utcnow()
 
             # If resulting class has no instance, remove it as well
-            class_proxy = self._class_proxy(device_id, class_id)
-            class_data = class_proxy.get('/', depth=1)
-
+            classpath = self._get_class_path(device_id, class_id)
+            class_data = MibClassData()
+            class_data.ParseFromString(self._kv_store[classpath])
+            
             if len(class_data.instances) == 0:
-                class_proxy.remove('/')
+                del self._kv_store[classpath]
 
             self._modified = now
             return True
@@ -887,16 +897,20 @@ class MibDbExternal(MibDbApi):
         try:
             if class_id is None:
                 # Get full device info
-                dev_data = self._device_proxy(device_id).get('/', depth=-1)
+                dev_data = MibDeviceData()
+                device_path = self._get_device_path(device_id)
+                dev_data.ParseFromString(self._kv_store[device_path])
                 end_time = datetime.utcnow()
                 data = self._device_to_dict(dev_data)
 
             elif instance_id is None:
                 # Get all instances of the class
                 try:
-                    cls_data = self._class_proxy(device_id, class_id).get('/', depth=-1)
+                    class_data = MibClassData()
+                    class_path = self._get_class_path(device_id, class_id)
+                    class_data.ParseFromString(self._kv_store[class_path])
                     end_time = datetime.utcnow()
-                    data = self._class_to_dict(device_id, cls_data)
+                    data = self._class_to_dict(device_id, class_data)
 
                 except KeyError:
                     data = dict()
@@ -904,13 +918,14 @@ class MibDbExternal(MibDbApi):
             else:
                 # Get all attributes of a specific ME
                 try:
-                    inst_data = self._instance_proxy(device_id, class_id, instance_id).\
-                        get('/', depth=-1)
+                    instance_data = MibInstanceData()
+                    instance_path = self._get_instance_path(device_id, class_id, instance_id)
+                    instance_data.ParseFromString(self._kv_store[instance_path])
                     end_time = datetime.utcnow()
 
                     if attributes is None:
                         # All Attributes
-                        data = self._instance_to_dict(device_id, class_id, inst_data)
+                        data = self._instance_to_dict(device_id, class_id, instance_data)
 
                     else:
                         # Specific attribute(s)
@@ -968,7 +983,6 @@ class MibDbExternal(MibDbApi):
             raise TypeError('{} is not of type MibClassData'.format(type(val)))
 
         data = {
-            CLASS_ID_KEY: val.class_id,
         }
         for instance in val.instances:
             data[instance.instance_id] = self._instance_to_dict(device_id,
@@ -1017,16 +1031,15 @@ class MibDbExternal(MibDbApi):
                                      name=self._managed_entity_to_name(device_id,
                                                                        class_id))
                        for class_id in managed_entities]
-
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
+            data = MibDeviceData()
+            device_path = self._get_device_path(device_id)
+            data.ParseFromString(self._kv_store[device_path])
 
             now = datetime.utcnow()
             data.managed_entities.extend(me_list)
 
             # Update
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id),
-                                    data)
+            self._kv_store[device_path] = data.SerializeToString()
             self._modified = now
             self.log.debug('save-me-list-complete', device_id=device_id)
 
@@ -1041,18 +1054,16 @@ class MibDbExternal(MibDbApi):
         :param msg_types: (set) Message Type values (ints)
         """
         try:
+            now = datetime.utcnow()
             msg_type_list = [MessageType(message_type=msg_type.value)
                              for msg_type in msg_types]
-
-            device_proxy = self._device_proxy(device_id)
-            data = device_proxy.get(depth=0)
-
-            now = datetime.utcnow()
+            data = MibDeviceData()
+            device_path = self._get_device_path(device_id)
+            data.ParseFromString(self._kv_store[device_path]) 
             data.message_types.extend(msg_type_list)
 
             # Update
-            self._root_proxy.update(MibDbExternal.DEVICE_PATH.format(device_id),
-                                    data)
+            self._kv_store[device_path] = data.SerializeToString()
             self._modified = now
             self.log.debug('save-msg-types-complete', device_id=device_id)
 
