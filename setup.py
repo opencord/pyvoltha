@@ -37,7 +37,7 @@ with open(version_file) as version_file:
 
 requirements = open(path.join(setup_dir, "requirements.txt")).read().splitlines()
 required = [line for line in requirements if not line.startswith("-")]
-print "Required is '{}'".format(required)
+print ("Required is '{}'".format(required))
 
 setup(
     name=package,

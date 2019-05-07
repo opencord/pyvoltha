@@ -11,3 +11,5 @@ dist
 
 # ide workspace
 .idea
+
+*.pyc
