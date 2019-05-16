@@ -804,9 +804,14 @@ class OMCI_CC(object):
                 try:
                     self._rx_response[index] = None
 
-                    omci_msg = InterAdapterOmciMessage(message=hexify(str(frame)))
+                    omci_msg = InterAdapterOmciMessage(
+                        message=hexify(str(frame)),
+                        proxy_address=self._proxy_address,
+                        connect_status=self._device.connect_status)
 
-                    self.log.debug('inter-adapter-send-omci', omci_msg=omci_msg)
+                    self.log.debug('inter-adapter-send-omci', omci_msg=omci_msg,
+                                   connect_status=self._device.connect_status,
+                                   channel_id=self._proxy_address.channel_id)
 
                     yield self._adapter_proxy.send_inter_adapter_message(
                         msg=omci_msg,
