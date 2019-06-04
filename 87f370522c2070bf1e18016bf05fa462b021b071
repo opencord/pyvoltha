@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cef942ba_9f993895",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_cc.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 807,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2019-06-04T07:53:04Z",
+      "side": 1,
+      "message": "can you please spread this across multiple lines (trying to limit 80 chars per line as much as possible in python code).",
+      "revId": "87f370522c2070bf1e18016bf05fa462b021b071",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
