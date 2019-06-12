@@ -34,7 +34,7 @@ help:
 
 dist:
 	@ echo "Creating python source distribution"
-	rm -r dist/
+	rm -rf dist/
 	python setup.py sdist
 
 upload: dist
