@@ -191,7 +191,7 @@ class AdapterPmMetrics(object):
         :param data: (list) Existing list of collected metrics (MetricInformation)
                             to convert to a KPIEvent and publish
         """
-        self.log.debug('publish-metrics')
+        self.log.debug('publish-metrics', data=data)
 
         if len(data):
             try:
