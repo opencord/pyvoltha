@@ -178,7 +178,7 @@ class CoreProxy(ContainerProxy):
                 encoded[k] = b_proto
         return encoded
 
-    @ContainerProxy.wrap_request(None)
+    @ContainerProxy.wrap_request(Device)
     @inlineCallbacks
     def child_device_detected(self,
                               parent_device_id,
