@@ -29,7 +29,7 @@ setup_dir = path.dirname(path.abspath(__file__))
 version_file = path.join(setup_dir, "VERSION")
 
 # Get the long description from the README file
-with open(path.join(setup_dir, 'README.md'), encoding='utf-8') as f:
+with open(path.join(setup_dir, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 with open(version_file) as version_file:
