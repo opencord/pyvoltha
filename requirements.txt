@@ -29,7 +29,6 @@ protobuf==3.6.1
 protobuf-to-dict==0.1.0
 pyflakes==2.1.0
 pylint==1.9.4
-#pypcap>=1.1.5
 pyOpenSSL==17.3.0
 PyYAML==3.12
 requests==2.18.4
@@ -60,4 +59,4 @@ packaging==17.1
 pexpect==4.6.0
 python-consul==0.6.2
 afkak==3.0.0.dev20181106
-voltha-protos==0.1.4
+voltha-protos>=0.1.4
