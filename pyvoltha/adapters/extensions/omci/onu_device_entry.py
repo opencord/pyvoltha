@@ -359,7 +359,7 @@ class OnuDeviceEntry(object):
                 self._state_machines.append(sm)
                 sm.start()
 
-        self._deferred = reactor.callLater(0, start_state_machines,
+        self._deferred = reactor.callLater(1, start_state_machines,
                                            self._on_start_state_machines)
         # Notify any event listeners
         self._publish_device_status_event()

@@ -274,7 +274,10 @@ class OmciGetRequest(Task):
                     elif status != RC.Success.value:
                         raise GetException('Get failed with status code: {}'.format(status))
 
-                    assert attr_mask == get_omci['attributes_mask'], 'wrong attribute'
+                    # assert attr_mask == get_omci['attributes_mask'], 'wrong attribute'
+                    if attr_mask != get_omci['attributes_mask']:
+                        self.log.debug('attr mask does not match expected mask', attr_mask=attr_mask,
+                            expected_mask = get_omci['attributes_mask'])
                     results_omci['attributes_mask'] |= attr_mask
 
                     if results_omci.get('data') is None:
