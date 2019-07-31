@@ -28,8 +28,7 @@ from voltha_protos.common_pb2 import ID, ConnectStatus, OperStatus
 from voltha_protos.inter_container_pb2 import StrType, BoolType, IntType, Packet
 from voltha_protos.device_pb2 import Device, Ports, Devices
 from voltha_protos.voltha_pb2 import CoreInstance, AlarmFilterRuleKey
-from voltha_protos.events_pb2 import AlarmEvent, AlarmEventType, \
-    AlarmEventState, AlarmEventCategory, AlarmEventSeverity
+from voltha_protos.events_pb2 import Event
 from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
 
 log = structlog.get_logger()
@@ -40,10 +39,11 @@ def createSubTopic(*args):
 
 class CoreProxy(ContainerProxy):
 
-    def __init__(self, kafka_proxy, default_core_topic, my_listening_topic):
+    def __init__(self, kafka_proxy, default_core_topic, default_event_topic, my_listening_topic):
         super(CoreProxy, self).__init__(kafka_proxy, default_core_topic,
                                         my_listening_topic)
         self.core_default_topic = default_core_topic
+        self.event_default_topic = default_event_topic
         self.deviceId_to_core_map = dict()
 
     def update_device_core_reference(self, device_id, core_topic):
@@ -455,48 +455,7 @@ class CoreProxy(ContainerProxy):
                                 packet=pac)
         returnValue(res)
         
-    # ~~~~~~~~~~~~~~~~~~~ Handle alarm submissions ~~~~~~~~~~~~~~~~~~~~~
-
-    def create_alarm(self, id=None, resource_id=None, description=None,
-                     raised_ts=0, changed_ts=0,
-                     type=AlarmEventType.EQUIPMENT,
-                     category=AlarmEventCategory.PON,
-                     severity=AlarmEventSeverity.MINOR,
-                     state=AlarmEventState.RAISED,
-                     context=None,
-                     logical_device_id=None,
-                     alarm_type_name=None):
-        # Construct the ID if it is not provided
-        if id is None:
-            id = 'voltha.{}.{}'.format(self.adapter_name, resource_id)
-        log.debug('create alarmevent', id=id,
-            resource_id=resource_id,
-            type=type,
-            category=category,
-            severity=severity,
-            state=state,
-            description=description,
-            reported_ts=arrow.utcnow().timestamp,
-            raised_ts=raised_ts,
-            changed_ts=changed_ts,
-            context=context,
-            logical_device_id=logical_device_id,
-            alarm_type_name=alarm_type_name)
-        return AlarmEvent(
-            id=id,
-            resource_id=resource_id,
-            type=type,
-            category=category,
-            severity=severity,
-            state=state,
-            description=description,
-            reported_ts=arrow.utcnow().timestamp,
-            raised_ts=raised_ts,
-            changed_ts=changed_ts,
-            context=context,
-            logical_device_id=logical_device_id,
-            alarm_type_name=alarm_type_name
-        )
+    # ~~~~~~~~~~~~~~~~~~~ Handle event submissions ~~~~~~~~~~~~~~~~~~~~~
 
     def filter_alarm(self, device_id, alarm_event):
         '''
@@ -544,22 +503,11 @@ class CoreProxy(ContainerProxy):
         return False
 
     @inlineCallbacks
-    def submit_alarm(self, device_id, alarm_event_msg):
+    def submit_event(self, event_msg):
         try:
-            assert isinstance(alarm_event_msg, AlarmEvent)
-            if not self.filter_alarm(device_id, alarm_event_msg):
-                res = yield self.kafka_proxy._send_kafka_message('alarms', alarm_event_msg)
-                returnValue(res)
-        except Exception as e:
-            log.exception('failed-alarm-submission',
-                        type=type(alarm_event_msg), e=e)
-
-    @inlineCallbacks
-    def submit_kpis(self, kpi_event_msg):
-        try:
-            assert isinstance(kpi_event_msg, KpiEvent2)
-            res = yield self.kafka_proxy._send_kafka_message('kpis', kpi_event_msg)
+            assert isinstance(event_msg, Event)
+            res = yield self.kafka_proxy._send_kafka_message(self.event_default_topic, event_msg)
             returnValue(res)
         except Exception as e:
-            log.exception('failed-kpis-submission',
-                        type=type(kpi_event_msg), e=e)
+            log.exception('failed-event-submission',
+                        type=type(event_msg), e=e)
