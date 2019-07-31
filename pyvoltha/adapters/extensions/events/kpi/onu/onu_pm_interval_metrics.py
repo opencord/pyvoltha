@@ -16,7 +16,8 @@ import arrow
 from twisted.internet.defer import inlineCallbacks, returnValue 
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
 from voltha_protos.events_pb2 import KpiEvent2, MetricInformation, MetricMetaData, KpiEventType
-from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
+from voltha_protos.events_pb2 import Event, EventType
+from pyvoltha.adapters.extensions.events.kpi.adapter_pm_metrics import AdapterPmMetrics
 from pyvoltha.adapters.extensions.omci.omci_entities import \
     EthernetFrameUpstreamPerformanceMonitoringHistoryData, \
     EthernetFrameDownstreamPerformanceMonitoringHistoryData, \
@@ -56,8 +57,8 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
     XGPON_DOWNSTREAM_HISTORY = False
     XGPON_UPSTREAM_HISTORY = False
 
-    def __init__(self, core_proxy, device_id, logical_device_id, serial_number, **kwargs):
-        super(OnuPmIntervalMetrics, self).__init__(core_proxy, device_id, logical_device_id, serial_number,
+    def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number, **kwargs):
+        super(OnuPmIntervalMetrics, self).__init__(event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                                                    grouped=True, freq_override=False,
                                                    **kwargs)
         ethernet_bridge_history = {
@@ -375,11 +376,19 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
                                               device_id=self.device_id,
                                               context=context)
                     slice_data = [MetricInformation(metadata=metadata, metrics=metrics)]
+                    raised_ts = arrow.utcnow().timestamp
+                    event_header = self.event_mgr.get_event_header(EventType.KPI_EVENT2, 
+                                                                   self._category,
+                                                                   self._sub_category,
+                                                                   self._event, 
+                                                                   raised_ts)
 
-                    kpi_event = KpiEvent2(type=KpiEventType.slice,
+                    event_body = KpiEvent2(type=KpiEventType.slice,
                                           ts=now.float_timestamp,
                                           slice_data=slice_data)
-                    yield self.core_proxy.submit_kpis(kpi_event)
+
+                    self.log.debug('Sending-onu-metrics-to-kafka')
+                    yield self.event_mgr.send_event(event_header, event_body)
 
         except Exception as e:
             self.log.exception('failed-to-submit-kpis', e=e)
