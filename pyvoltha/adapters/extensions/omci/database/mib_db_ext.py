@@ -918,10 +918,18 @@ class MibDbExternal(MibDbApi):
             else:
                 # Get all attributes of a specific ME
                 try:
-                    instance_data = MibInstanceData()
-                    instance_path = self._get_instance_path(device_id, class_id, instance_id)
-                    instance_data.ParseFromString(self._kv_store[instance_path])
+                    class_data = MibClassData()
+                    instance_data = None
+                    class_path = self._get_class_path(device_id, class_id)
+                    class_data.ParseFromString(self._kv_store[class_path])
                     end_time = datetime.utcnow()
+
+                    for inst in class_data.instances:
+                        if inst.instance_id == instance_id:
+                            instance_data = inst
+
+                    if instance_data == None:
+                        raise KeyError
 
                     if attributes is None:
                         # All Attributes
@@ -937,7 +945,7 @@ class MibDbExternal(MibDbApi):
                                                                  class_id,
                                                                  attr.name,
                                                                  attr.value)
-                            for attr in inst_data.attributes if attr.name in attributes}
+                            for attr in instance_data.attributes if attr.name in attributes}
 
                 except KeyError:
                     data = dict()
