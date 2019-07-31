@@ -579,20 +579,20 @@ class AlarmSynchronizer(object):
         :param alarm_number: (int) Alarm Number
         :return: (AlarmBase) Alarm library alarm or None if not supported/found
         """
-        from pyvoltha.adapters.extensions.alarms.onu.onu_dying_gasp_alarm import OnuDyingGaspAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_los_alarm import OnuLosAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_equipment_alarm import OnuEquipmentAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_selftest_failure_alarm import OnuSelfTestFailureAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_laser_eol_alarm import OnuLaserEolAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_laser_bias_current_alarm import OnuLaserBiasAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_temp_yellow_alarm import OnuTempYellowAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_temp_red_alarm import OnuTempRedAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_voltage_yellow_alarm import OnuVoltageYellowAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_voltage_red_alarm import OnuVoltageRedAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_low_rx_optical_power_alarm import OnuLowRxOpticalAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_high_rx_optical_power_alarm import OnuHighRxOpticalAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_low_tx_optical_power_alarm import OnuLowTxOpticalAlarm
-        from pyvoltha.adapters.extensions.alarms.onu.onu_high_tx_optical_power_alarm import OnuHighTxOpticalAlarm
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_dying_gasp_event import OnuDyingGaspEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_los_event import OnuLosEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_equipment_event import OnuEquipmentEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_selftest_failure_event import OnuSelfTestFailureEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_laser_eol_event import OnuLaserEolEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_laser_bias_current_event import OnuLaserBiasEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_temp_yellow_event import OnuTempYellowEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_temp_red_event import OnuTempRedEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_voltage_yellow_event import OnuVoltageYellowEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_voltage_red_event import OnuVoltageRedEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_low_rx_optical_power_event import OnuLowRxOpticalEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_high_rx_optical_power_event import OnuHighRxOpticalEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_low_tx_optical_power_event import OnuLowTxOpticalEvent
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_high_tx_optical_power_event import OnuHighTxOpticalEvent
 
         mgr = self._alarm_manager
         if class_id in (CircuitPack.class_id, PptpEthernetUni.class_id):
