@@ -15,8 +15,8 @@
 import arrow
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
 from voltha_protos.events_pb2 import MetricInformation, MetricMetaData
-from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
-from pyvoltha.adapters.extensions.kpi.onu.onu_pm_interval_metrics import OnuPmIntervalMetrics
+from pyvoltha.adapters.extensions.events.kpi.adapter_pm_metrics import AdapterPmMetrics
+from pyvoltha.adapters.extensions.events.kpi.onu.onu_pm_interval_metrics import OnuPmIntervalMetrics
 from pyvoltha.adapters.extensions.omci.omci_entities import UniG
 from pyvoltha.adapters.extensions.omci.omci_entities import PptpEthernetUni
 
@@ -41,7 +41,7 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
     DEFAULT_UNI_STATUS_ENABLED = True
     DEFAULT_UNI_STATUS_FREQUENCY = (15 * 60 * 10)
 
-    def __init__(self, core_proxy, device_id, logical_device_id, serial_number,
+    def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared ONU Device Adapter OMCI CC PM metrics
@@ -60,7 +60,7 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
                                          retrieval of OpenOMCI Communications channel statistics
                                          and retrieval of polled statistics.
         """
-        super(OnuOmciPmMetrics, self).__init__(core_proxy, device_id, logical_device_id, serial_number,
+        super(OnuOmciPmMetrics, self).__init__(event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                                                grouped=grouped, freq_override=freq_override,
                                                **kwargs)
 
@@ -108,7 +108,7 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
         self.omci_uni_metrics_config = {m: PmConfig(name=m, type=t, enabled=True)
                                         for (m, t) in self.omci_uni_pm_names}
 
-        self.openomci_interval_pm = OnuPmIntervalMetrics(core_proxy, device_id, logical_device_id,
+        self.openomci_interval_pm = OnuPmIntervalMetrics(event_mgr, core_proxy, device_id, logical_device_id,
                                                          serial_number)
 
     def update(self, pm_config):

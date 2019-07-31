@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from voltha_protos.device_pb2 import PmConfig, PmConfigs, PmGroupConfig
-from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
-from pyvoltha.adapters.extensions.kpi.onu.onu_omci_pm import OnuOmciPmMetrics
+from pyvoltha.adapters.extensions.events.kpi.adapter_pm_metrics import AdapterPmMetrics
+from pyvoltha.adapters.extensions.events.kpi.onu.onu_omci_pm import OnuOmciPmMetrics
 
 
 class OnuPmMetrics(AdapterPmMetrics):
@@ -35,7 +35,7 @@ class OnuPmMetrics(AdapterPmMetrics):
     # the KPI shared library supports individual collection.
     DEFAULT_ONU_COLLECTION_FREQUENCY = 60 * 10      # 1 minute
 
-    def __init__(self, core_proxy, device_id, logical_device_id, serial_number,
+    def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared ONU Device Adapter PM metrics
@@ -53,7 +53,7 @@ class OnuPmMetrics(AdapterPmMetrics):
                               'heartbeat': Reference to the a class that provides an ONU heartbeat
                                            statistics.   TODO: This should be standardized across adapters
         """
-        super(OnuPmMetrics, self).__init__(core_proxy, device_id, logical_device_id, serial_number,
+        super(OnuPmMetrics, self).__init__(event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                                            grouped=grouped, freq_override=freq_override,
                                            **kwargs)
 
@@ -77,7 +77,7 @@ class OnuPmMetrics(AdapterPmMetrics):
         self.health_metrics_config = {m: PmConfig(name=m, type=t, enabled=True)
                                       for (m, t) in self.health_pm_names}
 
-        self.omci_pm = OnuOmciPmMetrics(core_proxy, device_id, logical_device_id, serial_number,
+        self.omci_pm = OnuOmciPmMetrics(event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                                         grouped=grouped, freq_override=freq_override,
                                         **kwargs)
 
