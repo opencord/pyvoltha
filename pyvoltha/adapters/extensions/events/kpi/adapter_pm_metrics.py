@@ -16,6 +16,7 @@ import structlog
 import arrow
 from twisted.internet.task import LoopingCall
 from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
+from voltha_protos.events_pb2 import Event, EventType, EventCategory, EventSubCategory
 from voltha_protos.device_pb2 import PmConfig
 
 
@@ -37,7 +38,7 @@ class AdapterPmMetrics(object):
     # for collection.
     TIMESTAMP_ATTRIBUTE = 'timestamp'
 
-    def __init__(self, core_proxy, device_id, logical_device_id, serial_number,
+    def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
         """
         Initializer for shared Device Adapter PM metrics manager
@@ -51,6 +52,7 @@ class AdapterPmMetrics(object):
         :param kwargs: (dict) Device Adapter specific values
         """
         self.log = structlog.get_logger(device_id=device_id)
+        self.event_mgr = event_mgr
         self.device_id = device_id
         self.core_proxy = core_proxy
         self.name = core_proxy.listening_topic
@@ -58,6 +60,9 @@ class AdapterPmMetrics(object):
         self.serial_number = serial_number
         self.default_freq = kwargs.get(AdapterPmMetrics.DEFAULT_FREQUENCY_KEY,
                                        AdapterPmMetrics.DEFAULT_COLLECTION_FREQUENCY)
+        self._event = "KPI_EVENT"
+        self._category = EventCategory.EQUIPMENT
+        self._sub_category = EventSubCategory.ONU
         self.grouped = grouped
         self.freq_override = grouped and freq_override
         self.lc = None
@@ -175,12 +180,13 @@ class AdapterPmMetrics(object):
         """ Request collection of all enabled metrics and publish them """
         try:
             data = self.collect_metrics()
-            self.publish_metrics(data)
+            raised_ts = arrow.utcnow().timestamp
+            self.publish_metrics(data, raised_ts)
 
         except Exception as e:
             self.log.exception('failed-to-collect-kpis', e=e)
 
-    def publish_metrics(self, data):
+    def publish_metrics(self, data, raised_ts):
         """
         Publish the metrics during a collection.
 
@@ -192,18 +198,22 @@ class AdapterPmMetrics(object):
                             to convert to a KPIEvent and publish
         """
         self.log.debug('publish-metrics', data=data)
-
+        event_header = self.event_mgr.get_event_header(EventType.KPI_EVENT2,
+                                                       self._category,
+                                                       self._sub_category,
+                                                       self._event,
+                                                       raised_ts)
         if len(data):
             try:
                 # TODO: Existing adapters use the KpiEvent, if/when all existing
                 #       adapters use the shared KPI library, we may want to
                 #       deprecate the KPIEvent
-                kpi_event = KpiEvent2(
-                    type=KpiEventType.slice,
-                    ts=arrow.utcnow().float_timestamp,
-                    slice_data=data
-                )
-                self.core_proxy.submit_kpis(kpi_event)
+                event_body = KpiEvent2(
+                             type=KpiEventType.slice,
+                             ts=arrow.utcnow().float_timestamp,
+                             slice_data=data
+                             )
+                self.event_mgr.send_event(event_header, event_body)
 
             except Exception as e:
                 self.log.exception('failed-to-submit-kpis', e=e)
