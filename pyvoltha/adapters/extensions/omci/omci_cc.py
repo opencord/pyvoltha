@@ -355,12 +355,15 @@ class OMCI_CC(object):
                 omci_entities.entity_id_to_class_map = saved_me_map     # Always restore it.
 
             rx_tid = rx_frame.fields['transaction_id']
+            self.log.debug('Received message for rx_tid', rx_tid = rx_tid)
             if rx_tid == 0:
+                self.log.debug('Receive ONU message', rx_tid=0)
                 return self._receive_onu_message(rx_frame)
 
             # Previously unreachable if this is the very first round-trip Rx or we
             # have been running consecutive errors
             if self._rx_frames == 0 or self._consecutive_errors != 0:
+                self.log.debug('Consecutive errors for rx', err = self._consecutive_errors)
                 self.reactor.callLater(0, self._publish_connectivity_event, True)
 
             self._rx_frames += 1
@@ -376,6 +379,9 @@ class OMCI_CC(object):
                 if last_tx_tuple is None or \
                         last_tx_tuple[OMCI_CC.REQUEST_FRAME].fields.get('transaction_id') != rx_tid:
                     # Possible late Rx on a message that timed-out
+                    if last_tx_tuple:
+                        self.log.debug('Unknown message', rx_tid=rx_tid,
+                                       tx_id=last_tx_tuple[OMCI_CC.REQUEST_FRAME].fields.get('transaction_id'))
                     self._rx_unknown_tid += 1
                     self._rx_late += 1
                     return
@@ -389,6 +395,7 @@ class OMCI_CC(object):
                 # Late arrival already serviced by a timeout?
                 if d.called:
                     self._rx_late += 1
+                    self.log.debug('Serviced by timeout. Late arrival', rx_late = self._rx_late)
                     return
 
             except Exception as e:
@@ -398,6 +405,8 @@ class OMCI_CC(object):
                 return
 
             # Publish Rx event to listeners in a different task
+            self.log.debug('Publish rx event', rx_tid = rx_tid,
+                           tx_tid = tx_frame.fields['transaction_id'])
             reactor.callLater(0, self._publish_rx_frame, tx_frame, rx_frame)
 
             # begin success callback chain (will cancel timeout and queue next Tx message)
@@ -616,6 +625,8 @@ class OMCI_CC(object):
 
         self._send_next_request(high_priority)
 
+        self.log.debug('inter-adapter-recv-omci', tid=rx_tid)
+
         # Return rx_frame (to next item in callback list)
         return rx_frame
 
@@ -691,6 +702,7 @@ class OMCI_CC(object):
         if not self.enabled or self._proxy_address is None:
             # TODO custom exceptions throughout this code would be helpful
             self._tx_errors += 1
+            self.log.error("cannot-send-omci-msg", tx_errors=self._tx_errors, omci_cc_enabled=self._enabled, proxy_address=self._proxy_address)
             return fail(result=failure.Failure(Exception('OMCI is not enabled')))
 
         timeout = float(timeout)
@@ -804,14 +816,34 @@ class OMCI_CC(object):
                 try:
                     self._rx_response[index] = None
 
+                    # NOTE: We preload the tx audit fields and enqueue ourselves for receive.
+                    # This is because, the response could be faster than the yield send wakeup latency
+                    self._tx_frames += 1
+
+                    # Note: the 'd' deferred in the queued request we just got will
+                    # already have its success callback queued (callLater -> 0) with a
+                    # result of "queued".  Here we need time it out internally so
+                    # we can call cleanup appropriately. G.988 mentions that most ONUs
+                    # will process an request in < 1 second.
+                    dc_timeout = timeout if timeout > 0 else 1.0
+
+                    # Timeout on internal deferred to support internal retries if requested
+                    dc = self.reactor.callLater(dc_timeout, self._request_timeout, tx_tid, high_priority)
+
+                    # (timestamp, defer, frame, timeout, retry, delayedCall)
+                    self._tx_request[index] = (ts, d, frame, timeout, retry, dc)
+
+                    if timeout > 0:
+                        d.addCallbacks(self._request_success, self._request_failure,
+                                       callbackArgs=(high_priority,),
+                                       errbackArgs=(tx_tid, high_priority))
+
                     omci_msg = InterAdapterOmciMessage(
                         message=hexify(str(frame)),
                         proxy_address=self._proxy_address,
                         connect_status=self._device.connect_status)
 
-                    self.log.debug('inter-adapter-send-omci', omci_msg=omci_msg,
-                                   connect_status=self._device.connect_status,
-                                   channel_id=self._proxy_address.channel_id)
+                    self.log.debug('inter-adapter-send-omci', tid=tx_tid, omci_msg=omci_msg.message)
 
                     yield self._adapter_proxy.send_inter_adapter_message(
                         msg=omci_msg,
@@ -821,29 +853,9 @@ class OMCI_CC(object):
                         to_device_id=self._device_id,
                         proxy_device_id=self._proxy_address.device_id
                     )
-
+                    self.log.debug('done-inter-adapter-send-message', tx_tid=tx_tid)
                 finally:
                     omci_entities.entity_id_to_class_map = saved_me_map
-
-                self._tx_frames += 1
-
-                # Note: the 'd' deferred in the queued request we just got will
-                # already have its success callback queued (callLater -> 0) with a
-                # result of "queued".  Here we need time it out internally so
-                # we can call cleanup appropriately. G.988 mentions that most ONUs
-                # will process an request in < 1 second.
-                dc_timeout = timeout if timeout > 0 else 1.0
-
-                # Timeout on internal deferred to support internal retries if requested
-                dc = self.reactor.callLater(dc_timeout, self._request_timeout, tx_tid, high_priority)
-
-                # (timestamp, defer, frame, timeout, retry, delayedCall)
-                self._tx_request[index] = (ts, d, frame, timeout, retry, dc)
-
-                if timeout > 0:
-                    d.addCallbacks(self._request_success, self._request_failure,
-                                   callbackArgs=(high_priority,),
-                                   errbackArgs=(tx_tid, high_priority))
 
             except IndexError:
                 pass    # Nothing pending in this queue
