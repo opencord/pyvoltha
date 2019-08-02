@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78da8381_93805da0",
+        "filename": "VERSION",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000011
+      },
+      "writtenOn": "2019-08-02T14:27:03Z",
+      "side": 1,
+      "message": "Minor nitpick about versioning - this change should be 0.2.2 -\u003e 0.2.3-dev\n\nDev versions numbers come after the previous release version.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 9
+      },
+      "revId": "e631d0d4d63633737681621d3407e92150e4b8bc",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
