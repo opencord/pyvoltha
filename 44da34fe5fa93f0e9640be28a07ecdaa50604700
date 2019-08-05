@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3832f566_f7f6f2c0",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 921,
+      "author": {
+        "id": 1000015
+      },
+      "writtenOn": "2019-08-05T20:07:55Z",
+      "side": 1,
+      "message": ":) It won\u0027t. But you don\u0027t program thinking like that. Million was just a general number. It was mostly hinting at a trade-off with lookup. If you think, lookups are rare and we won\u0027t hit any performance bottle-necks, feel free to ignore my comments and skip optimizing for the \"rare\" path where N would be small.",
+      "parentUuid": "1248bca6_21f8dc2e",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d0be675_8f81403c",
         "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
         "patchSetId": 4
