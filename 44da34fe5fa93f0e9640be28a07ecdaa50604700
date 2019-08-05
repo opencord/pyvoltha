@@ -16,6 +16,24 @@
       "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df5eb88f_60bdda72",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 931,
+      "author": {
+        "id": 1000455
+      },
+      "writtenOn": "2019-08-05T19:41:22Z",
+      "side": 1,
+      "message": "The way it is being done here is intentional. Previously instances were stored in their own key by device, class, and instance id, but the system was also required to fetch instances by class.\nThe way they accomplished this was by also storing all the instances with the class data. So writes have to write data twice. \nRather than duplicate the data across both keys, I think it should be unified. Alternatively we could separate instances data from class data, but etcd doesn\u0027t have the ability to join things, so getting by class data would require a large number of reads.\nI think it also makes sense to unify it under device, and other changes, but I think it makes sense to do performance testing before optimizing it further.",
+      "parentUuid": "8d0be675_8f81403c",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
