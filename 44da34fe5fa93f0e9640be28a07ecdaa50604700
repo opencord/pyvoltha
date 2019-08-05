@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1248bca6_21f8dc2e",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 921,
+      "author": {
+        "id": 1000455
+      },
+      "writtenOn": "2019-08-05T20:00:12Z",
+      "side": 1,
+      "message": "Can a device have millions of instances? I didn\u0027t think that was the case since it is per device.",
+      "parentUuid": "76c07893_6e8cb7dd",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d0be675_8f81403c",
         "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
         "patchSetId": 4
