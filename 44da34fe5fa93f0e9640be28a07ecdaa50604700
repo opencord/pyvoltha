@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "6cef380f_dee95b3f",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 921,
+      "author": {
+        "id": 1000455
+      },
+      "writtenOn": "2019-08-05T20:59:08Z",
+      "side": 1,
+      "message": "I agree with you, it should be done in a way to scale to larger numbers, and fetching the entire json to get 1 instance is slow. \nIn our setup right now, I\u0027ve profiled the onu, and the amount of time spent writing is signicantly larger than the time spent querying. Of course, there are certain cases not being test right now, like reconciling form the mib storage. That one would most likely change this, and that needs to be pretty fast since many devices could be fetching at once. \nWith this schema, if we wanted to support fetching by device, we would have to store instance data in 3 places.\nI do agree storing it twice is objectively better here, all else being equal. I think this would be better done by a different database, that allowed fast queries. For now, I\u0027ll update it to store it twice, and have the lookup use the instance path.",
+      "parentUuid": "3832f566_f7f6f2c0",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d0be675_8f81403c",
         "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
         "patchSetId": 4
