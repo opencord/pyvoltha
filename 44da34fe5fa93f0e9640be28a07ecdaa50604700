@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "76c07893_6e8cb7dd",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 921,
+      "author": {
+        "id": 1000015
+      },
+      "writtenOn": "2019-08-05T19:49:57Z",
+      "side": 1,
+      "message": "Ok. But its fine to hash in 2 places for a faster lookup. \nIf you want a slower lookup, well the query fix from Matt will do it but you can also argue it for device and store all classes under device and hunt from the top level. \nBut it will not scale well trying to hunt for the instance id in the class data with millions of instances. \nIts a trade-off with lookups. Performance would be impacted depending on the type of test. I am ok with fixing _get_instance to store instance data in class map and instance map.",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d0be675_8f81403c",
         "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
         "patchSetId": 4
