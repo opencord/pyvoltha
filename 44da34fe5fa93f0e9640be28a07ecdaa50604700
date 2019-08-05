@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d0be675_8f81403c",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 931,
+      "author": {
+        "id": 1000015
+      },
+      "writtenOn": "2019-08-05T19:21:20Z",
+      "side": 1,
+      "message": "Instead of changing the instance data fetch using the class path, I think there is a bug in _get_instance where the instance data doesn\u0027t look like its being stored properly with device, class and instance id. Instead it seems to be stored into class data by mistake. Do you think its proper to fix _get_instance :\n data \u003d MibInstanceData(instance_id\u003dinstance_id, created\u003dnow, modified\u003dnow)      \n        root_path \u003d MibDbExternal.INSTANCE_PATH.format(device_id, class_id)             -\u003e seems like instance_id is missing.\n        self._kv_store[root_path] \u003d data\nMaybe:\nroot_path \u003d MibDbExternal.INSTANCE_PATH.format(device_id, class_id, instance_id) before saving the instance data in _get_instance might fix querying with instance_id. \nWhat do you think?",
+      "revId": "44da34fe5fa93f0e9640be28a07ecdaa50604700",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
