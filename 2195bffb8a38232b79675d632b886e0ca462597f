@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b3c9de64_b4e77a30",
+        "filename": "VERSION",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2019-08-06T03:08:10Z",
+      "side": 1,
+      "message": "I believe the version should change to 1.0.0.\nWe have drastically changed the whole framework and it is incompatible with earlier versions. There should be a major version change.\nOthers have any comments on this.",
+      "revId": "2195bffb8a38232b79675d632b886e0ca462597f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
