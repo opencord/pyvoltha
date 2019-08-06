@@ -22,15 +22,17 @@ class OnuLaserEolAlarm(AlarmBase):
 
     The intf_id reported is that of the UNI's logical port number
     """
-    def __init__(self, alarm_mgr, onu_id, intf_id):
+    def __init__(self, alarm_mgr, onu_id, intf_id, serial_number):
         super(OnuLaserEolAlarm, self).__init__(alarm_mgr, object_type='onu laser EOL',
                                                alarm='ONU_LASER_EOL',
                                                alarm_category=AlarmEventCategory.ONU,
-                                               alarm_type=AlarmEventType.EQUIPTMENT,
+                                               alarm_type=AlarmEventType.EQUIPMENT,
                                                alarm_severity=AlarmEventSeverity.MAJOR)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}

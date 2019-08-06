@@ -96,6 +96,7 @@ class AlarmSynchronizer(object):
         self._onu_id = None
         self._uni_ports = list()
         self._ani_ports = list()
+        self._serial_number = None
 
         self._deferred = None
         self._current_task = None
@@ -185,7 +186,7 @@ class AlarmSynchronizer(object):
                                       'time': str(datetime.utcnow())
                                   })
 
-    def set_alarm_params(self, mgr=None, onu_id=None, uni_ports=None, ani_ports=None):
+    def set_alarm_params(self, mgr=None, onu_id=None, uni_ports=None, ani_ports=None, serial_number=None):
         if mgr is not None:
             self._alarm_manager = mgr
 
@@ -199,6 +200,9 @@ class AlarmSynchronizer(object):
         if ani_ports is not None:
             assert isinstance(ani_ports, list)
             self._ani_ports = ani_ports
+
+        if serial_number is not None:
+            self._serial_number = serial_number
 
     def on_enter_disabled(self):
         """
@@ -448,6 +452,7 @@ class AlarmSynchronizer(object):
         :param bitmap: (long) Alarm bitmap value
         :param msg_seq_no: (int) Alarm sequence number. -1 if generated during an audit
         """
+        self.log.debug('process-alarm-data', class_id=class_id, entity_id=entity_id, bitmap=hex(bitmap), msg_seq_no=msg_seq_no)
         if msg_seq_no > 0:
             # increment alarm number & compare to alarm # in message
             # Signal early audit if no match and audits are enabled
@@ -482,6 +487,9 @@ class AlarmSynchronizer(object):
 
             newly_cleared = previously_raised - currently_raised
             newly_raised = currently_raised - previously_raised
+            self.log.debug('compare-bitmap', class_id=class_id, prev_bitmap=hex(prev_bitmap), bitmap=hex(bitmap),
+                            previously_raised=previously_raised, currently_raised=currently_raised,
+                            newly_cleared=newly_cleared, newly_raised=newly_raised)
 
             # Generate the set/clear alarms now
             for alarm_number in newly_cleared:
@@ -622,7 +630,7 @@ class AlarmSynchronizer(object):
         }
         alarm_cls = alarm_map.get((class_id, alarm_number))
 
-        return alarm_cls(mgr, self._onu_id, intf_id) if alarm_cls is not None else None
+        return alarm_cls(mgr, self._onu_id, intf_id, self._serial_number) if alarm_cls is not None else None
 
     def select_uni_port(self, class_id, entity_id):
         """
@@ -643,7 +651,8 @@ class AlarmSynchronizer(object):
         #       and PptpEthernetUni MEs will map to the UNI port
         assert class_id in (CircuitPack.class_id, PptpEthernetUni.class_id)
 
-        return next((uni.logical_port_number for uni in self._uni_ports if
+        # uni_port.port_number or uni_port._ofp_port_no replace uni.logical_port_number
+        return next((uni.port_number for uni in self._uni_ports if
                      uni.entity_id == entity_id), None)
 
     def select_ani_port(self, class_id, _entity_id):

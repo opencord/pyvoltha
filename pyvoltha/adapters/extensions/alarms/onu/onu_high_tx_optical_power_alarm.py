@@ -23,7 +23,7 @@ class OnuHighTxOpticalAlarm(AlarmBase):
     For ANI-G equipment alarms, the intf_id reported is that of the PON/ANI
     physical port number
     """
-    def __init__(self, alarm_mgr, onu_id, intf_id):
+    def __init__(self, alarm_mgr, onu_id, intf_id, serial_number):
         super(OnuHighTxOpticalAlarm, self).__init__(alarm_mgr, object_type='onu high tx optical power',
                                                     alarm='ONU_HIGH_TX_OPTICAL',
                                                     alarm_category=AlarmEventCategory.ONU,
@@ -31,7 +31,9 @@ class OnuHighTxOpticalAlarm(AlarmBase):
                                                     alarm_severity=AlarmEventSeverity.MAJOR)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}

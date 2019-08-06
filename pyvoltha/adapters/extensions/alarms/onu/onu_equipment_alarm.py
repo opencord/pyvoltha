@@ -31,15 +31,17 @@ class OnuEquipmentAlarm(AlarmBase):
           may report it with a different alarm number specifically for a
           self-test failure.
     """
-    def __init__(self, alarm_mgr, onu_id, intf_id):
+    def __init__(self, alarm_mgr, onu_id, intf_id, serial_number):
         super(OnuEquipmentAlarm, self).__init__(alarm_mgr, object_type='onu equipment',
                                                 alarm='ONU_EQUIPMENT',
                                                 alarm_category=AlarmEventCategory.ONU,
-                                                alarm_type=AlarmEventType.EQUIPTMENT,
+                                                alarm_type=AlarmEventType.EQUIPMENT,
                                                 alarm_severity=AlarmEventSeverity.CRITICAL)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}
