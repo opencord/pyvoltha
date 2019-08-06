@@ -28,7 +28,7 @@ class OnuTempRedAlarm(AlarmBase):
     For ONT-G equipment alarms, the intf_id reported is that of the PON/ANI
     physical port number
     """
-    def __init__(self, alarm_mgr, onu_id, intf_id):
+    def __init__(self, alarm_mgr, onu_id, intf_id, serial_number):
         super(OnuTempRedAlarm, self).__init__(alarm_mgr, object_type='onu temperature red',
                                               alarm='ONU_TEMP_RED',
                                               alarm_category=AlarmEventCategory.ONU,
@@ -36,7 +36,9 @@ class OnuTempRedAlarm(AlarmBase):
                                               alarm_severity=AlarmEventSeverity.CRITICAL)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}
