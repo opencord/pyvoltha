@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d0c1d9c_5acc35e8",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/alarm_sync.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2019-08-27T03:58:22Z",
+      "side": 1,
+      "message": "I am a bit lost here. Shouldn\u0027t the alarm_map now refer to new event definitions. For ex: OnuEquipmentAlarm changed to OnuEquipmentEvent. \nThese should ideally be caught in tests.",
+      "range": {
+        "startLine": 609,
+        "startChar": 0,
+        "endLine": 629,
+        "endChar": 50
+      },
+      "revId": "41769752f73eae40d503dcbbfb308c0faf9033a1",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
