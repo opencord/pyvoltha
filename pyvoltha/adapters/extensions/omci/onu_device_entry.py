@@ -332,7 +332,7 @@ class OnuDeviceEntry(object):
     # def image_download(self):
     #     return self._image_download
         
-    def start(self):
+    def start(self, device):
         """
         Start the ONU Device Entry state machines
         """
@@ -341,6 +341,8 @@ class OnuDeviceEntry(object):
             return
 
         self._started = True
+        self.omci_cc._device = device
+        self.omci_cc._proxy_address = device.proxy_address
         self._omci_cc.enabled = True
         self._first_in_sync = True
         self._first_capabilities = True
@@ -359,7 +361,7 @@ class OnuDeviceEntry(object):
                 self._state_machines.append(sm)
                 sm.start()
 
-        self._deferred = reactor.callLater(1, start_state_machines,
+        self._deferred = reactor.callLater(0, start_state_machines,
                                            self._on_start_state_machines)
         # Notify any event listeners
         self._publish_device_status_event()

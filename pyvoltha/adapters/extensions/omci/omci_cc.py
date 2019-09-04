@@ -262,16 +262,12 @@ class OMCI_CC(object):
     def max_lp_tx_queue(self):
         return self._max_lp_tx_queue
 
-    @inlineCallbacks
     def _start(self):
         """
         Start the OMCI Communications Channel
         """
         assert self._enabled, 'Start should only be called if enabled'
         self.flush()
-
-        self._device = yield self._core_proxy.get_device(self._device_id)
-        self._proxy_address = self._device.proxy_address
 
     def _stop(self):
         """
