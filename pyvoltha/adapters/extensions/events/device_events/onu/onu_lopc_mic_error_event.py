@@ -16,7 +16,7 @@ from voltha_protos.events_pb2 import EventType, EventCategory, EventSubCategory
 from pyvoltha.adapters.extensions.events.adapter_events import DeviceEventBase
 
 class OnuLopcMicErrorEvent(DeviceEventBase):
-    def __init__(self, evemt_mgr, onu_id, intf_id, serial_number, raised_ts):
+    def __init__(self, event_mgr, onu_id, intf_id, serial_number, raised_ts):
         super(OnuLopcMicErrorEvent, self).__init__(event_mgr, raised_ts, object_type='onu LOPC_MIC_ERROR',
                                                    event='ONU_LOPC_MIC_ERROR',
                                                    category=EventCategory.COMMUNICATION,
@@ -27,8 +27,6 @@ class OnuLopcMicErrorEvent(DeviceEventBase):
         self._serial_number = serial_number
 
     def get_context_data(self):
-        return {
-            'onu-id': self._onu_id,
-            'onu-intf-id': self._intf_id,
-            'onu-serial-number': self._serial_number
-        }
+        return {'onu-id': self._onu_id,
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}
