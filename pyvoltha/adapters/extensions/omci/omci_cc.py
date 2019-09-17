@@ -60,7 +60,12 @@ class OmciCCRxEvents(IntEnum):
     MIB_Reset = 8,
     Connectivity = 9,
     Get_ALARM_Get = 10,
-    Get_ALARM_Get_Next = 11
+    Get_ALARM_Get_Next = 11,
+    Start_Software_Download = 12,
+    Download_Section = 13,
+    End_Software_Download = 14,
+    Activate_Software = 15,
+    Commit_Software = 15,
 
 
 # abbreviations
@@ -71,8 +76,8 @@ RxEvent = OmciCCRxEvents
 class OMCI_CC(object):
     """ Handle OMCI Communication Channel specifics for Adtran ONUs"""
 
-    MIN_OMCI_TX_ID_LOW_PRIORITY = 0x0001  # 2 Octets max
-    MAX_OMCI_TX_ID_LOW_PRIORITY = 0x7FFF  # 2 Octets max
+    MIN_OMCI_TX_ID_LOW_PRIORITY = 0x0001   # 2 Octets max
+    MAX_OMCI_TX_ID_LOW_PRIORITY = 0x7FFF   # 2 Octets max
     MIN_OMCI_TX_ID_HIGH_PRIORITY = 0x8000  # 2 Octets max
     MAX_OMCI_TX_ID_HIGH_PRIORITY = 0xFFFF  # 2 Octets max
     LOW_PRIORITY = 0
@@ -352,7 +357,7 @@ class OMCI_CC(object):
 
             rx_tid = rx_frame.fields['transaction_id']
             msg_type = rx_frame.fields['message_type']
-            self.log.debug('Received message for rx_tid', rx_tid = rx_tid)
+            self.log.debug('Received message for rx_tid', rx_tid = rx_tid, msg_type = msg_type)
             # Filter the Test Result frame and route through receive onu
             # message method.
             if rx_tid == 0 or msg_type == EntityOperations.TestResult.value:
