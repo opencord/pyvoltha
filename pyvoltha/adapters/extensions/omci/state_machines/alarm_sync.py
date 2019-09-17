@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import structlog
+import arrow
 from datetime import datetime
 from transitions import Machine
 from twisted.internet import reactor
@@ -528,7 +529,7 @@ class AlarmSynchronizer(object):
         if self._alarm_manager is not None:
             alarm = self.omci_alarm_to_onu_alarm(class_id, entity_id, alarm_number)
             if alarm is not None:
-                alarm.raise_alarm()
+                alarm.send(True)
 
     def clear_alarm(self, class_id, entity_id, alarm_number):
         """
@@ -546,7 +547,7 @@ class AlarmSynchronizer(object):
         if self._alarm_manager is not None:
             alarm = self.omci_alarm_to_onu_alarm(class_id, entity_id, alarm_number)
             if alarm is not None:
-                alarm.clear_alarm()
+                alarm.send(False)
 
     def query_mib(self, class_id=None, instance_id=None):
         """
@@ -630,7 +631,7 @@ class AlarmSynchronizer(object):
         }
         alarm_cls = alarm_map.get((class_id, alarm_number))
 
-        return alarm_cls(mgr, self._onu_id, intf_id, self._serial_number) if alarm_cls is not None else None
+        return alarm_cls(mgr, self._onu_id, intf_id, self._serial_number, arrow.utcnow().timestamp) if alarm_cls is not None else None
 
     def select_uni_port(self, class_id, entity_id):
         """

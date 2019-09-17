@@ -12,4 +12,7 @@ dist
 # ide workspace
 .idea
 
+# Virtualenv
+venv-*
+
 *.pyc

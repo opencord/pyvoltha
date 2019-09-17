@@ -31,14 +31,16 @@ class OnuEquipmentEvent(DeviceEventBase):
           may report it with a different event number specifically for a
           self-test failure.
     """
-    def __init__(self, event_mgr, onu_id, intf_id, raised_ts):
+    def __init__(self, event_mgr, onu_id, intf_id, serial_number, raised_ts):
         super(OnuEquipmentEvent, self).__init__(event_mgr, raised_ts, object_type='onu equipment',
                                                 event='ONU_EQUIPMENT',
                                                 category=EventCategory.EQUIPMENT,
-                                                sub_category=EventSubCategory.ONU,
+                                                sub_category=EventSubCategory.ONU)
         self._onu_id = onu_id
         self._intf_id = intf_id
+        self._serial_number = serial_number
 
     def get_context_data(self):
         return {'onu-id': self._onu_id,
-                'onu-intf-id': self._intf_id}
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}

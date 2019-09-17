@@ -26,7 +26,7 @@ from pyvoltha.adapters.extensions.events.adapter_events import DeviceEventBase
 class OnuSignalFailEvent(DeviceEventBase):
     def __init__(self, event_mgr, onu_id, intf_id, inverse_bit_error_rate, serial_number, raised_ts):
         super(OnuSignalFailEvent, self).__init__(event_mgr, raised_ts, object_type='onu SIGNAL FAIL',
-                                          alarm='ONU_SIGNAL_FAIL',
+                                          event='ONU_SIGNAL_FAIL',
                                           category=EventCategory.COMMUNICATION,
                                           sub_category=EventSubCategory.ONU)
         self._onu_id = onu_id

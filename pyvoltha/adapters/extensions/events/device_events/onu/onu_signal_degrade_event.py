@@ -20,7 +20,7 @@ class OnuSignalDegradeEvent(DeviceEventBase):
                  inverse_bit_error_rate, serial_number, raised_ts):
         super(OnuSignalDegradeEvent, self).__init__(event_mgr, raised_ts, object_type='onu SIGNAL DEGRADE',
                                           event='ONU_SIGNAL_DEGRADE',
-                                          category=EventCategory.COMMUNICATION
+                                          category=EventCategory.COMMUNICATION,
                                           sub_category=EventSubCategory.ONU)
         self._onu_id = onu_id
         self._intf_id = intf_id

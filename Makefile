@@ -41,6 +41,14 @@ upload: dist
 	@ echo "Uploading sdist to test.pypi.org"
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
+VENVDIR := venv-pyvoltha
+
+venv:
+	virtualenv ${VENVDIR};\
+        source ./${VENVDIR}/bin/activate ; set -u ;\
+        rm ${VENVDIR}/local/bin ${VENVDIR}/local/lib ${VENVDIR}/local/include ;\
+        pip install -r requirements.txt
+
 test:
 	@ echo "Executing unit tests w/tox"
 	tox
@@ -54,4 +62,7 @@ clean:
     dist \
     nose-results.xml \
     pyvoltha.egg-info \
-    test/unit/tmp
+    test/unit/tmp \
+    rm -rf ${VENVDIR}
+
+# end file

@@ -11,13 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# sourcing this file is needed to make local development and integration testing work
-
-# load local python virtualenv if exists
-VENVDIR="venv-pyvoltha"
-if [ -e "$VENVDIR/bin/activate" ]; then
-    . $VENVDIR/bin/activate
-else
-   echo "Run 'make venv' to setup python development environment"
-fi
-
