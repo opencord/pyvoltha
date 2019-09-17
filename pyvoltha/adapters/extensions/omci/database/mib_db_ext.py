@@ -548,7 +548,7 @@ class MibDbExternal(MibDbApi):
 
         try:
             data = MibDeviceData()
-            path = get_device_path(device_id)
+            path = self._get_device_path(device_id)
             data.ParseFromString(self._kv_store[path])
             return int(data.mib_data_sync)
 
