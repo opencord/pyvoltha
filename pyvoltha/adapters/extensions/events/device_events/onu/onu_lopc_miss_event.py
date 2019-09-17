@@ -26,8 +26,6 @@ class OnuLopcMissEvent(DeviceEventBase):
         self._serial_number = serial_number
 
     def get_context_data(self):
-        return {
-            'onu-id': self._onu_id,
-            'onu-intf-id': self._intf_id,
-            'onu-serial-number': self._serial_number
-        }
+        return {'onu-id': self._onu_id,
+                'onu-intf-id': self._intf_id,
+                'onu-serial-number': self._serial_number}

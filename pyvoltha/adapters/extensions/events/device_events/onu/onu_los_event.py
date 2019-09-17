@@ -28,5 +28,4 @@ class OnuLosEvent(DeviceEventBase):
     def get_context_data(self):
         return {'onu-id': self._onu_id,
                 'onu-intf-id': self._intf_id,
-                'onu-serial-number': self._serial_number
-        }
+                'onu-serial-number': self._serial_number}
