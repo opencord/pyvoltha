@@ -35,7 +35,7 @@ class OnuEquipmentEvent(DeviceEventBase):
         super(OnuEquipmentEvent, self).__init__(event_mgr, raised_ts, object_type='onu equipment',
                                                 event='ONU_EQUIPMENT',
                                                 category=EventCategory.EQUIPMENT,
-                                                sub_category=EventSubCategory.ONU,
+                                                sub_category=EventSubCategory.ONU)
         self._onu_id = onu_id
         self._intf_id = intf_id
 
