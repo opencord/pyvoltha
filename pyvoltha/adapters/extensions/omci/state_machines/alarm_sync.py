@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import structlog
+import arrow
 from datetime import datetime
 from transitions import Machine
 from twisted.internet import reactor
@@ -528,7 +529,9 @@ class AlarmSynchronizer(object):
         if self._alarm_manager is not None:
             alarm = self.omci_alarm_to_onu_alarm(class_id, entity_id, alarm_number)
             if alarm is not None:
-                alarm.raise_alarm()
+                # FIXME Need to implement raise_alarm method in DeviceEventBase class
+                # alarm.raise_alarm()
+                NotImplementedError()
 
     def clear_alarm(self, class_id, entity_id, alarm_number):
         """
@@ -629,8 +632,8 @@ class AlarmSynchronizer(object):
             (AniG.class_id, 6): OnuLaserBiasEvent,
         }
         alarm_cls = alarm_map.get((class_id, alarm_number))
-
-        return alarm_cls(mgr, self._onu_id, intf_id, self._serial_number) if alarm_cls is not None else None
+        ts = arrow.utcnow().float_timestamp
+        return alarm_cls(mgr, ts, self._onu_id, intf_id, self._serial_number) if alarm_cls is not None else None
 
     def select_uni_port(self, class_id, entity_id):
         """
