@@ -28,6 +28,7 @@ from pyvoltha.adapters.extensions.omci.tasks.reboot_task import OmciRebootReques
 from pyvoltha.adapters.extensions.omci.tasks.omci_modify_request import OmciModifyRequest
 from pyvoltha.adapters.extensions.omci.omci_me import OntGFrame
 from pyvoltha.adapters.extensions.omci.state_machines.image_agent import ImageAgent
+from pyvoltha.adapters.extensions.events.device_events.onu.onu_los_event import OnuLosEvent
 
 from twisted.internet import reactor, defer
 from enum import IntEnum
@@ -49,6 +50,7 @@ class OnuDeviceEvents(IntEnum):
     MibDatabaseSyncEvent = 1    # MIB database sync changed
     OmciCapabilitiesEvent = 2   # OMCI ME and message type capabilities
     AlarmDatabaseSyncEvent = 3  # Alarm database sync changed
+    PortEvent = 4               # Port link state change
 
     # TODO: Add other events here as needed
 
@@ -641,3 +643,25 @@ class OnuDeviceEntry(object):
     def get_image_download_status(self, image_name):
         return self._image_agent.get_image_status(image_name)
         
+    def raise_onu_event(self, event, active):
+        # Notify any event listeners
+        if isinstance(event, OnuLosEvent):
+            topic = OnuDeviceEntry.event_bus_topic(self.device_id,
+                                                   OnuDeviceEvents.PortEvent)
+            context = event.get_context_data()
+
+            # an active port LOS event (or alarm) means the port is down. using meaningful status for consumers
+            port_status = False
+            if active is False:
+                port_status = True
+
+            msg = {
+                'onu_id': context['onu-id'],
+                'port_number': context['onu-intf-id'],
+                'serial_number': context['onu-serial-number'],
+                'port_status': port_status
+            }
+            self.log.debug('onu-port-event-publish', topic=topic, msg=msg)
+            self.event_bus.publish(topic=topic, msg=msg)
+        else:
+            self.log.warn('unhandled-onu-device-event', classname=event.__class__.__name__)
