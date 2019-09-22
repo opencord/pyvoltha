@@ -533,6 +533,7 @@ class AlarmSynchronizer(object):
             alarm = self.omci_alarm_to_onu_alarm(class_id, entity_id, alarm_number)
             if alarm is not None:
                 alarm.send(True)
+                self._device.raise_onu_event(alarm, active=True)
 
     def clear_alarm(self, class_id, entity_id, alarm_number):
         """
@@ -551,6 +552,7 @@ class AlarmSynchronizer(object):
             alarm = self.omci_alarm_to_onu_alarm(class_id, entity_id, alarm_number)
             if alarm is not None:
                 alarm.send(False)
+                self._device.raise_onu_event(alarm, active=False)
 
     def query_mib(self, class_id=None, instance_id=None):
         """
