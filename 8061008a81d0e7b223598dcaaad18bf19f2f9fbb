@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f67a1bdf_69e0ccb3",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_cc.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-09-23T19:50:14Z",
+      "side": 1,
+      "message": "Please add comment describing reason for special casing test results.",
+      "range": {
+        "startLine": 356,
+        "startChar": 12,
+        "endLine": 356,
+        "endChar": 76
+      },
+      "revId": "8061008a81d0e7b223598dcaaad18bf19f2f9fbb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
