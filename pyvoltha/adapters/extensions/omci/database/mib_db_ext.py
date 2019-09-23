@@ -209,7 +209,7 @@ class MibDbExternal(MibDbApi):
 
             else:
                 self.log.warning('default-conversion', type=type(field),
-                                 class_id=class_id, attribute=attr_name, value=str(value))
+                                 class_id=class_id, attribute=attr_name, hex_value=hexlify(str(value)))
                 str_value = str(value)
 
             return str_value
@@ -276,7 +276,7 @@ class MibDbExternal(MibDbApi):
 
             else:
                 self.log.warning('default-conversion', type=type(field),
-                                 class_id=class_id, attribute=attr_name, value=str_value)
+                                 class_id=class_id, attribute=attr_name, hex_value=hexlify(str_value))
                 value = None
 
             return value
@@ -600,7 +600,7 @@ class MibDbExternal(MibDbApi):
         try:
             data = MibDeviceData()
             path = self._get_device_path(device_id)
-            data.ParseFromString(self.kv_store[path])
+            data.ParseFromString(self._kv_store[path])
             return self._string_to_time(data.last_sync_time)
 
         except KeyError:
@@ -851,7 +851,7 @@ class MibDbExternal(MibDbApi):
             classpath = self._get_class_path(device_id, class_id)
             class_data = MibClassData()
             class_data.ParseFromString(self._kv_store[classpath])
-            
+
             if len(class_data.instances) == 0:
                 del self._kv_store[classpath]
 
@@ -897,11 +897,15 @@ class MibDbExternal(MibDbApi):
         try:
             if class_id is None:
                 # Get full device info
-                dev_data = MibDeviceData()
-                device_path = self._get_device_path(device_id)
-                dev_data.ParseFromString(self._kv_store[device_path])
-                end_time = datetime.utcnow()
-                data = self._device_to_dict(dev_data)
+                try:
+                    dev_data = MibDeviceData()
+                    device_path = self._get_device_path(device_id)
+                    dev_data.ParseFromString(self._kv_store[device_path])
+                    end_time = datetime.utcnow()
+                    data = self._device_to_dict(dev_data)
+
+                except KeyError:
+                    data = dict()
 
             elif instance_id is None:
                 # Get all instances of the class
@@ -918,18 +922,10 @@ class MibDbExternal(MibDbApi):
             else:
                 # Get all attributes of a specific ME
                 try:
-                    class_data = MibClassData()
-                    instance_data = None
-                    class_path = self._get_class_path(device_id, class_id)
-                    class_data.ParseFromString(self._kv_store[class_path])
+                    instance_data = MibInstanceData()
+                    instance_path = self._get_instance_path(device_id, class_id, instance_id)
+                    instance_data.ParseFromString(self._kv_store[instance_path])
                     end_time = datetime.utcnow()
-
-                    for inst in class_data.instances:
-                        if inst.instance_id == instance_id:
-                            instance_data = inst
-
-                    if instance_data == None:
-                        raise KeyError
 
                     if attributes is None:
                         # All Attributes
@@ -991,6 +987,7 @@ class MibDbExternal(MibDbApi):
             raise TypeError('{} is not of type MibClassData'.format(type(val)))
 
         data = {
+            CLASS_ID_KEY: val.class_id,
         }
         for instance in val.instances:
             data[instance.instance_id] = self._instance_to_dict(device_id,
