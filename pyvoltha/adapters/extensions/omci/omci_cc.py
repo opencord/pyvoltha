@@ -351,8 +351,11 @@ class OMCI_CC(object):
                 omci_entities.entity_id_to_class_map = saved_me_map     # Always restore it.
 
             rx_tid = rx_frame.fields['transaction_id']
+            msg_type = rx_frame.fields['message_type']
             self.log.debug('Received message for rx_tid', rx_tid = rx_tid)
-            if rx_tid == 0:
+            # Filter the Test Result frame and route through receive onu
+            # message method.
+            if rx_tid == 0 or msg_type == EntityOperations.TestResult.value:
                 self.log.debug('Receive ONU message', rx_tid=0)
                 return self._receive_onu_message(rx_frame)
 
