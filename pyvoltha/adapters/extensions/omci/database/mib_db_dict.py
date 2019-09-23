@@ -387,7 +387,7 @@ class MibDbVolatileDict(MibDbApi):
         :raises DatabaseStateError: If the database is not enabled
         """
         self.log.debug('query', device_id=device_id, class_id=class_id,
-                       instance_id=instance_id, attributes=attributes)
+                       entity_instance_id=instance_id, attributes=attributes)
 
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
@@ -395,9 +395,9 @@ class MibDbVolatileDict(MibDbApi):
         if not isinstance(device_id, basestring):
             raise TypeError('Device ID is a string')
 
-        device_db = self._data[device_id]
+        device_db = self._data.get(device_id, dict())
         if class_id is None:
-            return self._fix_dev_json_attributes(copy.copy(device_db), device_id)
+            return self._fix_dev_json_attributes(copy.deepcopy(device_db), device_id)
 
         if not isinstance(class_id, int):
             raise TypeError('Class ID is an integer')
@@ -407,14 +407,14 @@ class MibDbVolatileDict(MibDbApi):
 
         class_db = device_db.get(class_id, dict())
         if instance_id is None or len(class_db) == 0:
-            return self._fix_cls_json_attributes(copy.copy(class_db), entity)
+            return self._fix_cls_json_attributes(copy.deepcopy(class_db), entity)
 
         if not isinstance(instance_id, int):
             raise TypeError('Instance ID is an integer')
 
         instance_db = class_db.get(instance_id, dict())
         if attributes is None or len(instance_db) == 0:
-            return self._fix_inst_json_attributes(copy.copy(instance_db), entity)
+            return self._fix_inst_json_attributes(copy.deepcopy(instance_db), entity)
 
         if not isinstance(attributes, (basestring, list, set)):
             raise TypeError('Attributes should be a string or list/set of strings')
@@ -428,7 +428,7 @@ class MibDbVolatileDict(MibDbApi):
         for attr, attr_data in results.items():
             attr_index = entity.attribute_name_to_index_map[attr]
             eca = entity.attributes[attr_index]
-            results[attr] = self._fix_attr_json_attribute(copy.copy(attr_data), eca)
+            results[attr] = self._fix_attr_json_attribute(copy.deepcopy(attr_data), eca)
 
         return results
 
@@ -444,13 +444,13 @@ class MibDbVolatileDict(MibDbApi):
             if isinstance(cls_id, int):
                 me_map = self._omci_agent.get_device(device_id).me_map
                 entity = me_map.get(cls_id)
-                dev_data[cls_id] = self._fix_cls_json_attributes(copy.copy(cls_data), entity)
+                dev_data[cls_id] = self._fix_cls_json_attributes(copy.deepcopy(cls_data), entity)
         return dev_data
 
     def _fix_cls_json_attributes(self, cls_data, entity):
         for inst_id, inst_data in cls_data.items():
             if isinstance(inst_id, int):
-                cls_data[inst_id] = self._fix_inst_json_attributes(copy.copy(inst_data), entity)
+                cls_data[inst_id] = self._fix_inst_json_attributes(copy.deepcopy(inst_data), entity)
         return cls_data
 
     def _fix_inst_json_attributes(self, inst_data, entity):
@@ -459,7 +459,7 @@ class MibDbVolatileDict(MibDbApi):
                 attr_index = entity.attribute_name_to_index_map[attr] \
                     if entity is not None and attr in entity.attribute_name_to_index_map else None
                 eca = entity.attributes[attr_index] if attr_index is not None else None
-                inst_data[ATTRIBUTES_KEY][attr] = self._fix_attr_json_attribute(copy.copy(attr_data), eca)
+                inst_data[ATTRIBUTES_KEY][attr] = self._fix_attr_json_attribute(copy.deepcopy(attr_data), eca)
         return inst_data
 
     def _fix_attr_json_attribute(self, attr_data, eca):

@@ -290,7 +290,7 @@ class AlarmDbExternal(MibDbApi):
         try:
             data = AlarmDeviceData()
             path = self._get_device_path(device_id)
-            data.ParseFromString(self.kv_store[path])
+            data.ParseFromString(self._kv_store[path])
             return int(data.last_alarm_sequence)
 
         except KeyError:

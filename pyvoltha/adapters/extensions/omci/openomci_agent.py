@@ -43,6 +43,7 @@ OpenOmciAgentDefaults = {
         'database': MibDbVolatileDict,     # Implements volatile ME MIB database
         # 'database': MibDbExternal,         # Implements persistent ME MIB database
         'advertise-events': True,          # Advertise events on OpenOMCI event bus
+        'audit-delay': 60,                 # Time to wait between MIB audits.  0 to disable audits.
         'tasks': {
             'mib-upload': MibUploadTask,
             'get-mds': GetMdsTask,
