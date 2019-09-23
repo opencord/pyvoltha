@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "739facd5_41ffad86",
+        "filename": "VERSION",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-09-23T10:40:55Z",
+      "side": 1,
+      "message": "in the case of \"x.y.z-dev0\" VERSION you do not need to increase the last entry.   the \"z\" is the next upcoming point release when we finally decide to tag \"x.y.z\"\n\nSo in this case leaving it 2.2.2-dev0 is fine since 2.2.2 has not been released yet.",
+      "range": {
+        "startLine": 1,
+        "startChar": 4,
+        "endLine": 1,
+        "endChar": 5
+      },
+      "revId": "7788a75b50b36ca74646f6b7e0128fe256a919ce",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
