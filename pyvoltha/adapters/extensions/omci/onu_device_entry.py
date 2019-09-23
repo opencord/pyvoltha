@@ -99,11 +99,13 @@ class OnuDeviceEntry(object):
             self._mib_db_in_sync = False
             mib_synchronizer_info = support_classes.get('mib-synchronizer')
             advertise = mib_synchronizer_info['advertise-events']
+            audit_delay = mib_synchronizer_info['audit-delay']
             self._mib_sync_sm = mib_synchronizer_info['state-machine'](self._omci_agent,
                                                                        device_id,
                                                                        mib_synchronizer_info['tasks'],
                                                                        mib_db,
-                                                                       advertise_events=advertise)
+                                                                       advertise_events=advertise,
+                                                                       audit_delay=audit_delay)
             # ONU OMCI Capabilities state machine
             capabilities_info = support_classes.get('omci-capabilities')
             advertise = capabilities_info['advertise-events']
