@@ -31,7 +31,7 @@ from pyvoltha.adapters.extensions.omci.omci_messages import OmciCreate, OmciDele
     OmciDownloadSection, OmciDownloadSectionLast, OmciDownloadSectionResponse, \
     OmciEndSoftwareDownload, OmciEndSoftwareDownloadResponse, \
     OmciActivateImage, OmciActivateImageResponse, \
-    OmciCommitImage, OmciCommitImageResponse, OmciCreateResponse
+    OmciCommitImage, OmciCommitImageResponse, OmciCreateResponse, OmciTestResponse, OmciTest
 
 
 class OmciFrame(Packet):
@@ -109,10 +109,6 @@ class OmciFrame(Packet):
             PacketField("omci_message", None, OmciAttributeValueChange), align=36),
             lambda pkt: pkt.message_type == OmciAttributeValueChange.message_id),
         ConditionalField(FixedLenField(
-            PacketField("omci_message", None, OmciTestResult), align=36),
-            lambda pkt: pkt.message_type == OmciTestResult.message_id),
-
-        ConditionalField(FixedLenField(
             PacketField("omci_message", None, OmciReboot), align=36),
             lambda pkt: pkt.message_type == OmciReboot.message_id),
         ConditionalField(FixedLenField(
@@ -175,6 +171,16 @@ class OmciFrame(Packet):
         ConditionalField(FixedLenField(
             PacketField("omci_message", None, OmciCommitImageResponse), align=36),
             lambda pkt: pkt.message_type == OmciCommitImageResponse.message_id),
+        # Create Frame for Omci Test.
+        ConditionalField(FixedLenField(
+            PacketField("omci_message", None, OmciTest), align=36),
+            lambda pkt: pkt.message_type == OmciTest.message_id),
+        ConditionalField(FixedLenField(
+            PacketField("omci_message", None, OmciTestResponse), align=36),
+            lambda pkt: pkt.message_type == OmciTestResponse.message_id),
+        ConditionalField(FixedLenField(
+            PacketField("omci_message", None, OmciTestResult), align=36),
+            lambda pkt: pkt.message_type == OmciTestResult.message_id),
 
         # TODO add entries for remaining OMCI message types
 
