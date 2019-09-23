@@ -944,7 +944,7 @@ class MibSynchronizer(object):
         from pyvoltha.adapters.extensions.omci.database.mib_db_api import DatabaseStateError
 
         self.log.debug('query', class_id=class_id,
-                       instance_id=instance_id, attributes=attributes)
+                       entity_instance_id=instance_id, attributes=attributes)
         if self._database is None:
             raise DatabaseStateError('Database does not yet exist')
 
