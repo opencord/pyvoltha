@@ -46,6 +46,30 @@
       "revId": "8061008a81d0e7b223598dcaaad18bf19f2f9fbb",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b100db3_a7081cac",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_cc.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-09-24T14:40:00Z",
+      "side": 1,
+      "message": "Yeah, I remember it being there too. If I recall correctly, it was due to Test actions often sending back two responses (one to acknowledge the test request, and the other when test is complete with the results).",
+      "parentUuid": "5dc759fa_6d7c598c",
+      "range": {
+        "startLine": 356,
+        "startChar": 12,
+        "endLine": 356,
+        "endChar": 76
+      },
+      "revId": "8061008a81d0e7b223598dcaaad18bf19f2f9fbb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
