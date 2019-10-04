@@ -75,6 +75,7 @@ class MibSynchronizer(object):
     DEFAULT_TIMEOUT_RETRY = 5      # Seconds to delay after task failure/timeout
     DEFAULT_AUDIT_DELAY = 60       # Periodic tick to audit the MIB Data Sync
     DEFAULT_RESYNC_DELAY = 300     # Periodically force a resync
+    DEFAULT_RESYNC_FAIL_LIMIT = 5  # Number of times to try to resync an existing onu before force resetting.
 
     def __init__(self, agent, device_id, mib_sync_tasks, db,
                  advertise_events=False,
@@ -83,7 +84,8 @@ class MibSynchronizer(object):
                  initial_state='disabled',
                  timeout_delay=DEFAULT_TIMEOUT_RETRY,
                  audit_delay=DEFAULT_AUDIT_DELAY,
-                 resync_delay=DEFAULT_RESYNC_DELAY):
+                 resync_delay=DEFAULT_RESYNC_DELAY,
+                 resync_fail_limit=DEFAULT_RESYNC_FAIL_LIMIT):
         """
         Class initialization
 
@@ -102,6 +104,9 @@ class MibSynchronizer(object):
                                   an audit manually by calling 'self.audit_mib'
         :param resync_delay: (int) Seconds in sync before performing a forced MIB
                                    resynchronization
+        :param resync_fail_limit: (int) Number of attempts at resynchronizing the onu
+                                        before giving up and reseting/re-uploading the mib.
+                                        Setting to 0 disables the limit allowing unlimited attempts.
         """
         self.log = structlog.get_logger(device_id=device_id)
 
@@ -112,6 +117,7 @@ class MibSynchronizer(object):
         self._timeout_delay = timeout_delay
         self._audit_delay = audit_delay
         self._resync_delay = resync_delay
+        self._resync_fail_limit = resync_fail_limit
 
         self._upload_task = mib_sync_tasks['mib-upload']
         self._get_mds_task = mib_sync_tasks['get-mds']
@@ -127,6 +133,7 @@ class MibSynchronizer(object):
         self._last_mib_db_sync_value = None
         self._device_in_db = False
         self._next_resync = None
+        self._failed_resync_count = 0
 
         self._on_olt_only_diffs = None
         self._on_onu_only_diffs = None
@@ -354,6 +361,8 @@ class MibSynchronizer(object):
 
         # Determine if this ONU has ever synchronized
         if self.is_new_onu:
+            # clear resync failure counter if we "started over"
+            self._failed_resync_count = 0
             # Start full MIB upload
             self._deferred = reactor.callLater(0, self.upload_mib)
 
@@ -546,6 +555,19 @@ class MibSynchronizer(object):
         def failure(reason):
             self.log.info('resync-failure', reason=reason)
             self._current_task = None
+
+            # if we continue to fail resync after configured number of times then give up
+            # and reset the onu, reupload the mib db and start over. Setting last_mib_db_sync_value
+            # to None forces the state machine to start over on calling timeout trigger
+            self._failed_resync_count += 1
+            if self._resync_fail_limit > 0 and self._failed_resync_count >= self._resync_fail_limit:
+                self.log.warn("resync-forcing-reset", attempt_count=self._failed_resync_count,
+                              limit=self._resync_fail_limit)
+                self._last_mib_db_sync_value = None
+            else:
+                self.log.info("resync-attempt-count", attempt_count=self._failed_resync_count,
+                              limit=self._resync_fail_limit)
+
             self._deferred = reactor.callLater(self._timeout_delay, self.timeout)
 
         self._current_task = self._resync_task(self._agent, self._device_id)
