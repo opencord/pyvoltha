@@ -21,6 +21,7 @@ from twisted.internet.defer import inlineCallbacks, failure, returnValue, Timeou
 from pyvoltha.adapters.extensions.omci.omci_defs import *
 from pyvoltha.adapters.extensions.omci.omci_me import OntDataFrame
 from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame, OmciDelete, OmciCreate, OmciSet
+from pyvoltha.adapters.extensions.omci.omci_fields import OmciTableField
 from pyvoltha.adapters.extensions.omci.database.mib_db_api import ATTRIBUTES_KEY
 
 OP = EntityOperations
@@ -420,13 +421,18 @@ class MibReconcileTask(Task):
                     self._db_updates = 0
 
                     # Try any writeable attributes now (but not set-by-create)
-                    writeable_data = {k: v for k, v in olt_entry[ATTRIBUTES_KEY].items()
-                                      if AA.Writable in
-                                      next((attr.access for attr in me_entry.attributes
-                                            if attr.field.name == k), set())
-                                      and AA.SetByCreate not in
-                                      next((attr.access for attr in me_entry.attributes
-                                            if attr.field.name == k), set())}
+                    writeable_data = dict()
+                    table_data = dict()
+                    for key, value in olt_entry[ATTRIBUTES_KEY].items():
+                        for attr in me_entry.attributes:
+                            if AA.SetByCreate in attr.access:
+                                continue
+                            if AA.Writable in attr.access:
+                                if attr.field.name == key:
+                                    if isinstance(attr.field, OmciTableField):
+                                        table_data[key] = value
+                                    else:
+                                        writeable_data[key] = value
 
                     if len(writeable_data):
                         attributes_mask = me_entry.mask_for(*writeable_data.keys())
@@ -436,10 +442,23 @@ class MibReconcileTask(Task):
                                                                entity_id=eid,
                                                                attributes_mask=attributes_mask,
                                                                data=writeable_data))
-
                         self._local_deferred = yield self._device.omci_cc.send(frame)
                         self.check_status_and_state(self._local_deferred, 'olt-set-writeable')
                         successes += 1
+
+                    for key, value in table_data.items():
+                        for row in value:
+                            setvalue = { key : row }
+                            attributes_mask = me_entry.mask_for(*setvalue.keys())
+                            frame = OmciFrame(transaction_id=None,
+                                              message_type=OmciSet.message_id,
+                                              omci_message=OmciSet(entity_class=cid,
+                                                                   entity_id=eid,
+                                                                   attributes_mask=attributes_mask,
+                                                                   data=setvalue))
+                            self._local_deferred = yield self._device.omci_cc.send(frame)
+                            self.check_status_and_state(self._local_deferred, 'olt-set-table')
+                            successes += 1
 
             except Exception as e:
                 self.log.exception('olt-only-fix', e=e, cid=cid, eid=eid)
