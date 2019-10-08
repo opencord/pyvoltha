@@ -346,7 +346,7 @@ class PptpEthernetUni(EntityClass):
             range_check=lambda x: x in [0, 3]),
         ECA(ByteField("administrative_state", 1), {AA.R, AA.W},
             range_check=lambda x: 0 <= x <= 1),
-        ECA(ByteField("operational_state", 1), {AA.R, AA.W},
+        ECA(ByteField("operational_state", 1), {AA.R},
             range_check=lambda x: 0 <= x <= 1, optional=True, avc=True),
         ECA(ByteField("config_ind", 0), {AA.R},
             range_check=lambda x: x in [0, 1, 2, 3, 4, 0x11, 0x12, 0x13]),
