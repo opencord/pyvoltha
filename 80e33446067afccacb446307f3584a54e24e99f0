@@ -46,6 +46,30 @@
       "revId": "80e33446067afccacb446307f3584a54e24e99f0",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3993427f_640ce05c",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2019-10-09T15:09:25Z",
+      "side": 1,
+      "message": "my expectation is if i set the limit to N then if the thing fails N times it wil be reset. can\u0027t be sure, but i think this is the common expectation. i guess i expected the code more like\n\nself._failed_resync_count +\u003d 1\nif self._resync_fail_limit \u003e 0 and self._failed_resync_count \u003e\u003d self.resync_fail_limit:\n    reset\n\nalso is the fail limit reset to 0, when a successful sync occurs?",
+      "parentUuid": "4c038e53_8cb14abe",
+      "range": {
+        "startLine": 553,
+        "startChar": 12,
+        "endLine": 553,
+        "endChar": 19
+      },
+      "revId": "80e33446067afccacb446307f3584a54e24e99f0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
