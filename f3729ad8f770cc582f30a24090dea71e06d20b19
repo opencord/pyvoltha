@@ -22,6 +22,30 @@
       "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad0b385_02567505",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 908,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-09T20:31:24Z",
+      "side": 1,
+      "message": "Yes i can remove this as the outer try/catch gets it and the result is the same.   \n\nBut at this point this whole class is not being used as we are not storing mib in etcd.  it needs to be completely re-written to work with resync/reconcile given whole mib lookups or nested element lookups are needed.  \n\nSo i can just abandon changes to this and alarm_db_ext.py and it would not affect anything functionally.",
+      "parentUuid": "1a8ceedb_ff6c165a",
+      "range": {
+        "startLine": 907,
+        "startChar": 16,
+        "endLine": 908,
+        "endChar": 33
+      },
+      "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
