@@ -22,6 +22,30 @@
       "revId": "80e33446067afccacb446307f3584a54e24e99f0",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c038e53_8cb14abe",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-09T15:02:59Z",
+      "side": 1,
+      "message": "yes as coded.  Given the default is 5, 6 failures are experienced.   I could change to be something like:\n\nself._failed_resync_count \u003e\u003d (self._resync_fail_limit - 1)\n\nbut its not as readable and seems a bit mysterious.  I can update the comment to reflect this condition needs one failure past the limit to take effect.",
+      "parentUuid": "95046dc0_dbcd48c9",
+      "range": {
+        "startLine": 553,
+        "startChar": 12,
+        "endLine": 553,
+        "endChar": 19
+      },
+      "revId": "80e33446067afccacb446307f3584a54e24e99f0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
