@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "95046dc0_dbcd48c9",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2019-10-09T14:54:47Z",
+      "side": 1,
+      "message": "If I am understanding this correctly it the limit is 1, then on first failure count will be incremented from 0 to 1 and then on second failure the rest will actually happen. i.e. it takes limit + 1 calls to failure to cause a reset. Am I missing something?",
+      "range": {
+        "startLine": 553,
+        "startChar": 12,
+        "endLine": 553,
+        "endChar": 19
+      },
+      "revId": "80e33446067afccacb446307f3584a54e24e99f0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
