@@ -70,6 +70,30 @@
       "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c59edcbe_2bf20de0",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 908,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-09T20:37:45Z",
+      "side": 1,
+      "message": "It needs a heavy refactor, possibly being completely replaced.  I would just as soon leave it and delete it the same time the new file/class is added with its unit tests.",
+      "parentUuid": "dbc851de_76475cd5",
+      "range": {
+        "startLine": 907,
+        "startChar": 16,
+        "endLine": 908,
+        "endChar": 33
+      },
+      "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
