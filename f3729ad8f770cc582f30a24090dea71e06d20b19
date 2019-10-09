@@ -46,6 +46,30 @@
       "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dbc851de_76475cd5",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_ext.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 908,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2019-10-09T20:33:05Z",
+      "side": 1,
+      "message": "If it is not being used, can we delete the function? I like the idea of dead code being removed? Or will we need it at a later time?",
+      "parentUuid": "9ad0b385_02567505",
+      "range": {
+        "startLine": 907,
+        "startChar": 16,
+        "endLine": 908,
+        "endChar": 33
+      },
+      "revId": "f3729ad8f770cc582f30a24090dea71e06d20b19",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
