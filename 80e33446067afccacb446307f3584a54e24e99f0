@@ -70,6 +70,30 @@
       "revId": "80e33446067afccacb446307f3584a54e24e99f0",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6ecc401_bd90db0e",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-09T15:27:37Z",
+      "side": 1,
+      "message": "ill move the counter up that does make more sense.  Also ill reset the fail count to 0 in on_enter_starting because other audit leftovers are cleared out in the same way there too.",
+      "parentUuid": "3993427f_640ce05c",
+      "range": {
+        "startLine": 553,
+        "startChar": 12,
+        "endLine": 553,
+        "endChar": 19
+      },
+      "revId": "80e33446067afccacb446307f3584a54e24e99f0",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
