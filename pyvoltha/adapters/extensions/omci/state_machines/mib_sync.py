@@ -226,7 +226,8 @@ class MibSynchronizer(object):
     def increment_mib_data_sync(self):
         self._mib_data_sync += 1
         if self._mib_data_sync > 255:
-            self._mib_data_sync = 0
+            # per G.984 and G.988 overflow starts over at 1 given 0 is reserved for reset
+            self._mib_data_sync = 1
 
         if self._database is not None:
             self._database.save_mib_data_sync(self._device_id,
