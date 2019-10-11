@@ -23,6 +23,7 @@ from pyvoltha.adapters.extensions.omci.omci_defs import *
 from pyvoltha.adapters.extensions.omci.omci_me import OntDataFrame
 from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame, OmciDelete, OmciCreate, OmciSet
 from pyvoltha.adapters.extensions.omci.omci_fields import OmciTableField
+from pyvoltha.adapters.extensions.omci.omci_entities import RECONCILE_LOW_PRIORITY
 from pyvoltha.adapters.extensions.omci.database.mib_db_api import ATTRIBUTES_KEY
 
 OP = EntityOperations
@@ -202,6 +203,7 @@ class MibReconcileTask(Task):
         # First the undecodables and onu-created (treated the same)
         undecodable = self._undecodable(onu, me_map)
         onu_created = self._onu_created(onu, me_map)
+        self.log.debug("sorted-class-list", onu_created=onu_created)
 
         if len(undecodable) or len(onu_created):
             results = yield self.fix_onu_only_save_to_db(undecodable, onu_created, onu_db)
@@ -212,6 +214,7 @@ class MibReconcileTask(Task):
         # Last the OLT created values, resend these to the ONU
 
         olt_created = self._olt_created(onu, me_map)
+        self.log.debug("sorted-class-list", olt_created=olt_created)
         if len(olt_created):
             results = yield self.fix_onu_only_remove_from_onu(olt_created)
             successes += results[0]
@@ -347,6 +350,7 @@ class MibReconcileTask(Task):
         # from OpenOMCI database
         undecodable = self._undecodable(olt, me_map)
         onu_created = self._onu_created(olt, me_map)
+        self.log.debug("sorted-class-list", onu_created=onu_created)
 
         if len(undecodable) or len(onu_created):
             good, bad = self.fix_olt_only_remove_from_db(undecodable, onu_created)
@@ -357,6 +361,7 @@ class MibReconcileTask(Task):
         # Last the OLT created
 
         olt_created = self._olt_created(olt, me_map)
+        self.log.debug("sorted-class-list", olt_created=olt_created)
         if len(olt_created):
             results = yield self.fix_olt_only_create_on_onu(olt_created, me_map)
             successes += results[0]
@@ -743,12 +748,12 @@ class MibReconcileTask(Task):
         return [(cid, eid) for cid, eid in cid_eid_list if cid not in me_map]
 
     def _onu_created(self, cid_eid_list, me_map):
-        return [(cid, eid) for cid, eid in cid_eid_list if cid in me_map and
+        return [(cid, eid) for cid, eid in sorted(cid_eid_list, key=self.entitysorter) if cid in me_map and
                 (OP.Create not in me_map[cid].mandatory_operations and
                  OP.Create not in me_map[cid].optional_operations)]
 
     def _olt_created(self, cid_eid_list, me_map):
-        return [(cid, eid) for cid, eid in cid_eid_list if cid in me_map and
+        return [(cid, eid) for cid, eid in sorted(cid_eid_list, key=self.entitysorter) if cid in me_map and
                 (OP.Create in me_map[cid].mandatory_operations or
                  OP.Create in me_map[cid].optional_operations)]
 
@@ -759,3 +764,11 @@ class MibReconcileTask(Task):
             new_mds_value = 1
 
         return new_mds_value
+
+    def entitysorter(self, key):
+        me_map = self._device.me_map
+        try:
+            clsid = key[0]
+            return me_map[clsid].reconcile_sort_order
+        except KeyError:
+            return RECONCILE_LOW_PRIORITY

@@ -31,6 +31,7 @@ from pyvoltha.adapters.extensions.omci.omci_defs import bitpos_from_mask
 import six
 from six.moves import range
 
+RECONCILE_LOW_PRIORITY=1000
 
 class EntityClassAttribute(object):
 
@@ -143,6 +144,7 @@ class EntityClass(six.with_metaclass(EntityClassMeta, object)):
     mandatory_operations = set()
     optional_operations = set()
     notifications = set()
+    reconcile_sort_order = RECONCILE_LOW_PRIORITY
     alarms = dict()       # Alarm Number -> Alarm Name
     hidden = False        # If true, this attribute is not reported by a MIB upload.
                           # This attribute is needed to be able to properly perform
@@ -373,6 +375,7 @@ class PptpEthernetUni(EntityClass):
 
 class MacBridgeServiceProfile(EntityClass):
     class_id = 45
+    reconcile_sort_order = 2
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ByteField("spanning_tree_ind", None), {AA.R, AA.W, AA.SBC},
@@ -400,6 +403,7 @@ class MacBridgeServiceProfile(EntityClass):
 
 class MacBridgePortConfigurationData(EntityClass):
     class_id = 47
+    reconcile_sort_order = 4
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ShortField("bridge_id_pointer", None), {AA.R, AA.W, AA.SBC}),
@@ -474,6 +478,7 @@ class VlanTaggingFilterData(EntityClass):
 
 class Ieee8021pMapperServiceProfile(EntityClass):
     class_id = 130
+    reconcile_sort_order = 3
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ShortField("tp_pointer", None), {AA.R, AA.W, AA.SBC}),
@@ -761,6 +766,7 @@ class Ont2G(EntityClass):
 
 class Tcont(EntityClass):
     class_id = 262
+    reconcile_sort_order = 5
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R}),
         ECA(ShortField("alloc_id", None), {AA.R, AA.W}),
@@ -826,6 +832,7 @@ class UniG(EntityClass):
 
 class GemInterworkingTp(EntityClass):
     class_id = 266
+    reconcile_sort_order = 7
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ShortField("gem_port_network_ctp_pointer", None),
@@ -850,6 +857,7 @@ class GemInterworkingTp(EntityClass):
 
 class GemPortNetworkCtp(EntityClass):
     class_id = 268
+    reconcile_sort_order = 6
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ShortField("port_id", None), {AA.R, AA.W, AA.SBC}),
@@ -878,6 +886,7 @@ class GemPortNetworkCtp(EntityClass):
 
 class GalEthernetProfile(EntityClass):
     class_id = 272
+    reconcile_sort_order = 1
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ShortField("max_gem_payload_size", None), {AA.R, AA.W, AA.SBC}),
