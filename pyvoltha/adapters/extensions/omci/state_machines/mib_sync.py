@@ -226,7 +226,8 @@ class MibSynchronizer(object):
     def increment_mib_data_sync(self):
         self._mib_data_sync += 1
         if self._mib_data_sync > 255:
-            self._mib_data_sync = 0
+            # per G.984 and G.988 overflow starts over at 1 given 0 is reserved for reset
+            self._mib_data_sync = 1
 
         if self._database is not None:
             self._database.save_mib_data_sync(self._device_id,
@@ -885,10 +886,18 @@ class MibSynchronizer(object):
                                   unsupported_attribute_mask=rx_omci_msg['unsupported_attributes_mask'],
                                   failed_attribute_mask=rx_omci_msg['failed_attributes_mask'])
 
-                # Save to the database. A set of MDS in the OntData class results in
-                # an increment. However, we do not save that within the class/entity
-                # portion of the database.
+                # Save to the database.
+                #
+                # If an MDS was being set and succeeded use the value that was sent and store in our local db.
+                # A set of MDS in the OntData class also results in an increment of that value on the onu. Reflect that as well.
+                # We do not save MDS within the class/entity portion of the database as it has its own attribute
                 if class_id == OntData.class_id and len(attributes) > 0:
+                    self.log.debug("set-response-ontdata", attributes=attributes)
+                    if 'mib_data_sync' in attributes:
+                        # setting requires mds in higher order bits.  shift back down again to get true value
+                        self._mib_data_sync = (attributes['mib_data_sync'] >> 8) & 0xFF
+                        self._database.save_mib_data_sync(self._device_id,
+                                                          self._mib_data_sync)
                     self.increment_mib_data_sync()
 
                 elif len(attributes) > 0:

@@ -151,7 +151,7 @@ class MibReconcileTask(Task):
 
             # Success? Update MIB-data-sync
             if failures == 0:
-                results = yield self.update_mib_data_sync()
+                results = yield self.update_mib_data_sync(successes)
                 successes += results[0]
                 failures += results[1]
 
@@ -671,7 +671,7 @@ class MibReconcileTask(Task):
         returnValue(mds)
 
     @inlineCallbacks
-    def update_mib_data_sync(self):
+    def update_mib_data_sync(self, successes):
         """
         As the final step of MIB resynchronization, the OLT sets the MIB data sync
         attribute of the ONU data ME to some suitable value of its own choice. It
@@ -681,26 +681,23 @@ class MibReconcileTask(Task):
         :return: (int, int) success, failure counts
         """
         # Get MDS to set
-        self._sync_sm.increment_mib_data_sync()
-        new_mds_value = self._sync_sm.mib_data_sync
+        new_mds_value = self.calculate_new_mds(successes)
+        self.log.debug('mds-from-successes', successes=successes, new_mds=new_mds_value)
 
         # Update it.  The set response will be sent on the OMCI-CC pub/sub bus
         # and the MIB Synchronizer will update this MDS value in the database
         # if successful.
         try:
-            # previous_mds = yield self._get_current_mds()
+            previous_mds = yield self._get_current_mds()
 
             frame = OntDataFrame(mib_data_sync=new_mds_value).set()
 
             results = yield self._device.omci_cc.send(frame)
-            self.check_status_and_state(results, 'ont-data-mbs-update')
+            self.check_status_and_state(results, 'ont-data-mds-update')
 
-            #########################################
-            # Debug.  Verify new MDS value was received. Should be 1 greater
-            #         than what was sent
-            # new_mds = yield self._get_current_mds()
-            # self.log.info('mds-update', previous=previous_mds, new=new_mds_value, now=new_mds)
-            # Done
+            # Verify new MDS value was received. Should be 1 greater than what was sent
+            new_mds = yield self._get_current_mds()
+            self.log.info('mds-set', onu_old_mds=previous_mds, sent_mds=new_mds_value, onu_new_mds=new_mds)
             returnValue((1, 0))
 
         except TimeoutError as e:
@@ -753,3 +750,11 @@ class MibReconcileTask(Task):
         return [(cid, eid) for cid, eid in cid_eid_list if cid in me_map and
                 (OP.Create in me_map[cid].mandatory_operations or
                  OP.Create in me_map[cid].optional_operations)]
+
+    def calculate_new_mds(self, counter):
+        new_mds_value = counter % 255
+        if new_mds_value == 0:
+            # per G.984 and G.988 overflow starts over at 1 given 0 is reserved for reset
+            new_mds_value = 1
+
+        return new_mds_value
