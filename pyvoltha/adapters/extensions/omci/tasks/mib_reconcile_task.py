@@ -611,19 +611,45 @@ class MibReconcileTask(Task):
             if not still_the_same:
                 returnValue((0, len(onu_data)))    # Wait for it to stabilize
 
+            writeable_data = dict()
+            table_data = dict()
+            for key, value in onu_data.items():
+                for attr in me_entry.attributes:
+                    if attr.field.name == key:
+                        if isinstance(attr.field, OmciTableField):
+                            table_data[key] = value
+                        else:
+                            writeable_data[key] = value
+
             # OLT data still matches, do the set operations now
             # while len(onu_data):
-            attributes_mask = me_entry.mask_for(*onu_data.keys())
-            frame = OmciFrame(transaction_id=None,
-                              message_type=OmciSet.message_id,
-                              omci_message=OmciSet(entity_class=cid,
-                                                   entity_id=eid,
-                                                   attributes_mask=attributes_mask,
-                                                   data=onu_data))
+            if len(writeable_data):
+                attributes_mask = me_entry.mask_for(*writeable_data.keys())
+                frame = OmciFrame(transaction_id=None,
+                                  message_type=OmciSet.message_id,
+                                  omci_message=OmciSet(entity_class=cid,
+                                                       entity_id=eid,
+                                                       attributes_mask=attributes_mask,
+                                                       data=onu_data))
 
-            results = yield self._device.omci_cc.send(frame)
-            self.check_status_and_state(results, 'onu-attribute-update')
-            successes += len(onu_data)
+                results = yield self._device.omci_cc.send(frame)
+                self.check_status_and_state(results, 'onu-attribute-update')
+                successes += len(writeable_data)
+
+            for key, value in table_data.items():
+                for row in value:
+                    setvalue = {key: row}
+                    attributes_mask = me_entry.mask_for(*setvalue.keys())
+                    frame = OmciFrame(transaction_id=None,
+                                      message_type=OmciSet.message_id,
+                                      omci_message=OmciSet(entity_class=cid,
+                                                           entity_id=eid,
+                                                           attributes_mask=attributes_mask,
+                                                           data=setvalue))
+                    self._local_deferred = yield self._device.omci_cc.send(frame)
+                    self.check_status_and_state(self._local_deferred, 'onu-attribute-table-update')
+                    successes += 1
+
             self._db_updates = 0
 
         except Exception as e:
