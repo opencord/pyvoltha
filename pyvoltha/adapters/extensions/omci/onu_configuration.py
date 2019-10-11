@@ -140,6 +140,17 @@ class OnuConfiguration(object):
         return ontg[ATTRIBUTES_KEY].get('version')
 
     @property
+    def vendor_id(self):
+        """
+        This attribute identifies the vendor id of the onu. e.g BRCM, ADTN, ALCL
+        """
+        ontg = self._get_capability('_ont_g', OntG.class_id, 0)
+        if ontg is None or ATTRIBUTES_KEY not in ontg:
+            return None
+
+        return ontg[ATTRIBUTES_KEY].get('vendor_id')
+
+    @property
     def serial_number(self):
         """
         The serial number is unique for each ONU
