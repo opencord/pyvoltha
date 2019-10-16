@@ -454,7 +454,25 @@ class CoreProxy(ContainerProxy):
                                 port=p,
                                 packet=pac)
         returnValue(res)
-        
+
+    @ContainerProxy.wrap_request(None)
+    @inlineCallbacks
+    def device_reason_update(self, device_id, reason):
+        id = ID()
+        id.id = device_id
+        rsn = StrType()
+        rsn.val = reason
+        to_topic = self.get_core_topic(device_id)
+        reply_topic = self.get_adapter_topic()
+
+        res = yield self.invoke(rpc="DeviceReasonUpdate",
+                                to_topic=to_topic,
+                                reply_topic=reply_topic,
+                                device_id=id,
+                                device_reason=rsn)
+
+        returnValue(res)
+                
     # ~~~~~~~~~~~~~~~~~~~ Handle event submissions ~~~~~~~~~~~~~~~~~~~~~
 
     def filter_alarm(self, device_id, alarm_event):
