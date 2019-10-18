@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9861de17_371dbf87",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 637,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-18T20:23:14Z",
+      "side": 1,
+      "message": "should it be len(writable_data)?",
+      "range": {
+        "startLine": 637,
+        "startChar": 33,
+        "endLine": 637,
+        "endChar": 41
+      },
+      "revId": "ceb2cf3b08f16a4ebd8daaecdeae5c57e48f2294",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
