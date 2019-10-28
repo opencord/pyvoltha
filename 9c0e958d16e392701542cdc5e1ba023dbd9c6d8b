@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "414db08d_942e796c",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T04:13:55Z",
+      "side": 1,
+      "message": "Shouldn\u0027t change its initial value also  to 1 or we can check it here and if it is 0 we can set it to 1 before starting.",
+      "range": {
+        "startLine": 227,
+        "startChar": 13,
+        "endLine": 227,
+        "endChar": 27
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "848417b7_fd517677",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T04:13:55Z",
+      "side": 1,
+      "message": "What are we going to do with this incremented \"successes\" value? I think the MDS value in OLT(onu-adapter here) will be incremented in response of SET MDS.",
+      "range": {
+        "startLine": 155,
+        "startChar": 16,
+        "endLine": 155,
+        "endChar": 25
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3bd81864_e9b1944d",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 678,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T04:13:55Z",
+      "side": 1,
+      "message": "Where does it set its local value? I expected to see self._sync_sm.mib_data_sync updated to \"successes\" somewhere here.",
+      "range": {
+        "startLine": 677,
+        "startChar": 79,
+        "endLine": 678,
+        "endChar": 32
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26da05a4_61013805",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T04:13:55Z",
+      "side": 1,
+      "message": "Do we go get this from onu for logging purpose only?",
+      "range": {
+        "startLine": 691,
+        "startChar": 1,
+        "endLine": 691,
+        "endChar": 56
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "04df93c3_859704e4",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T04:13:55Z",
+      "side": 1,
+      "message": "Same comment with previous_mds",
+      "range": {
+        "startLine": 699,
+        "startChar": 0,
+        "endLine": 699,
+        "endChar": 51
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
