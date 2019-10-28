@@ -95,6 +95,29 @@
     },
     {
       "key": {
+        "uuid": "58e6fd72_427a57ec",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 898,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-28T14:32:50Z",
+      "side": 1,
+      "message": "here is where the \"successes\" as sent to the onu are set in the mib_data_sync.  The purpose of doing this here is this function is an event queue callback and its guarantees the message ordering is correct, so that when we set it here previous or upcoming increments do not get out of alignment.",
+      "range": {
+        "startLine": 898,
+        "startChar": 24,
+        "endLine": 898,
+        "endChar": 87
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "848417b7_fd517677",
         "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
         "patchSetId": 4
@@ -106,6 +129,30 @@
       "writtenOn": "2019-10-28T04:13:55Z",
       "side": 1,
       "message": "What are we going to do with this incremented \"successes\" value? I think the MDS value in OLT(onu-adapter here) will be incremented in response of SET MDS.",
+      "range": {
+        "startLine": 155,
+        "startChar": 16,
+        "endLine": 155,
+        "endChar": 25
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03e6c316_24b452b2",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-28T14:32:50Z",
+      "side": 1,
+      "message": "before this chance successes was just reported in the logs.  but now we use this as the key to set the new MDS.  the reason for using this value is explained below.",
+      "parentUuid": "848417b7_fd517677",
       "range": {
         "startLine": 155,
         "startChar": 16,
@@ -141,6 +188,30 @@
     },
     {
       "key": {
+        "uuid": "2589ddf5_0b81ef36",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 678,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-28T14:32:50Z",
+      "side": 1,
+      "message": "the reason for using successes now rather than querying .mib_data_sync is because at this point in the code (asyncronously) the mib_data_sync is still getting incremented from the ME pushes happening for reconcile.  trying to query \"too soon\" results in the onu being set to a wrong value while the library is still counting what was sent.  \n\nFor example at this point in the old code, we would query and use value 50.  We sent 50 to the onu but on the library side old increments where still being counted.  so the library would show 52 or 53, while the onu would show 50 (51 actually).   \n\nThe tricky part here is that when you send a \"set\" to set the MDS it takes what was sent and increments by 1.  That plus the library side still counting causes both counters to be off in a nondeterministic way.\n\nThe fix for this was as you see, to just use the successes as counted during the ME push and set that.   Later in the _on_set_response in mib_sync, the value set sends here is then explicitly used and set to mib_sync\u0027s mib_data_sync.",
+      "parentUuid": "3bd81864_e9b1944d",
+      "range": {
+        "startLine": 677,
+        "startChar": 79,
+        "endLine": 678,
+        "endChar": 32
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "26da05a4_61013805",
         "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
         "patchSetId": 4
@@ -164,6 +235,30 @@
     },
     {
       "key": {
+        "uuid": "c5c85326_f684d774",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-28T14:32:50Z",
+      "side": 1,
+      "message": "just for logging. i wanted to leave it in for a while and see if we run into an MDS mismatch.",
+      "parentUuid": "26da05a4_61013805",
+      "range": {
+        "startLine": 691,
+        "startChar": 1,
+        "endLine": 691,
+        "endChar": 56
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04df93c3_859704e4",
         "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
         "patchSetId": 4
@@ -175,6 +270,30 @@
       "writtenOn": "2019-10-28T04:13:55Z",
       "side": 1,
       "message": "Same comment with previous_mds",
+      "range": {
+        "startLine": 699,
+        "startChar": 0,
+        "endLine": 699,
+        "endChar": 51
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "84f42028_8791b20e",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_reconcile_task.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-10-28T14:32:50Z",
+      "side": 1,
+      "message": "just for logging.  give it a month or so of wider community testing and ill remove it.",
+      "parentUuid": "04df93c3_859704e4",
       "range": {
         "startLine": 699,
         "startChar": 0,
