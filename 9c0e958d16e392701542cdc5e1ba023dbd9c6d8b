@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "aa24c1d7_0003b322",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2019-10-28T16:23:47Z",
+      "side": 1,
+      "message": "Thanks for explanation , I thought that it should  start from 1 initially.",
+      "parentUuid": "d52410af_14a03cdd",
+      "range": {
+        "startLine": 227,
+        "startChar": 13,
+        "endLine": 227,
+        "endChar": 27
+      },
+      "revId": "9c0e958d16e392701542cdc5e1ba023dbd9c6d8b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "22adf6a1_2c204342",
         "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
         "patchSetId": 4
