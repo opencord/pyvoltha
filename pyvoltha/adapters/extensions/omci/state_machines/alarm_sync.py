@@ -363,7 +363,7 @@ class AlarmSynchronizer(object):
         """
         for cid_eid in olt_only:
             # First process the alarm clearing
-            self.process_alarm_data(cid_eid[0], cid_eid[1], 0, -1)
+            self.process_alarm_data(cid_eid[0], cid_eid[1], 0L, -1)
             # Now remove from alarm DB so we match the ONU alarm table
             self._database.delete(self._device_id, cid_eid[0], cid_eid[1])
 
