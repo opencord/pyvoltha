@@ -106,6 +106,7 @@ class AdapterProxy(ContainerProxy):
                   to_topic=iaMsg.header.to_topic, to_device_id=iaMsg.header.to_device_id)
             res = yield self.invoke(rpc="process_inter_adapter_message",
                                     to_topic=iaMsg.header.to_topic,
+                                    key_topic=h.to_device_id,
                                     msg=iaMsg)
             returnValue(res)
         except Exception as e:
