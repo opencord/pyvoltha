@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """
 Agent to play gateway between CORE and an adapter.
 """
@@ -95,6 +94,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="GetDevice",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id)
         returnValue(res)
 
@@ -110,6 +110,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="GetChildDevice",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 device_id=id,
                                 **args)
         returnValue(res)
@@ -129,6 +130,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="GetPorts",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 port_type=p_type)
         returnValue(res)
@@ -144,6 +146,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="GetChildDevices",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 device_id=id)
         returnValue(res)
 
@@ -158,6 +161,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="GetChildDeviceWithProxyAddress",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 proxy_address=proxy_address)
         returnValue(res)
 
@@ -205,6 +209,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="ChildDeviceDetected",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 parent_device_id=id,
                                 parent_port_no=ppn,
                                 child_device_type=cdt,
@@ -224,6 +229,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="DeviceUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device.id,
                                 device=device)
         returnValue(res)
 
@@ -256,6 +262,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="DeviceStateUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 oper_status=o_status,
                                 connect_status=c_status)
@@ -287,6 +294,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="ChildrenStateUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 oper_status=o_status,
                                 connect_status=c_status)
@@ -316,6 +324,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="PortStateUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 port_type=pt,
                                 port_no=pNo,
@@ -349,6 +358,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="child_devices_state_update",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 parent_device_id=id,
                                 oper_status=o_status,
                                 connect_status=c_status)
@@ -371,6 +381,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="DevicePMConfigUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=None,
                                 device_pm_config=device_pm_config,
                                 init=b)
         returnValue(res)
@@ -389,6 +400,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="PortCreated",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=proto_id,
                                 port=port)
         returnValue(res)
@@ -412,6 +424,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="PortsStateUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 oper_status=o_status)
         log.debug("ports_state_update_response", device_id=device_id, oper_status=oper_status, response=res)
@@ -452,6 +465,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="PacketIn",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=proto_id,
                                 port=p,
                                 packet=pac)
@@ -470,6 +484,7 @@ class CoreProxy(ContainerProxy):
         res = yield self.invoke(rpc="DeviceReasonUpdate",
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
+                                key_topic=device_id,
                                 device_id=id,
                                 device_reason=rsn)
 
