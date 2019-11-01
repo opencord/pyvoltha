@@ -313,6 +313,7 @@ class IKafkaMessagingProxy(object):
                         rpc,
                         to_topic,
                         reply_topic,
+                        key_topic,
                         **kwargs):
         """
         Format a request to send over kafka
@@ -332,6 +333,8 @@ class IKafkaMessagingProxy(object):
             request.header.type = MessageType.Value("REQUEST")
             request.header.from_topic = reply_topic
             request.header.to_topic = to_topic
+            if key_topic is not None:
+                request.header.key_topic = key_topic
 
             response_required = False
             if reply_topic:
@@ -488,7 +491,7 @@ class IKafkaMessagingProxy(object):
                         if response is not None:
                             res_topic = self._to_string(
                                 response.header.to_topic)
-                            self._send_kafka_message(res_topic, response)
+                            self._send_kafka_message(res_topic, response, message.header.key_topic)
 
                         log.debug("Response-sent",
                                   to_topic=res_topic)
@@ -505,9 +508,9 @@ class IKafkaMessagingProxy(object):
             log.exception("Failed-to-process-message", message=m, e=e)
 
     @inlineCallbacks
-    def _send_kafka_message(self, topic, msg):
+    def _send_kafka_message(self, topic, msg, key=None):
         try:
-            yield self.kafka_proxy.send_message(topic, msg.SerializeToString())
+            yield self.kafka_proxy.send_message(topic, msg.SerializeToString(), key)
         except Exception as e:
             log.exception("Failed-sending-message", message=msg, e=e)
 
@@ -516,6 +519,7 @@ class IKafkaMessagingProxy(object):
                      rpc,
                      to_topic,
                      reply_topic=None,
+                     key_topic=None,
                      callback=None,
                      **kwargs):
         """
@@ -536,12 +540,14 @@ class IKafkaMessagingProxy(object):
             rpc = self._to_string(rpc)
             to_topic = self._to_string(to_topic)
             reply_topic = self._to_string(reply_topic)
+            key_topic = self._to_string(key_topic)
 
             request, transaction_id, response_required = \
                 self._format_request(
                     rpc=rpc,
                     to_topic=to_topic,
                     reply_topic=reply_topic,
+                    key_topic=key_topic,
                     **kwargs)
 
             if request is None:
@@ -557,7 +563,7 @@ class IKafkaMessagingProxy(object):
                     self._to_string(request.header.id)] = wait_for_result
             log.debug("message-send", transaction_id=transaction_id, to_topic=to_topic,
                       from_topic=reply_topic)
-            yield self._send_kafka_message(to_topic, request)
+            yield self._send_kafka_message(to_topic, request, key_topic)
             log.debug("message-sent", transaction_id=transaction_id, to_topic=to_topic,
                       from_topic=reply_topic)
 
