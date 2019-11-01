@@ -310,6 +310,7 @@ class IKafkaMessagingProxy(object):
                         rpc,
                         to_topic,
                         reply_topic,
+                        key_topic,
                         **kwargs):
         """
         Format a request to send over kafka
@@ -329,6 +330,8 @@ class IKafkaMessagingProxy(object):
             request.header.type = MessageType.Value("REQUEST")
             request.header.from_topic = reply_topic
             request.header.to_topic = to_topic
+            if key_topic is not None:
+                request.header.key_topic = key_topic
 
             response_required = False
             if reply_topic:
@@ -511,6 +514,7 @@ class IKafkaMessagingProxy(object):
                      rpc,
                      to_topic,
                      reply_topic=None,
+                     key_topic=None,
                      callback=None,
                      **kwargs):
         """
@@ -531,12 +535,14 @@ class IKafkaMessagingProxy(object):
             rpc = self._to_string(rpc)
             to_topic = self._to_string(to_topic)
             reply_topic = self._to_string(reply_topic)
+            key_topic = self._to_string(key_topic)
 
             request, transaction_id, response_required = \
                 self._format_request(
                     rpc=rpc,
                     to_topic=to_topic,
                     reply_topic=reply_topic,
+                    key_topic=key_topic,
                     **kwargs)
 
             if request is None:

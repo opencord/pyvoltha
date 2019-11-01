@@ -83,21 +83,24 @@ class ContainerProxy(object):
         return real_wrapper
 
     @inlineCallbacks
-    def invoke(self, rpc, to_topic=None, reply_topic=None, **kwargs):
+    def invoke(self, rpc, to_topic=None, reply_topic=None, key_topic=None, **kwargs):
         @inlineCallbacks
-        def _send_request(rpc, m_callback, to_topic, reply_topic, **kwargs):
+        def _send_request(rpc, m_callback, to_topic, reply_topic, key_topic, **kwargs):
             try:
                 log.debug("sending-request",
                           rpc=rpc,
                           to_topic=to_topic,
-                          reply_topic=reply_topic)
+                          reply_topic=reply_topic,
+                          key_topic=key_topic)
                 if to_topic is None:
                     to_topic = self.remote_topic
                 if reply_topic is None:
                     reply_topic = self.listening_topic
+                    
                 result = yield self.kafka_proxy.send_request(rpc=rpc,
                                                              to_topic=to_topic,
                                                              reply_topic=reply_topic,
+                                                             key_topic=key_topic,
                                                              callback=None,
                                                              **kwargs)
                 if not m_callback.called:
@@ -120,7 +123,7 @@ class ContainerProxy(object):
         max_retry = 2
         for timeout in timeouts:
             cb = DeferredWithTimeout(timeout=timeout)
-            _send_request(rpc, cb, to_topic, reply_topic, **kwargs)
+            _send_request(rpc, cb, to_topic, reply_topic, key_topic, **kwargs)
             try:
                 res = yield cb
                 returnValue(res)
