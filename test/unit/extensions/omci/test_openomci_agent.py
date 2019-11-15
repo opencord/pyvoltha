@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from unittest import TestCase, main
 from nose.tools import assert_raises
 from copy import deepcopy
-from mock.mock_adapter_agent import MockAdapterAgent, MockCore
+from .mock.mock_adapter_agent import MockAdapterAgent, MockCore
 from pyvoltha.adapters.extensions.omci.openomci_agent import OpenOMCIAgent, OpenOmciAgentDefaults
 from pyvoltha.adapters.extensions.omci.database.mib_db_ext import MibDbExternal
 from pyvoltha.adapters.extensions.omci.database.mib_db_dict import MibDbVolatileDict
