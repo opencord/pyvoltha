@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c83f788f_0d276b6a",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-11-15T20:55:17Z",
+      "side": 1,
+      "message": "i think this will need to be:\n\ntry:\n    from _thread import get_ident as _get_ident\nexcept ImportError:\n    from _dummy_thread import get_ident as _get_ident\n\n\nOr whatever can be made to work with python 2.7 and 3.x",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 52
+      },
+      "revId": "8e8f12ab956c0105efdf3b78953947dc7fca30a6",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
