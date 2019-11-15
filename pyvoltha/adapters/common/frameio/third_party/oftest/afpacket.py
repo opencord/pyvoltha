@@ -21,6 +21,7 @@ use ctypes to call it. The recv function exported by this module reconstructs
 the VLAN tag if it was offloaded.
 """
 
+from __future__ import absolute_import
 import struct
 from ctypes import *
 

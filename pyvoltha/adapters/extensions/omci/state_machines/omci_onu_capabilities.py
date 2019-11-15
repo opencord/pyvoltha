@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from transitions import Machine
 from twisted.internet import reactor
 from pyvoltha.adapters.extensions.omci.onu_device_entry import OnuDeviceEntry, OnuDeviceEvents, IN_SYNC_KEY
 from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
+import six
 
 
 class OnuOmciCapabilities(object):
@@ -174,7 +176,7 @@ class OnuOmciCapabilities(object):
         self._supported_msg_types = frozenset()
 
         # Drop Response and Autonomous notification subscriptions
-        for event, sub in self._subscriptions.iteritems():
+        for event, sub in six.iteritems(self._subscriptions):
             if sub is not None:
                 self._subscriptions[event] = None
                 self._device.event_bus.unsubscribe(sub)
@@ -190,7 +192,7 @@ class OnuOmciCapabilities(object):
 
         # Subscribe to events of interest
         try:
-            for event, sub in self._sub_mapping.iteritems():
+            for event, sub in six.iteritems(self._sub_mapping):
                 if self._subscriptions[event] is None:
                     self._subscriptions[event] = \
                         self._device.event_bus.subscribe(

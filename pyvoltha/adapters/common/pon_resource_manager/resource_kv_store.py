@@ -15,6 +15,7 @@
 #
 
 """Resource KV store - interface between Resource Manager and backend store."""
+from __future__ import absolute_import
 import structlog
 
 from pyvoltha.common.config.config_backend import ConsulStore
