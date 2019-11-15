@@ -13,11 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 
 from voltha_protos.device_pb2 import Image
-from omci_entities import *
-from database.mib_db_api import *
+from .omci_entities import *
+from .database.mib_db_api import *
 from enum import IntEnum
 
 

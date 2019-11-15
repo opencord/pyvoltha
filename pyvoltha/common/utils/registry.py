@@ -19,6 +19,7 @@
 Simple component registry to provide centralized access to any registered
 components.
 """
+from __future__ import absolute_import
 from collections import OrderedDict
 from zope.interface import Interface
 
@@ -62,7 +63,7 @@ class Registry(object):
         return self.components[name]
 
     def iterate(self):
-        return self.components.values()
+        return list(self.components.values())
 
 
 # public shared registry

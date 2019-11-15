@@ -17,6 +17,7 @@
 """
 Some docker related convenience functions
 """
+from __future__ import absolute_import
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
@@ -44,7 +45,7 @@ def get_my_containers_name():
         docker_cli = Client(base_url=docker_socket)
         info = docker_cli.inspect_container(my_container_id)
 
-    except Exception, e:
+    except Exception as e:
         log.exception('failed', my_container_id=my_container_id, e=e)
         raise
 
@@ -57,7 +58,7 @@ def get_all_running_containers():
         docker_cli = Client(base_url=docker_socket)
         containers = docker_cli.containers()
 
-    except Exception, e:
+    except Exception as e:
         log.exception('failed', e=e)
         raise
 
@@ -67,7 +68,7 @@ def inspect_container(id):
     try:
         docker_cli = Client(base_url=docker_socket)
         info = docker_cli.inspect_container(id)
-    except Exception, e:
+    except Exception as e:
         log.exception('failed-inspect-container', id=id, e=e)
         raise
 

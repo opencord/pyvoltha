@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 import binascii
 import structlog
 from unittest import TestCase, TestSuite, skip
@@ -52,9 +53,9 @@ class TestOmciDownload(TestCase):
         'trailer'     : '00000028',
         'mic'         : '00000000'
     }
-    
+
     # sw_dwld_resp = '0001330A000700000000001f010000'
-     
+
     ### Test Functions ###
     def sim_receive_start_sw_download_resp(self, tid, eid, r=0):
         msg = OmciFrame(
@@ -120,7 +121,7 @@ class TestOmciDownload(TestCase):
                         result = r
                     ))
         self.device.omci_cc.receive_message(msg)
-        
+
     def cb_after_send_omci(self, msg):
         self.log.debug("cb_after_send_omci")
         dmsg = OmciFrame(binascii.unhexlify(msg))
@@ -148,7 +149,7 @@ class TestOmciDownload(TestCase):
             self.log.debug("receive download section, not respond")
         elif mid == OmciDownloadSectionLast.message_id:
             self.log.debug("response download last section")
-            self.reactor.callLater(0, self.sim_receive_download_section_resp, tid, eid, 
+            self.reactor.callLater(0, self.sim_receive_download_section_resp, tid, eid,
                                    section=dmsg_body.fields["section_number"])
         elif mid == OmciActivateImage.message_id:
             self.log.debug("response activate image")
@@ -163,11 +164,11 @@ class TestOmciDownload(TestCase):
             self.reactor.callLater(0, self.sim_receive_commit_image_resp, tid, eid)
         else:
             self.log.debug("Unsupported message type", message_type=mid)
-            
+
         self.defer = Deferred()
         self.defer.addCallback(self.cb_after_send_omci)
         self.adapter_agent.send_omci_defer = self.defer
-        
+
     def setUp(self):
         self.log = structlog.get_logger()
         self.log.debug("do setup")
@@ -196,7 +197,7 @@ class TestOmciDownload(TestCase):
         self.omci_agent.database.add('1')
         self.omci_agent.database.set('1', SoftwareImage.class_id, 0, {"is_committed": 1, "is_active": 1, "is_valid": 1})
         self.omci_agent.database.set('1', SoftwareImage.class_id, 1, {"is_committed": 0, "is_active": 0, "is_valid": 1})
-        
+
     def tearDown(self):
         self.log.debug("Test is Done")
         self.omci_agent.database.remove('1')
@@ -214,10 +215,10 @@ class TestOmciDownload(TestCase):
         return m + kargs['trailer'] + kargs['mic']
 
     def sim_receive_sw_download_resp2(self):
-        r = self.get_omci_msg(self.sw_dwld_resp['tid'], self.sw_dwld_resp['mid'], 
-                              self.sw_dwld_resp['did'], self.sw_dwld_resp['entity_class'], 
-                              self.sw_dwld_resp['entity_id'], self.sw_dwld_resp['reason'], 
-                              self.sw_dwld_resp['window_size'], self.sw_dwld_resp['inst_num'], self.sw_dwld_resp['inst_id'], 
+        r = self.get_omci_msg(self.sw_dwld_resp['tid'], self.sw_dwld_resp['mid'],
+                              self.sw_dwld_resp['did'], self.sw_dwld_resp['entity_class'],
+                              self.sw_dwld_resp['entity_id'], self.sw_dwld_resp['reason'],
+                              self.sw_dwld_resp['window_size'], self.sw_dwld_resp['inst_num'], self.sw_dwld_resp['inst_id'],
                               trailer=self.sw_dwld_resp['trailer'], mic=self.sw_dwld_resp['mic'])
         data = binascii.unhexlify(r)
         #msg = OmciFrame(data)
@@ -228,22 +229,22 @@ class TestOmciDownload(TestCase):
     def sw_action_success(self, instance_id, device_id):
         self.log.debug("Action Success", device_id=device_id, entity_id=instance_id)
         self.reactor.callLater(0, self.onu_do_activate)
-        
+
     def sw_action2_success(self, instance_id, device_id):
         self.log.debug("Action2 Success", device_id=device_id, entity_id=instance_id)
 
     def sw_action_fail(self, fail, device_id):
         self.log.debug("Finally Failed", device_id=device_id)
         self.log.debug(fail)
-        
+
     # def test_onu_do_activate(self):
     def onu_do_activate(self):
-        self.log.debug("do test_onu_do_activate") 
+        self.log.debug("do test_onu_do_activate")
         self.defer = self.device.do_onu_image_activate(self._image_dnld.name)
         self.defer.addCallbacks(self.sw_action2_success, self.sw_action_fail, callbackArgs=(self.device_id,), errbackArgs=(self.device_id,))
         self.reactor.callLater(100, self.stop)
         # self.reactor.run()
-        
+
     @skip("for Jenkins Verification")
     def test_onu_do_software_upgrade(self):
         self.log.debug("do test_onu_do_software_upgrade", download=self._image_dnld)
@@ -254,14 +255,14 @@ class TestOmciDownload(TestCase):
         # self.reactor.callLater(1, self.sim_receive_start_sw_download_resp)
         # self.reactor.callLater(12, self.stop)
         self.reactor.run()
-        
+
     @skip("Not used")
     def test_omci_message(self):
-        self.log.debug("do test_omci_message") 
-        r = self.get_omci_msg(self.sw_dwld_resp['tid'], self.sw_dwld_resp['mid'], 
-                              self.sw_dwld_resp['did'], self.sw_dwld_resp['entity_class'], 
-                              self.sw_dwld_resp['entity_id'], self.sw_dwld_resp['reason'], 
-                              self.sw_dwld_resp['window_size'], self.sw_dwld_resp['inst_num'], self.sw_dwld_resp['inst_id'], 
+        self.log.debug("do test_omci_message")
+        r = self.get_omci_msg(self.sw_dwld_resp['tid'], self.sw_dwld_resp['mid'],
+                              self.sw_dwld_resp['did'], self.sw_dwld_resp['entity_class'],
+                              self.sw_dwld_resp['entity_id'], self.sw_dwld_resp['reason'],
+                              self.sw_dwld_resp['window_size'], self.sw_dwld_resp['inst_num'], self.sw_dwld_resp['inst_id'],
                               trailer=self.sw_dwld_resp['trailer'], mic=self.sw_dwld_resp['mic'])
         data = binascii.unhexlify(r)
         msg = OmciFrame(data)
@@ -273,7 +274,7 @@ class TestOmciDownload(TestCase):
 
     @skip("Not used")
     def test_omci_message2(self):
-        self.log.debug("do test_omci_message2") 
+        self.log.debug("do test_omci_message2")
         msg = OmciFrame(
                     transaction_id=0x0001,
                     message_type=OmciStartSoftwareDownloadResponse.message_id,
@@ -287,7 +288,7 @@ class TestOmciDownload(TestCase):
                     )
               )
         self.log.debug(binascii.hexlify(str(msg)))
-        
+
 this_suite = TestSuite()
 # this_suite.addTest(TestOmciDownload('test_onu_do_software_upgrade'))
 # this_suite.addTest(TestOmciDownload('test_onu_do_activate'))

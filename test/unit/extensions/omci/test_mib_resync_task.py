@@ -13,12 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from unittest import main, TestCase
 from pyvoltha.adapters.extensions.omci.omci_entities import *
 from pyvoltha.adapters.extensions.omci.tasks.mib_resync_task import MibResyncTask
 from pyvoltha.adapters.extensions.omci.database.mib_db_dict import MibDbVolatileDict as OnuDB
 from pyvoltha.adapters.extensions.omci.database.mib_db_ext import MibDbExternal as OltDB
-from mock.mock_adapter_agent import MockAdapterAgent, MockDevice
+from .mock.mock_adapter_agent import MockAdapterAgent, MockDevice
 
 _DEVICE_ID = 'br-549'
 
@@ -145,7 +146,7 @@ class TestOmciMibResyncTask(TestCase):
         class_id = OntG.class_id
         inst_id = 0
         attributes = {
-            'extended_tc_layer_options': long(0x1234),        # BitField(16)
+            'extended_tc_layer_options': int(0x1234),        # BitField(16)
         }
         self.onu_db.set(_DEVICE_ID, class_id, inst_id, attributes)
         self.olt_db.set(_DEVICE_ID, class_id, inst_id, attributes)

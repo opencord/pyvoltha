@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, division
 import arrow
-from twisted.internet.defer import inlineCallbacks, returnValue 
+from twisted.internet.defer import inlineCallbacks, returnValue
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
 from voltha_protos.events_pb2 import KpiEvent2, MetricInformation, MetricMetaData, KpiEventType
 from voltha_protos.events_pb2 import Event, EventType
@@ -27,6 +28,7 @@ from pyvoltha.adapters.extensions.omci.omci_entities import \
     GemPortNetworkCtpMonitoringHistoryData, XgPonTcPerformanceMonitoringHistoryData, \
     XgPonDownstreamPerformanceMonitoringHistoryData, \
     XgPonUpstreamPerformanceMonitoringHistoryData
+import six
 
 
 class OnuPmIntervalMetrics(AdapterPmMetrics):
@@ -322,7 +324,7 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
                                                                type=pm.type,
                                                                enabled=pm.enabled)])
 
-        pm_config.groups.extend([stats for stats in self.pm_group_metrics.itervalues()])
+        pm_config.groups.extend([stats for stats in six.itervalues(self.pm_group_metrics)])
 
         return pm_config
 
@@ -377,10 +379,10 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
                                               context=context)
                     slice_data = [MetricInformation(metadata=metadata, metrics=metrics)]
                     raised_ts = arrow.utcnow().timestamp
-                    event_header = self.event_mgr.get_event_header(EventType.KPI_EVENT2, 
+                    event_header = self.event_mgr.get_event_header(EventType.KPI_EVENT2,
                                                                    self._category,
                                                                    self._sub_category,
-                                                                   self._event, 
+                                                                   self._event,
                                                                    raised_ts)
 
                     event_body = KpiEvent2(type=KpiEventType.slice,

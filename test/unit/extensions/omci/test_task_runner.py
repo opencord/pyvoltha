@@ -14,11 +14,12 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 from unittest import TestCase, main
 from nose.tools import raises
 from twisted.internet import defer
 from twisted.internet.defer import inlineCallbacks, returnValue, CancelledError
-from mock.mock_task import SimpleTask
+from .mock.mock_task import SimpleTask
 from nose.twistedtools import deferred
 from pyvoltha.adapters.extensions.omci.tasks.task_runner import TaskRunner
 

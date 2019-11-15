@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, division
 import arrow
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
 from voltha_protos.events_pb2 import MetricInformation, MetricMetaData
@@ -222,7 +223,7 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
 
         # Scan all ANI-G ports
         ani_g_entities = self._omci_onu_device.configuration.ani_g_entities
-        ani_g_entities_ids = ani_g_entities.keys() if ani_g_entities is not None else None
+        ani_g_entities_ids = list(ani_g_entities.keys()) if ani_g_entities is not None else None
         metrics_info = []
 
         if ani_g_entities_ids is not None and len(ani_g_entities_ids):
@@ -269,9 +270,9 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
 
         # Scan all UNI-G and PPTP ports
         uni_g_entities = self._omci_onu_device.configuration.uni_g_entities
-        uni_g_entities_ids = uni_g_entities.keys() if uni_g_entities is not None else None
+        uni_g_entities_ids = list(uni_g_entities.keys()) if uni_g_entities is not None else None
         pptp_entities = self._omci_onu_device.configuration.pptp_entities
-        pptp_entities_ids = pptp_entities.keys() if pptp_entities is not None else None
+        pptp_entities_ids = list(pptp_entities.keys()) if pptp_entities is not None else None
 
         metrics_info = []
 

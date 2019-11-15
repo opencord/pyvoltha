@@ -18,10 +18,12 @@
 Some consul related convenience functions
 """
 
+from __future__ import absolute_import
 from structlog import get_logger
 from consul import Consul
 from random import randint
-from nethelpers import get_my_primary_local_ipv4
+from .nethelpers import get_my_primary_local_ipv4
+from six.moves import range
 
 log = get_logger()
 
@@ -56,7 +58,7 @@ def verify_all_services_healthy(consul_endpoint, service_name=None,
 
     services = get_all_services(consul_endpoint)
 
-    items = services.keys()
+    items = list(services.keys())
 
     if number_of_expected_services is not None and \
                     len(items) != number_of_expected_services:
@@ -158,7 +160,7 @@ def get_healthy_instances(consul_endpoint, service_name=None,
 
     services = get_all_services(consul_endpoint)
 
-    items = services.keys()
+    items = list(services.keys())
 
     if number_of_expected_services is not None and \
                     len(items) != number_of_expected_services:

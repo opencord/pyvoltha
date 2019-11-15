@@ -17,6 +17,7 @@
 OMCI Message support
 """
 
+from __future__ import absolute_import, division
 import sys
 import arrow
 from twisted.internet import reactor, defer
@@ -31,12 +32,7 @@ from pyvoltha.common.event_bus import EventBusClient
 from voltha_protos.inter_container_pb2 import InterAdapterMessageType, InterAdapterOmciMessage
 from enum import IntEnum
 from binascii import hexlify
-
-
-def hexify(buffer):
-    """Return a hexadecimal string encoding of input buffer"""
-    return ''.join('%02x' % ord(c) for c in buffer)
-
+import codecs
 
 DEFAULT_OMCI_TIMEOUT = 10       # 3               # Seconds
 MAX_OMCI_REQUEST_AGE = 60                          # Seconds
@@ -139,7 +135,7 @@ class OMCI_CC(object):
         self._rx_unknown_me = 0       # Number of managed entities Rx without a decode definition
         self._tx_errors = 0           # Exceptions during tx request
         self._consecutive_errors = 0  # Rx & Tx errors in a row, a good RX resets this to 0
-        self._reply_min = sys.maxint  # Fastest successful tx -> rx
+        self._reply_min = sys.maxsize # Fastest successful tx -> rx
         self._reply_max = 0           # Longest successful tx -> rx
         self._reply_sum = 0.0         # Total seconds for successful tx->rx (float for average)
         self._max_hp_tx_queue = 0     # Maximum size of high priority tx pending queue
@@ -240,16 +236,16 @@ class OMCI_CC(object):
 
     @property
     def reply_min(self):
-        return int(round(self._reply_min * 1000.0))     # Milliseconds
+        return int(self._reply_min * 1000.0)     # Milliseconds
 
     @property
     def reply_max(self):
-        return int(round(self._reply_max * 1000.0))     # Milliseconds
+        return int(self._reply_max * 1000.0)     # Milliseconds
 
     @property
     def reply_average(self):
         avg = self._reply_sum / self._rx_frames if self._rx_frames > 0 else 0.0
-        return int(round(avg * 1000.0))     # Milliseconds
+        return int(avg * 1000.0)     # Milliseconds
 
     @property
     def hp_tx_queue_len(self):
@@ -843,7 +839,7 @@ class OMCI_CC(object):
                                        errbackArgs=(tx_tid, high_priority))
 
                     omci_msg = InterAdapterOmciMessage(
-                        message=hexify(str(frame)),
+                        message=hexify(frame),
                         proxy_address=self._proxy_address,
                         connect_status=self._device.connect_status)
 
@@ -924,7 +920,7 @@ class OMCI_CC(object):
     def send_start_software_download(self, image_inst_id, image_size, window_size, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
         frame = SoftwareImageFrame(image_inst_id).start_software_download(image_size, window_size-1)
         return self.send(frame, timeout, 3, high_priority=high_priority)
-        
+
     def send_download_section(self, image_inst_id, section_num, data, size=DEFAULT_OMCI_DOWNLOAD_SECTION_SIZE, timeout=0, high_priority=False):
         """
         # timeout=0 indicates no repons needed
@@ -935,10 +931,10 @@ class OMCI_CC(object):
         else:
             frame = SoftwareImageFrame(image_inst_id).download_section(False, section_num, data)
         return self.send(frame, timeout, high_priority=high_priority)
-        
+
         # if timeout > 0:
-        #     self.reactor.callLater(0, self.sim_receive_download_section_resp, 
-        #                            frame.fields["transaction_id"], 
+        #     self.reactor.callLater(0, self.sim_receive_download_section_resp,
+        #                            frame.fields["transaction_id"],
         #                            frame.fields["omci_message"].fields["section_number"])
         # return d
 

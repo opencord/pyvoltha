@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import arrow
 from pyvoltha.adapters.extensions.events.device_events.olt.olt_los_event import OltLosEvent
 from pyvoltha.adapters.extensions.events.device_events.device_events.onu.onu_dying_gasp_event import OnuDyingGaspEvent

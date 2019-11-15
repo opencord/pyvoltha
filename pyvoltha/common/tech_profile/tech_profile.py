@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import json
 import ast
 from collections import namedtuple
@@ -23,6 +24,7 @@ from pyvoltha.common.config.config_backend  import ConsulStore
 from pyvoltha.common.config.config_backend import EtcdStore
 from pyvoltha.common.utils.registry import registry
 from voltha_protos import openolt_pb2
+from six.moves import range
 
 # logger
 log = structlog.get_logger()
@@ -250,7 +252,7 @@ class TechProfile(object):
             tech_profile_instance = json.loads(tech_profile_instance,
                                                object_hook=lambda d:
                                                namedtuple('tech_profile_instance',
-                                                          d.keys())(*d.values()))
+                                                          list(d.keys()))(*list(d.values())))
             log.debug("Tech-profile-instance-after-json-to-object-conversion", path=path,
                       tech_profile_instance=tech_profile_instance)
             return tech_profile_instance

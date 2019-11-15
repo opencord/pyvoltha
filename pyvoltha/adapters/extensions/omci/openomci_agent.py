@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from twisted.internet import reactor
 from pyvoltha.adapters.extensions.omci.database.mib_db_dict import MibDbVolatileDict
@@ -36,6 +37,7 @@ from pyvoltha.adapters.extensions.omci.tasks.omci_delete_pm_task import OmciDele
 from pyvoltha.adapters.extensions.omci.state_machines.image_agent import ImageDownloadeSTM, OmciSoftwareImageDownloadSTM
 from pyvoltha.adapters.extensions.omci.tasks.file_download_task import FileDownloadTask
 from pyvoltha.adapters.extensions.omci.tasks.omci_sw_image_upgrade_task import OmciSwImageUpgradeTask
+import six
 
 OpenOmciAgentDefaults = {
     'mib-synchronizer': {
@@ -171,7 +173,7 @@ class OpenOMCIAgent(object):
             self._mib_db.start()
             self._alarm_db.start()
 
-            for device in self._devices.itervalues():
+            for device in six.itervalues(self._devices):
                 device.start()
 
         except Exception as e:
@@ -189,7 +191,7 @@ class OpenOMCIAgent(object):
         self._event_bus = None
 
         # ONUs OMCI shutdown
-        for device in self._devices.itervalues():
+        for device in six.itervalues(self._devices):
             device.stop()
 
         # DB shutdown
@@ -272,7 +274,7 @@ class OpenOMCIAgent(object):
 
         :return: (frozenset) Set of device IDs (str)
         """
-        return frozenset(self._devices.keys())
+        return frozenset(list(self._devices.keys()))
 
     def get_device(self, device_id):
         """

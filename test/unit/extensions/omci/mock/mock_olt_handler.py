@@ -14,9 +14,11 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 import sys
-from mock_adapter_agent import MockDevice
+from .mock_adapter_agent import MockDevice
 from nose.twistedtools import reactor
+from six.moves import range
 
 
 class MockOltHandler(MockDevice):
@@ -45,7 +47,7 @@ class MockOltHandler(MockDevice):
 
         self.enabled = True                # OLT is enabled/active
         self.activated_onus = set()        # Activated ONU serial numbers
-        self.enabled_pons = range(0, 16)   # Enabled PONs
+        self.enabled_pons = list(range(0, 16))   # Enabled PONs
         self.max_tx = sys.maxint           # Fail after this many tx requests
         self.latency = 0.0                 # OMCI response latency (keep small)
 
@@ -101,7 +103,7 @@ class MockOltHandler(MockDevice):
     def _deliver_proxy_message(self, proxy_address, response):
         from common.frameio.frameio import hexify
         self._adapter_agent.receive_proxied_message(proxy_address,
-                                                    hexify(str(response)))
+                                                    hexify(response))
 
     def receive_proxied_message(self, _, __):
         assert False, 'This is never called on the OLT side of proxy messaging'

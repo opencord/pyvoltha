@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from copy import copy
 
 from jsonpatch import JsonPatch
@@ -29,6 +30,7 @@ from pyvoltha.common.config.merge_3way import merge_3way
 from voltha_protos import meta_pb2
 
 import structlog
+import six
 
 log = structlog.get_logger()
 
@@ -40,7 +42,7 @@ def check_access_violation(new_msg, old_msg):
     """Raise ValueError if attempt is made to change a read-only field"""
     access_map = access_rights(new_msg.__class__)
     violated_fields = []
-    for field_name, access in access_map.iteritems():
+    for field_name, access in six.iteritems(access_map):
         if access == meta_pb2.READ_ONLY:
             if getattr(new_msg, field_name) != getattr(old_msg, field_name):
                 violated_fields.append(field_name)
@@ -104,7 +106,7 @@ class ConfigNode(object):
         # separate external children data away from locally stored data
         # based on child_node annotations in protobuf
         children = {}
-        for field_name, field in children_fields(self._type).iteritems():
+        for field_name, field in six.iteritems(children_fields(self._type)):
             field_value = getattr(data, field_name)
             if field.is_container:
                 if field.key:
@@ -135,7 +137,7 @@ class ConfigNode(object):
 
     @property
     def revisions(self):
-        return [r._hash for r in self._branches[None]._revs.itervalues()]
+        return [r._hash for r in six.itervalues(self._branches[None]._revs)]
 
     @property
     def latest(self):
@@ -506,7 +508,7 @@ class ConfigNode(object):
 
     @property
     def tags(self):
-        return sorted(self._tags.iterkeys())
+        return sorted(six.iterkeys(self._tags))
 
     def by_tag(self, tag):
         """
@@ -530,7 +532,7 @@ class ConfigNode(object):
 
     def prune_untagged(self):
         branch = self._branches[None]
-        keep = set(rev.hash for rev in self._tags.itervalues())
+        keep = set(rev.hash for rev in six.itervalues(self._tags))
         keep.add(branch._latest.hash)
         for hash in branch._revs.keys():
             if hash not in keep:

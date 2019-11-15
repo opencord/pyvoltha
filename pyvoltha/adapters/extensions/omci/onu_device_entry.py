@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 import structlog
 from copy import deepcopy
 from voltha_protos.device_pb2 import ImageDownload
@@ -30,6 +31,7 @@ from pyvoltha.adapters.extensions.omci.state_machines.image_agent import ImageAg
 
 from twisted.internet import reactor, defer
 from enum import IntEnum
+import six
 
 OP = EntityOperations
 RC = ReasonCodes
@@ -545,7 +547,7 @@ class OnuDeviceEntry(object):
         """
         self.log.debug('query-single', class_id=class_id,
                        instance_id=instance_id, attributes=attribute)
-        assert isinstance(attribute, basestring), \
+        assert isinstance(attribute, six.string_types), \
             'Only a single attribute value can be retrieved'
 
         entry = self.mib_synchronizer.query_mib(class_id=class_id,

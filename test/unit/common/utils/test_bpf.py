@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 from unittest import TestCase, main
 
 from scapy.layers.l2 import Ether, Dot1Q
@@ -25,8 +26,8 @@ class TestBpf(TestCase):
         pcp = 7
         frame_match = 'ether[14:2] = 0x{:01x}{:03x}'.format(pcp << 1, vid)
         filter = BpfProgramFilter(frame_match)
-        self.assertTrue(filter(str(Ether()/Dot1Q(prio=pcp, vlan=vid))))
-        self.assertFalse(filter(str(Ether()/Dot1Q(prio=pcp, vlan=4000))))
+        self.assertTrue(filter(bytes(Ether()/Dot1Q(prio=pcp, vlan=vid))))
+        self.assertFalse(filter(bytes(Ether()/Dot1Q(prio=pcp, vlan=4000))))
 
     def test_bpf2(self):
         vid1 = 4090
@@ -39,9 +40,9 @@ class TestBpf(TestCase):
 
         filter = BpfProgramFilter('{} or {}'.format(
             frame_match_case1, frame_match_case2))
-        self.assertTrue(filter(str(Ether()/Dot1Q(prio=pcp1, vlan=vid1))))
-        self.assertTrue(filter(str(Ether()/Dot1Q(vlan=vid2))))
-        self.assertFalse(filter(str(Ether()/Dot1Q(vlan=4001))))
+        self.assertTrue(filter(bytes(Ether()/Dot1Q(prio=pcp1, vlan=vid1))))
+        self.assertTrue(filter(bytes(Ether()/Dot1Q(vlan=vid2))))
+        self.assertFalse(filter(bytes(Ether()/Dot1Q(vlan=4001))))
 
 
 if __name__ == '__main__':

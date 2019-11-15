@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from twisted.internet.defer import inlineCallbacks, failure
 from twisted.internet import reactor
 import requests

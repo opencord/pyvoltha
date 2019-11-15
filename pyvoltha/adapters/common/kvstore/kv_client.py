@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 from pyvoltha.common.utils.asleep import asleep
 from structlog import get_logger
 from twisted.internet.defer import inlineCallbacks, returnValue
+from six.moves import range
 
 log = get_logger()
 

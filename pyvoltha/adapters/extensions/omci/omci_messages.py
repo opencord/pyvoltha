@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from scapy.fields import ByteField, ThreeBytesField, StrFixedLenField, ConditionalField, IntField, Field
 from scapy.fields import ShortField, BitField
@@ -93,13 +94,13 @@ class OmciMaskedData(Field):
         for index in indices:
             try:
                 fld = entity_class.attributes[index].field
-            except IndexError, e:
+            except IndexError as e:
                 log.error("attribute-decode-failure", attribute_index=index,
                           entity_class=entity_class, e=e)
                 continue
             try:
                 s, value = fld.getfield(pkt, s)
-            except Exception, _e:
+            except Exception as _e:
                 raise
             if isinstance(pkt, OmciGetResponse) and isinstance(fld, OmciTableField):
                 data[fld.name + '_size'] = value

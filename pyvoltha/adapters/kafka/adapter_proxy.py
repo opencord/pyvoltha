@@ -18,13 +18,16 @@
 Agent to play gateway between adapters.
 """
 
+from __future__ import absolute_import
 import structlog
 from uuid import uuid4
 from twisted.internet.defer import inlineCallbacks, returnValue
-from container_proxy import ContainerProxy
+from .container_proxy import ContainerProxy
 from voltha_protos.inter_container_pb2 import InterAdapterHeader, \
     InterAdapterMessage
 import time
+import codecs
+import six
 
 log = structlog.get_logger()
 
@@ -38,12 +41,12 @@ class AdapterProxy(ContainerProxy):
 
     def _to_string(self, unicode_str):
         if unicode_str is not None:
-            if type(unicode_str) == unicode:
-                return unicode_str.encode('ascii', 'ignore')
-            else:
+            if isinstance(unicode_str, six.string_types):
                 return unicode_str
+            else:
+                return codecs.encode(unicode_str, 'ascii')
         else:
-            return ""
+            return None
 
     @ContainerProxy.wrap_request(None)
     @inlineCallbacks

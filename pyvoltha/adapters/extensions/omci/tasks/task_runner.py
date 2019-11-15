@@ -13,8 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from twisted.internet import reactor
+import six
 
 
 class TaskRunner(object):
@@ -48,7 +50,7 @@ class TaskRunner(object):
         Get the number of tasks pending to run
         """
         count = 0
-        for tasks in self._pending_queue.itervalues():
+        for tasks in six.itervalues(self._pending_queue):
             count += len(tasks)
         return count
 
@@ -102,14 +104,14 @@ class TaskRunner(object):
             rq, self._running_queue = self._running_queue, dict()
 
             # Stop running tasks
-            for task in rq.itervalues():
+            for task in six.itervalues(rq):
                 try:
                     task.stop()
                 except:
                     pass
 
             # Kill pending tasks
-            for d in pq.iterkeys():
+            for d in six.iterkeys(pq):
                 try:
                     d.cancel()
                 except:
@@ -127,12 +129,12 @@ class TaskRunner(object):
         if self._active and len(self._pending_queue) > 0:
             # Cannot run a new task if a running one needs the OMCI_CC exclusively
 
-            if any(task.exclusive for task in self._running_queue.itervalues()):
+            if any(task.exclusive for task in six.itervalues(self._running_queue)):
                 self.log.debug('exclusive-running')
                 return    # An exclusive task is already running
 
             try:
-                priorities = [k for k in self._pending_queue.iterkeys()]
+                priorities = [k for k in six.iterkeys(self._pending_queue)]
                 priorities.sort(reverse=True)
                 highest_priority = priorities[0] if len(priorities) else None
 
@@ -216,7 +218,7 @@ class TaskRunner(object):
         except Exception as e:
             # Check the pending queue
 
-            for priority, tasks in self._pending_queue.iteritems():
+            for priority, tasks in six.iteritems(self._pending_queue):
                 found = next((t for t in tasks if t.task_id == task.task_id), None)
 
                 if found is not None:
@@ -273,7 +275,7 @@ class TaskRunner(object):
             reactor.callLater(0, self._run_next_task)
 
         else:
-            for priority, tasks in self._pending_queue.iteritems():
+            for priority, tasks in six.iteritems(self._pending_queue):
                 task = next((t for t in tasks if t.task_id == task_id), None)
 
                 if task is not None:

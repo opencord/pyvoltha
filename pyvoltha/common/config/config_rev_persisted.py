@@ -17,12 +17,14 @@
 """
 A config rev object that persists itself
 """
+from __future__ import absolute_import
 from bz2 import compress, decompress
 
 import structlog
 from simplejson import dumps, loads
 
 from pyvoltha.common.config.config_rev import ConfigRevision, children_fields
+import six
 
 log = structlog.get_logger()
 
@@ -50,7 +52,7 @@ class PersistedConfigRevision(ConfigRevision):
                 assert self.__weakref__ is None
                 if self._hash in self._kv_store:
                     del self._kv_store[self._hash]
-        except Exception, e:
+        except Exception as e:
             # this should never happen
             log.exception('del-error', hash=self.hash, e=e)
 
@@ -64,7 +66,7 @@ class PersistedConfigRevision(ConfigRevision):
             self.store_config()
 
             children_lists = {}
-            for field_name, children in self._children.iteritems():
+            for field_name, children in six.iteritems(self._children):
                 hashes = [rev.hash for rev in children]
                 children_lists[field_name] = hashes
 
@@ -78,7 +80,7 @@ class PersistedConfigRevision(ConfigRevision):
 
             self._kv_store[self._hash] = blob
 
-        except Exception, e:
+        except Exception as e:
             log.exception('store-error', e=e)
 
     @classmethod
@@ -95,7 +97,7 @@ class PersistedConfigRevision(ConfigRevision):
         children_list = data['children']
         assembled_children = {}
         node = branch._node
-        for field_name, meta in children_fields(msg_cls).iteritems():
+        for field_name, meta in six.iteritems(children_fields(msg_cls)):
             child_msg_cls = tmp_cls_loader(meta.module, meta.type)
             children = []
             for child_hash in children_list[field_name]:

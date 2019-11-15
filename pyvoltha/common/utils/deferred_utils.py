@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.internet.error import AlreadyCalled

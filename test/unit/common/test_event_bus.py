@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import re
 
 from mock import Mock
@@ -21,6 +22,7 @@ from twisted.internet.defer import DeferredQueue, inlineCallbacks
 from twisted.trial.unittest import TestCase
 
 from pyvoltha.common.event_bus import EventBusClient, EventBus
+from six.moves import range
 
 
 class TestEventBus(TestCase):
@@ -187,11 +189,11 @@ class TestEventBus(TestCase):
 
         ebc.subscribe('', lambda _, msg: queue.put(msg))
 
-        for i in xrange(10):
+        for i in range(10):
             ebc.publish('', i)
 
         self.assertEqual(len(queue.pending), 10)
-        for i in xrange(10):
+        for i in range(10):
             msg = yield queue.get()
             self.assertEqual(msg, i)
         self.assertEqual(len(queue.pending), 0)

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from enum import Enum
 
@@ -145,7 +146,7 @@ class ConfigProxy(object):
         for callback, args, kw in lst:
             try:
                 context = callback(context, *args, **kw)
-            except Exception, e:
+            except Exception as e:
                 if proceed_on_errors:
                     log.exception(
                         'call-back-error', callback_type=callback_type,

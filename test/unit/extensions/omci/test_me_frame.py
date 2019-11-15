@@ -13,23 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from unittest import TestCase, main
 from nose.tools import assert_raises
 from pyvoltha.adapters.extensions.omci.me_frame import *
 from pyvoltha.adapters.extensions.omci.omci_me import *
 from pyvoltha.adapters.extensions.omci.omci import *
+import codecs
 
 
-def hexify(buffer):
+def hexify(frame):
     """Return a hexadecimal string encoding of input buffer"""
-    return ''.join('%02x' % ord(c) for c in buffer)
-
+    return codecs.encode(bytes(frame),'hex')
 
 class TestSelectMeFrameGeneration(TestCase):
 
     def assertGeneratedFrameEquals(self, frame, ref):
         assert isinstance(frame, Packet)
-        serialized_hexified_frame = hexify(str(frame)).upper()
+        serialized_hexified_frame = hexify(frame).upper()
         ref = ref.upper()
         if serialized_hexified_frame != ref:
             self.fail('Mismatch:\nReference:\n{}\nGenerated (bad):\n{}'.format(
@@ -37,46 +38,46 @@ class TestSelectMeFrameGeneration(TestCase):
             ))
 
     def test_mib_reset_message_serialization(self):
-        ref = '00004F0A000200000000000000000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'00004F0A000200000000000000000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         frame = OntDataFrame().mib_reset()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_gal_ethernet_profile(self):
-        ref = '0000440A011000010030000000000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A011000010030000000000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         frame = GalEthernetProfileFrame(1, max_gem_payload_size=48).create()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_tcont_1(self):
-        ref = '0000480A010680008000040000000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A010680008000040000000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
 
         frame = TcontFrame(0x8000, alloc_id=0x400).set()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_tcont_2(self):
-        ref = '0000480A010680018000040100000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A010680018000040100000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
 
         frame = TcontFrame(0x8001, alloc_id=0x401).set()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_8021p_mapper_service_profile(self):
-        ref = '0000440A00828000ffffffffffffffff' \
-              'ffffffffffffffffffff000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A00828000ffffffffffffffff' \
+              b'ffffffffffffffffffff000000000000' \
+              b'000000000000000000000028'
         frame = Ieee8021pMapperServiceProfileFrame(0x8000).create()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_mac_bridge_service_profile(self):
-        ref = '0000440A002D02010001008000140002' \
-              '000f0001000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A002D02010001008000140002' \
+              b'000f0001000000000000000000000000' \
+              b'000000000000000000000028'
         data = dict(
             spanning_tree_ind=False,
             learning_ind=True,
@@ -90,9 +91,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_gem_port_network_ctp(self):
-        ref = '0000440A010C01000400800003010000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A010C01000400800003010000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
 
         data = dict(
             port_id=0x400,
@@ -111,9 +112,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_gem_inteworking_tp(self):
-        ref = '0000440A010A80010100058000000000' \
-              '01000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A010A80010100058000000000' \
+              b'01000000000000000000000000000000' \
+              b'000000000000000000000028'
         frame = GemInterworkingTpFrame(0x8001,
                                        gem_port_network_ctp_pointer=0x100,
                                        interworking_option=5,
@@ -124,9 +125,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_8021p_mapper_service_profile(self):
-        ref = '0000480A008280007F80800100000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A008280007F80800100000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         ptrs = [0x8001, 0, 0, 0, 0, 0, 0, 0]
         frame = Ieee8021pMapperServiceProfileFrame(0x8000,
                                                    interwork_tp_pointers=ptrs).set()
@@ -140,9 +141,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_mac_bridge_port_configuration_data(self):
-        ref = '0000440A002F21010201020380000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A002F21010201020380000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
 
         frame = MacBridgePortConfigurationDataFrame(0x2101,
                                                     bridge_id_pointer=0x201,
@@ -152,18 +153,18 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_vlan_tagging_filter_data(self):
-        ref = '0000440A005421010400000000000000' \
-              '00000000000000000000000000000000' \
-              '100100000000000000000028'
+        ref = b'0000440A005421010400000000000000' \
+              b'00000000000000000000000000000000' \
+              b'100100000000000000000028'
         frame = VlanTaggingFilterDataFrame(0x2101,
                                            vlan_tcis=[0x400],
                                            forward_operation=0x10).create()
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_extended_vlan_tagging_operation_configuration_data(self):
-        ref = '0000440A00AB02020A04010000000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A00AB02020A04010000000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         data = dict(
             association_type=10,
             associated_me_pointer=0x401
@@ -176,9 +177,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_extended_vlan_tagging_operation_configuration_data(self):
-        ref = '0000480A00AB02023800810081000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A00AB02023800810081000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         data = dict(
             input_tpid=0x8100,
             output_tpid=0x8100,
@@ -192,9 +193,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_extended_vlan_tagging_1(self):
-        ref = '0000480A00AB02020400f00000008200' \
-              '5000402f000000082004000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A00AB02020400f00000008200' \
+              b'5000402f000000082004000000000000' \
+              b'000000000000000000000028'
         data = dict(
             received_frame_vlan_tagging_operation_table=\
                 VlanTaggingOperation(
@@ -219,9 +220,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_extended_vlan_tagging_2(self):
-        ref = '0000480A00AB02020400F00000008200' \
-              'd000402f00000008200c000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A00AB02020400F00000008200' \
+              b'd000402f00000008200c000000000000' \
+              b'000000000000000000000028'
         data = dict(
             received_frame_vlan_tagging_operation_table=
                 VlanTaggingOperation(
@@ -247,9 +248,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_create_mac_bridge_port_configuration_data2(self):
-        ref = '0000440A002F02010201010b04010000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000440A002F02010201010b04010000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         data = dict(
             bridge_id_pointer=0x201,
             encapsulation_methods=0,
@@ -268,9 +269,9 @@ class TestSelectMeFrameGeneration(TestCase):
         self.assertGeneratedFrameEquals(frame, ref)
 
     def test_set_pptp_ethernet_uni_frame(self):
-        ref = '0000480A000B020109000005EE000000' \
-              '00000000000000000000000000000000' \
-              '000000000000000000000028'
+        ref = b'0000480A000B020109000005EE000000' \
+              b'00000000000000000000000000000000' \
+              b'000000000000000000000028'
         data = dict(
             administrative_state=0,  # 0 - Unlock
             max_frame_size=1518      # two-octet field

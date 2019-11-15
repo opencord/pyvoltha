@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 import arrow
 from transitions import Machine
@@ -36,6 +37,7 @@ from pyvoltha.adapters.extensions.omci.omci_entities import EthernetPMMonitoring
     EthernetFrameDownstreamPerformanceMonitoringHistoryData, \
     EthernetFrameExtendedPerformanceMonitoring, \
     EthernetFrameExtendedPerformanceMonitoring64Bit, AniG
+import six
 
 
 RxEvent = OmciCCRxEvents
@@ -339,7 +341,7 @@ class PerformanceIntervals(object):
         self._next_interval = None
 
         # Drop OMCI ME Response subscriptions
-        for event, sub in self._omci_cc_subscriptions.iteritems():
+        for event, sub in six.iteritems(self._omci_cc_subscriptions):
             if sub is not None:
                 self._omci_cc_subscriptions[event] = None
                 self._device.omci_cc.event_bus.unsubscribe(sub)
@@ -350,14 +352,14 @@ class PerformanceIntervals(object):
         unis = config.uni_g_entities
 
         if anis is not None:
-            for entity_id in anis.iterkeys():
+            for entity_id in six.iterkeys(anis):
                 self.delete_pm_me(FecPerformanceMonitoringHistoryData.class_id, entity_id)
                 self.delete_pm_me(XgPonTcPerformanceMonitoringHistoryData.class_id, entity_id)
                 self.delete_pm_me(XgPonDownstreamPerformanceMonitoringHistoryData.class_id, entity_id)
                 self.delete_pm_me(XgPonUpstreamPerformanceMonitoringHistoryData.class_id, entity_id)
 
         if unis is not None:
-            for entity_id in config.uni_g_entities.iterkeys():
+            for entity_id in six.iterkeys(config.uni_g_entities):
                 self.delete_pm_me(EthernetPMMonitoringHistoryData.class_id, entity_id)
 
     def on_enter_starting(self):
@@ -369,7 +371,7 @@ class PerformanceIntervals(object):
 
         # Set up OMCI ME Response subscriptions
         try:
-            for event, sub in self._omci_cc_sub_mapping.iteritems():
+            for event, sub in six.iteritems(self._omci_cc_sub_mapping):
                 if self._omci_cc_subscriptions[event] is None:
                     self._omci_cc_subscriptions[event] = \
                         self._device.omci_cc.event_bus.subscribe(
@@ -386,7 +388,7 @@ class PerformanceIntervals(object):
             unis = config.uni_g_entities
 
             if anis is not None:
-                for entity_id in anis.iterkeys():
+                for entity_id in six.iterkeys(anis):
                     self.add_pm_me(FecPerformanceMonitoringHistoryData.class_id,
                                    entity_id)
                     self.add_pm_me(XgPonTcPerformanceMonitoringHistoryData.class_id,
@@ -397,12 +399,12 @@ class PerformanceIntervals(object):
                                    entity_id)
 
             if unis is not None:
-                for entity_id in config.uni_g_entities.iterkeys():
+                for entity_id in six.iterkeys(config.uni_g_entities):
                     self.add_pm_me(EthernetPMMonitoringHistoryData.class_id, entity_id)
 
             # Look for existing instances of dynamically created ME's that have PM
             # associated with them and add them now
-            for class_id in self._me_watch_list.iterkeys():
+            for class_id in six.iterkeys(self._me_watch_list):
                 instances = {k: v for k, v in
                              self._device.query_mib(class_id=class_id).items()
                              if isinstance(k, int)}
@@ -477,7 +479,7 @@ class PerformanceIntervals(object):
 
             # Scan all ANI-G ports
             ani_g_entities = self._device.configuration.ani_g_entities
-            ani_g_entities_ids = ani_g_entities.keys() if ani_g_entities is not None else None
+            ani_g_entities_ids = list(ani_g_entities.keys()) if ani_g_entities is not None else None
 
             if ani_g_entities_ids is not None and len(ani_g_entities_ids):
                 for entity_id in ani_g_entities_ids:
@@ -577,7 +579,7 @@ class PerformanceIntervals(object):
         self.advertise(OpenOmciEventType.state_change, self.state)
         self._cancel_deferred()
         self._cancel_tasks()
-        keys = self._pm_me_collect_retries.keys()
+        keys = list(self._pm_me_collect_retries.keys())
         shuffle(keys)
 
         for key in keys:
@@ -713,7 +715,7 @@ class PerformanceIntervals(object):
             status = omci_msg['success_code']
 
             if status == RC.Success:
-                for class_id in self._me_watch_list.iterkeys():
+                for class_id in six.iterkeys(self._me_watch_list):
                     # BP entity_id -> (PM class_id, PM entity_id)
                     instances = self._me_watch_list[class_id]['instances']
                     for _, me_pair in instances.items():
@@ -736,7 +738,7 @@ class PerformanceIntervals(object):
         def valid_request(stat, c_id, e_id):
             return self._omci_cc_subscriptions[RxEvent.Delete] is not None\
                 and stat in (RC.Success, RC.InstanceExists) \
-                and c_id in self._me_watch_list.keys() \
+                and c_id in list(self._me_watch_list.keys()) \
                 and e_id not in self._me_watch_list[c_id]['instances']
 
         response = msg[RX_RESPONSE_KEY]
@@ -767,7 +769,7 @@ class PerformanceIntervals(object):
         def valid_request(stat, cid, eid):
             return self._omci_cc_subscriptions[RxEvent.Delete] is not None\
                 and stat in (RC.Success, RC.UnknownInstance) \
-                and cid in self._me_watch_list.keys() \
+                and cid in list(self._me_watch_list.keys()) \
                 and eid in self._me_watch_list[cid]['instances']
 
         response = msg[RX_RESPONSE_KEY]
@@ -850,7 +852,7 @@ class PerformanceIntervals(object):
                 3: upstream_types,
                 5: downstream_types,
                 6: downstream_types,
-            }.get(tp, None)
+            }.get(tp, [None, False])
 
         if request is not None:
             assert class_id == MacBridgePortConfigurationData.class_id
@@ -882,7 +884,7 @@ class PerformanceIntervals(object):
             pm_class_ids = [class_id]
 
         if pm_class_ids is None:
-            return False     # Unable to select a supported ME for this ONU
+            return 0, 0     # Unable to select a supported ME for this ONU
 
         if add:
             for pm_class_id in pm_class_ids:

@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from twisted.internet import reactor
 from twisted.internet.defer import failure, inlineCallbacks, TimeoutError, returnValue
 from pyvoltha.adapters.extensions.omci.omci_defs import ReasonCodes, EntityOperations
@@ -21,6 +22,7 @@ from pyvoltha.adapters.extensions.omci.omci_me import MEFrame
 from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame
 from pyvoltha.adapters.extensions.omci.omci_messages import OmciGet, OmciGetNext
 from pyvoltha.adapters.extensions.omci.omci_fields import OmciTableField
+from six.moves import range
 
 RC = ReasonCodes
 OP = EntityOperations
@@ -382,9 +384,9 @@ class OmciGetRequest(Task):
 
                 # Start the loop
                 seq_no = 0
-                data_buffer = ''
+                data_buffer = b''
 
-                for offset in xrange(0, attr_size, OmciTableField.PDU_SIZE):
+                for offset in range(0, attr_size, OmciTableField.PDU_SIZE):
                     frame = OmciFrame(
                         transaction_id=None,                    # OMCI-CC will set
                         message_type=OmciGetNext.message_id,

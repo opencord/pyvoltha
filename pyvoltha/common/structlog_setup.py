@@ -16,6 +16,9 @@
 
 """Setting up proper logging for Voltha"""
 
+from __future__ import absolute_import
+import builtins # bring in python 2 to 3 compat imports: https://python-future.org/imports.html
+
 import logging
 import logging.config
 from collections import OrderedDict
@@ -24,9 +27,9 @@ import structlog
 from structlog.stdlib import BoundLogger, INFO
 
 try:
-    from thread import get_ident as _get_ident
+    from _thread import get_ident as _get_ident
 except ImportError:
-    from dummy_thread import get_ident as _get_ident
+    from _dummy_thread import get_ident as _get_ident
 
 
 class StructuredLogRenderer(object):

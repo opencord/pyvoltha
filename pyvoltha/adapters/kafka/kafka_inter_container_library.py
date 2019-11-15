@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import time
 from uuid import uuid4
 
@@ -25,10 +26,12 @@ from zope.interface import implementer
 
 from pyvoltha.common.utils import asleep
 from pyvoltha.common.utils.registry import IComponent
-from kafka_proxy import KafkaProxy, get_kafka_proxy
+from .kafka_proxy import KafkaProxy, get_kafka_proxy
 from voltha_protos.inter_container_pb2 import MessageType, Argument, \
     InterContainerRequestBody, InterContainerMessage, Header, \
     InterContainerResponseBody, StrType
+import six
+import codecs
 
 log = structlog.get_logger()
 
@@ -299,10 +302,10 @@ class IKafkaMessagingProxy(object):
 
     def _to_string(self, unicode_str):
         if unicode_str is not None:
-            if type(unicode_str) == unicode:
-                return unicode_str.encode('ascii', 'ignore')
-            else:
+            if isinstance(unicode_str, six.string_types):
                 return unicode_str
+            else:
+                return codecs.encode(unicode_str, 'ascii')
         else:
             return None
 
@@ -338,7 +341,7 @@ class IKafkaMessagingProxy(object):
 
             request.header.timestamp = int(round(time.time() * 1000))
             request_body.rpc = rpc
-            for a, b in kwargs.iteritems():
+            for a, b in six.iteritems(kwargs):
                 arg = Argument()
                 arg.key = a
                 try:
@@ -428,7 +431,7 @@ class IKafkaMessagingProxy(object):
                 result[arg.key] = arg.value
             return result
 
-        current_time = int(round(time.time() * 1000))
+        current_time = int(time.time() * 1000)
         # log.debug("Got Message", message=m)
         try:
             val = m.value()
@@ -503,7 +506,7 @@ class IKafkaMessagingProxy(object):
     def _send_kafka_message(self, topic, msg):
         try:
             yield self.kafka_proxy.send_message(topic, msg.SerializeToString())
-        except Exception, e:
+        except Exception as e:
             log.exception("Failed-sending-message", message=msg, e=e)
 
     @inlineCallbacks

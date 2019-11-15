@@ -17,9 +17,11 @@
 """
 A simple internal pub/sub event bus with topics and filter-based registration.
 """
+from __future__ import absolute_import
 import re
 
 import structlog
+import six
 
 
 log = structlog.get_logger()
@@ -44,7 +46,7 @@ class EventBus(object):
 
     def list_subscribers(self, topic=None):
         if topic is None:
-            return sum(self.subscriptions.itervalues(), [])
+            return sum(six.itervalues(self.subscriptions), [])
         else:
             if topic in self.subscriptions:
                 return self.subscriptions[topic]
@@ -96,7 +98,7 @@ class EventBus(object):
         def passes(msg, predicate):
             try:
                 return predicate(msg)
-            except Exception, e:
+            except Exception as e:
                 return False  # failed predicate function treated as no match
 
         # lookup subscribers with explicit topic subscriptions
@@ -112,7 +114,7 @@ class EventBus(object):
             if predicate is None or passes(msg, predicate):
                 try:
                     candidate.callback(topic, msg)
-                except Exception, e:
+                except Exception as e:
                     log.exception('callback-failed', e=repr(e), topic=topic)
 
 

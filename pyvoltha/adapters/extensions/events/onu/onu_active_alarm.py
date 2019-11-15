@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.alarms.adapter_alarms import AlarmBase
 from voltha_protos.events_pb2 import AlarmEventType, AlarmEventSeverity, AlarmEventCategory
 

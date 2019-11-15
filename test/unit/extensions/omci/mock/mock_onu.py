@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame
 from pyvoltha.adapters.extensions.omci.omci_defs import *
 from pyvoltha.adapters.extensions.omci.omci_entities import *

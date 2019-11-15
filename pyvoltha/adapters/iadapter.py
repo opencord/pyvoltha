@@ -18,11 +18,12 @@
 Adapter abstract base class
 """
 
+from __future__ import absolute_import
 import structlog
 from twisted.internet import reactor
 from zope.interface import implementer
 
-from interface import IAdapterInterface
+from .interface import IAdapterInterface
 from voltha_protos.adapter_pb2 import Adapter
 from voltha_protos.adapter_pb2 import AdapterConfig
 from voltha_protos.common_pb2 import AdminState
@@ -266,7 +267,7 @@ class OltAdapter(IAdapter):
                 # basic children data structures
                 self.core_proxy.reconcile_child_devices(device.id)
             return device
-        except Exception, e:
+        except Exception as e:
             log.exception('Exception', e=e)
 
     def send_proxied_message(self, proxy_address, msg):
@@ -295,7 +296,7 @@ class OltAdapter(IAdapter):
             handler = self.devices_handlers[device_id]
             if handler:
                 reactor.callLater(0, handler.packet_out, egress_port_no, msg.data)
-        except Exception, e:
+        except Exception as e:
             log.exception('packet-out-failure', e=e)
 
 

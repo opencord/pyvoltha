@@ -16,10 +16,13 @@
 """
 OMCI Managed Entity Frame support
 """
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.omci.omci import *
 from pyvoltha.adapters.extensions.omci.me_frame import MEFrame
 from pyvoltha.adapters.extensions.omci.omci_entities import PriorityQueueG
 from pyvoltha.adapters.extensions.omci.omci_entities import *
+import six
+from six.moves import range
 
 
 
@@ -293,7 +296,7 @@ class GemPortNetworkCtpFrame(MEFrame):
         # Validate
         self.check_type(port_id, (int, type(None)))
         self.check_type(tcont_id, (int, type(None)))
-        self.check_type(direction, (basestring, type(None)))
+        self.check_type(direction, (six.string_types, type(None)))
         self.check_type(upstream_tm, (int, type(None)))
 
         if port_id is not None and not 0 <= port_id <= 0xFFFE:  # TODO: Verify max
@@ -303,7 +306,7 @@ class GemPortNetworkCtpFrame(MEFrame):
             raise ValueError('tcont_id should be 0..0xFFFE')
 
         if direction is not None and str(direction).lower() not in _directions:
-            raise ValueError('direction should one of {}'.format(_directions.keys()))
+            raise ValueError('direction should one of {}'.format(list(_directions.keys())))
 
         if upstream_tm is not None and not 0 <= upstream_tm <= 0xFFFE:  # TODO: Verify max
             raise ValueError('upstream_tm should be 0..0xFFFE')

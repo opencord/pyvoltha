@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from twisted.internet.defer import inlineCallbacks, TimeoutError, failure, AlreadyCalledError
 from twisted.internet import reactor
 from pyvoltha.adapters.extensions.omci.omci_defs import ReasonCodes
+from six.moves import range
 
 
 class MibUploadFailure(Exception):
@@ -110,7 +112,7 @@ class MibUploadTask(Task):
 
             number_of_commands = results.fields['omci_message'].fields['number_of_commands']
 
-            for seq_no in xrange(number_of_commands):
+            for seq_no in range(number_of_commands):
                 if not device.active or not device.omci_cc.enabled:
                     raise MibUploadFailure('OMCI and/or ONU is not active')
 

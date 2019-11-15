@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import, division
 import os
 import rlcompleter
 from pprint import pprint
@@ -24,6 +25,7 @@ from twisted.conch.ssh import keys
 from twisted.cred.checkers import InMemoryUsernamePasswordDatabaseDontUse
 from twisted.cred.portal import Portal
 from twisted.internet import reactor
+from six.moves import range
 
 log = structlog.get_logger()
 
@@ -43,13 +45,13 @@ def get_rsa_keys():
         private_key_str = rsa_key.exportKey()
 
         # save keys for next time
-        file(MANHOLE_SERVER_RSA_PUBLIC, 'w+b').write(public_key_str)
-        file(MANHOLE_SERVER_RSA_PRIVATE, 'w+b').write(private_key_str)
+        open(MANHOLE_SERVER_RSA_PUBLIC, 'w+b').write(public_key_str)
+        open(MANHOLE_SERVER_RSA_PRIVATE, 'w+b').write(private_key_str)
         log.debug('saved-rsa-keypair', public=MANHOLE_SERVER_RSA_PUBLIC,
                   private=MANHOLE_SERVER_RSA_PRIVATE)
     else:
-        public_key_str = file(MANHOLE_SERVER_RSA_PUBLIC).read()
-        private_key_str = file(MANHOLE_SERVER_RSA_PRIVATE).read()
+        public_key_str = open(MANHOLE_SERVER_RSA_PUBLIC).read()
+        private_key_str = open(MANHOLE_SERVER_RSA_PRIVATE).read()
     return public_key_str, private_key_str
 
 
@@ -69,7 +71,7 @@ class ManholeWithCompleter(ColoredManhole):
         buffer = ''.join(self.lineBuffer)
         completions = []
         maxlen = 3
-        for c in xrange(1000):
+        for c in range(1000):
             candidate = self.completer.complete(buffer, c)
             if not candidate:
                 break

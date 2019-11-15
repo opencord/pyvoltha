@@ -13,9 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import copy
-from mib_db_api import *
+from .mib_db_api import *
 import json
+import six
 
 
 class MibDbVolatileDict(MibDbApi):
@@ -66,7 +68,7 @@ class MibDbVolatileDict(MibDbApi):
         """
         self.log.debug('add-device', device_id=device_id, overwrite=overwrite)
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not self._started:
@@ -95,7 +97,7 @@ class MibDbVolatileDict(MibDbApi):
         """
         self.log.debug('remove-device', device_id=device_id)
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not self._started:
@@ -116,7 +118,7 @@ class MibDbVolatileDict(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         device_db = self._data[device_id]
@@ -139,7 +141,7 @@ class MibDbVolatileDict(MibDbApi):
         :param device_id: (str) ONU Device ID
         :param value: (int) Value to save
         """
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not isinstance(value, int):
@@ -159,7 +161,7 @@ class MibDbVolatileDict(MibDbApi):
         :param device_id: (str) ONU Device ID
         :return: (int) The Value or None if not found
         """
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if device_id not in self._data:
@@ -174,7 +176,7 @@ class MibDbVolatileDict(MibDbApi):
         :param device_id: (str) ONU Device ID
         :param value: (DateTime) Value to save
         """
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not isinstance(value, datetime):
@@ -191,7 +193,7 @@ class MibDbVolatileDict(MibDbApi):
         :param device_id: (str) ONU Device ID
         :return: (int) The Value or None if not found
         """
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if device_id not in self._data:
@@ -215,7 +217,7 @@ class MibDbVolatileDict(MibDbApi):
         :raises KeyError: If device does not exist
         :raises DatabaseStateError: If the database is not enabled
         """
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be a string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -261,14 +263,14 @@ class MibDbVolatileDict(MibDbApi):
             entity = me_map.get(class_id)
 
             for attribute, value in attributes.items():
-                assert isinstance(attribute, basestring)
+                assert isinstance(attribute, six.string_types)
                 assert value is not None, "Attribute '{}' value cannot be 'None'".\
                     format(attribute)
 
                 db_value = instance_db[ATTRIBUTES_KEY].get(attribute) \
                     if ATTRIBUTES_KEY in instance_db else None
 
-                if entity is not None and isinstance(value, basestring):
+                if entity is not None and isinstance(value, six.string_types):
                     from scapy.fields import StrFixedLenField
                     attr_index = entity.attribute_name_to_index_map[attribute]
                     eca = entity.attributes[attr_index]
@@ -336,7 +338,7 @@ class MibDbVolatileDict(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -392,7 +394,7 @@ class MibDbVolatileDict(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID is a string')
 
         device_db = self._data.get(device_id, dict())
@@ -416,13 +418,13 @@ class MibDbVolatileDict(MibDbApi):
         if attributes is None or len(instance_db) == 0:
             return self._fix_inst_json_attributes(copy.deepcopy(instance_db), entity)
 
-        if not isinstance(attributes, (basestring, list, set)):
+        if not isinstance(attributes, (six.string_types, list, set)):
             raise TypeError('Attributes should be a string or list/set of strings')
 
         if not isinstance(attributes, (list, set)):
             attributes = [attributes]
 
-        results = {attr: val for attr, val in instance_db[ATTRIBUTES_KEY].iteritems()
+        results = {attr: val for attr, val in six.iteritems(instance_db[ATTRIBUTES_KEY])
                    if attr in attributes}
 
         for attr, attr_data in results.items():
@@ -471,7 +473,7 @@ class MibDbVolatileDict(MibDbApi):
                     value = field.load_json(attr_data)
                     return value
 
-            return json.loads(attr_data) if isinstance(attr_data, basestring) else attr_data
+            return json.loads(attr_data) if isinstance(attr_data, six.string_types) else attr_data
 
         except ValueError:
             return attr_data

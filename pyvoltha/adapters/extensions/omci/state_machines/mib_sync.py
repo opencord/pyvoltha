@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 from datetime import datetime, timedelta
 from transitions import Machine
@@ -28,6 +29,7 @@ from pyvoltha.adapters.extensions.omci.onu_device_entry import OnuDeviceEvents, 
 from pyvoltha.adapters.extensions.omci.omci_entities import OntData, Omci
 from pyvoltha.common.event_bus import EventBusClient
 from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
+import six
 
 RxEvent = OmciCCRxEvents
 DevEvent = OnuDeviceEvents
@@ -287,12 +289,12 @@ class MibSynchronizer(object):
             task.stop()
 
         # Drop Response and Autonomous notification subscriptions
-        for event, sub in self._omci_cc_subscriptions.iteritems():
+        for event, sub in six.iteritems(self._omci_cc_subscriptions):
             if sub is not None:
                 self._omci_cc_subscriptions[event] = None
                 self._device.omci_cc.event_bus.unsubscribe(sub)
 
-        for event, sub in self._onu_dev_subscriptions.iteritems():
+        for event, sub in six.iteritems(self._onu_dev_subscriptions):
             if sub is not None:
                 self._onu_dev_subscriptions[event] = None
                 self._device.event_bus.unsubscribe(sub)
@@ -331,7 +333,7 @@ class MibSynchronizer(object):
 
         # Set up Response and Autonomous notification subscriptions
         try:
-            for event, sub in self._omci_cc_sub_mapping.iteritems():
+            for event, sub in six.iteritems(self._omci_cc_sub_mapping):
                 if self._omci_cc_subscriptions[event] is None:
                     self._omci_cc_subscriptions[event] = \
                         self._device.omci_cc.event_bus.subscribe(
@@ -343,7 +345,7 @@ class MibSynchronizer(object):
 
         # Set up ONU device subscriptions
         try:
-            for event, sub in self._onu_dev_sub_mapping.iteritems():
+            for event, sub in six.iteritems(self._onu_dev_sub_mapping):
                 if self._onu_dev_subscriptions[event] is None:
                     self._onu_dev_subscriptions[event] = \
                         self._device.event_bus.subscribe(
@@ -631,7 +633,7 @@ class MibSynchronizer(object):
                 class_id = omci_msg['entity_class']
                 instance_id = omci_msg['entity_id']
                 data = omci_msg['data']
-                attributes = [data.keys()]
+                attributes = [list(data.keys())]
 
                 # Look up ME Instance in Database. Not-found can occur if a MIB
                 # reset has occurred
@@ -756,7 +758,7 @@ class MibSynchronizer(object):
                                      if (AA.SBC in attr.access or AA.W in attr.access)
                                      and attr.field.name != 'managed_entity_id'}
 
-                        missing = sbc_w_set - {k for k in attributes.iterkeys()}
+                        missing = sbc_w_set - {k for k in six.iterkeys(attributes)}
 
                         if len(missing):
                             # Request the missing attributes

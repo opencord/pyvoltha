@@ -13,8 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from twisted.internet.defer import Deferred
 from twisted.internet.defer import succeed
+from six.moves import range
 
 
 class MessageQueue(object):

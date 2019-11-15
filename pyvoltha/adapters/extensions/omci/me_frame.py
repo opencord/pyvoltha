@@ -16,7 +16,9 @@
 """
 OMCI Managed Entity Message support base class
 """
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.omci.omci import *
+import six
 
 # abbreviations
 OP = EntityOperations
@@ -76,7 +78,7 @@ class MEFrame(object):
                                                                       self.entity_class_name)
 
     def _check_attributes(self, attributes, access):
-        keys = attributes.keys() if isinstance(attributes, dict) else attributes
+        keys = list(attributes.keys()) if isinstance(attributes, dict) else attributes
         for attr_name in keys:
             # Bad attribute name (invalid or spelling error)?
             index = self.entity_class.attribute_name_to_index_map.get(attr_name)
@@ -90,7 +92,7 @@ class MEFrame(object):
                                                                               self.entity_class_name)
 
         if access.value in [AA.W.value, AA.SBC.value] and isinstance(attributes, dict):
-            for attr_name, value in attributes.iteritems():
+            for attr_name, value in six.iteritems(attributes):
                 index = self.entity_class.attribute_name_to_index_map.get(attr_name)
                 attribute = self.entity_class.attributes[index]
                 if not attribute.valid(value):
@@ -115,19 +117,19 @@ class MEFrame(object):
 
         :return: (set, dict) set for get/deletes, dict for create/set
         """
-        if isinstance(attributes, basestring):
+        if isinstance(attributes, six.string_types):
             # data = [str(attributes)]
             data = set()
             data.add(str(attributes))
 
         elif isinstance(attributes, list):
-            assert all(isinstance(attr, basestring) for attr in attributes),\
+            assert all(isinstance(attr, six.string_types) for attr in attributes),\
                 'attribute list must be strings'
             data = {str(attr) for attr in attributes}
             assert len(data) == len(attributes), 'Attributes were not unique'
 
         elif isinstance(attributes, set):
-            assert all(isinstance(attr, basestring) for attr in attributes),\
+            assert all(isinstance(attr, six.string_types) for attr in attributes),\
                 'attribute set must be strings'
             data = {str(attr) for attr in attributes}
 
@@ -198,7 +200,7 @@ class MEFrame(object):
             omci_message=OmciSet(
                 entity_class=getattr(self.entity_class, 'class_id'),
                 entity_id=getattr(self, 'entity_id'),
-                attributes_mask=self.entity_class.mask_for(*data.keys()),
+                attributes_mask=self.entity_class.mask_for(*list(data.keys())),
                 data=data
             ))
 
@@ -212,7 +214,7 @@ class MEFrame(object):
         MEFrame.check_type(data, (list, set, dict))
         assert len(data) > 0, 'No attributes supplied'
 
-        mask_set = data.keys() if isinstance(data, dict) else data
+        mask_set = list(data.keys()) if isinstance(data, dict) else data
 
         self._check_operation(OP.Get)
         self._check_attributes(mask_set, AA.Readable)
@@ -306,7 +308,7 @@ class MEFrame(object):
         MEFrame.check_type(data, dict)
         assert len(data) == 1, 'Only one attribute should be specified'
 
-        mask_set = data.keys() if isinstance(data, dict) else data
+        mask_set = list(data.keys()) if isinstance(data, dict) else data
 
         self._check_operation(OP.GetNext)
         self._check_attributes(mask_set, AA.Readable)
@@ -318,7 +320,7 @@ class MEFrame(object):
                 entity_class=getattr(self.entity_class, 'class_id'),
                 entity_id=getattr(self, 'entity_id'),
                 attributes_mask=self.entity_class.mask_for(*mask_set),
-                command_sequence_number=data.values()[0]
+                command_sequence_number=list(data.values())[0]
             ))
 
     def synchronize_time(self, time=None):

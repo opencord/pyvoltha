@@ -17,6 +17,7 @@
 """
 Utilities to handle gRPC server and client side code in a Twisted environment
 """
+from __future__ import absolute_import
 import structlog
 from concurrent.futures import Future
 from twisted.internet import reactor
@@ -91,14 +92,14 @@ def twisted_async(func):
                     f.set_result(d)
                     f.done()
 
-            except Exception, e:
+            except Exception as e:
                 f.set_exception(e)
                 f.done()
 
         reactor.callFromThread(twisted_wrapper)
         try:
             result = f.result()
-        except Exception, e:
+        except Exception as e:
             log.exception(e=e, func=func, args=args, kw=kw)
             raise
 

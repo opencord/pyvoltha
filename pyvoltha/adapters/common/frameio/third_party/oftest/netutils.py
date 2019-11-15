@@ -34,6 +34,7 @@ Network utilities for the OpenFlow test framework
 ##                                                                         ##
 #############################################################################
 
+from __future__ import absolute_import
 import socket
 from fcntl import ioctl
 import struct

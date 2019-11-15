@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from consul_client import ConsulClient
-from etcd_client import EtcdClient
+from __future__ import absolute_import
+from .consul_client import ConsulClient
+from .etcd_client import EtcdClient
 
 def create_kv_client(kv_store, host, port):
     '''

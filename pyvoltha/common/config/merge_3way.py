@@ -17,11 +17,13 @@
 """
 3-way merge function for config rev objects.
 """
+from __future__ import absolute_import
 from collections import OrderedDict
 from copy import copy
 
 from pyvoltha.common.config.config_proxy import CallbackType, OperationContext
 from pyvoltha.common.config.config_rev import children_fields
+import six
 
 
 class MergeConflictException(Exception):
@@ -59,11 +61,11 @@ def merge_3way(fork_rev, src_rev, dst_rev, merge_child_func, dry_run=False):
             self.keymap2 = OrderedDict((getattr(rev._config._data, keyname), i)
                                        for i, rev in enumerate(lst2))
             self.added_keys = [
-                k for k in self.keymap2.iterkeys() if k not in self.keymap1]
+                k for k in six.iterkeys(self.keymap2) if k not in self.keymap1]
             self.removed_keys = [
-                k for k in self.keymap1.iterkeys() if k not in self.keymap2]
+                k for k in six.iterkeys(self.keymap1) if k not in self.keymap2]
             self.changed_keys = [
-                k for k in self.keymap1.iterkeys()
+                k for k in six.iterkeys(self.keymap1)
                 if k in self.keymap2 and
                     lst1[self.keymap1[k]]._hash != lst2[self.keymap2[k]]._hash
             ]
@@ -85,7 +87,7 @@ def merge_3way(fork_rev, src_rev, dst_rev, merge_child_func, dry_run=False):
     new_children = dst_rev._children.copy()
     _children_fields = children_fields(fork_rev.data.__class__)
 
-    for field_name, field in _children_fields.iteritems():
+    for field_name, field in six.iteritems(_children_fields):
 
         fork_list = fork_rev._children[field_name]
         src_list = src_rev._children[field_name]

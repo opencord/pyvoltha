@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.alarms.olt.olt_los_alarm import OltLosAlarm
 from pyvoltha.adapters.extensions.alarms.onu.onu_dying_gasp_alarm import OnuDyingGaspAlarm
 from pyvoltha.adapters.extensions.alarms.onu.onu_los_alarm import OnuLosAlarm

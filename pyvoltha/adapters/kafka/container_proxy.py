@@ -18,6 +18,7 @@
 The superclass for all kafka proxy subclasses.
 """
 
+from __future__ import absolute_import
 import structlog
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.python import failure

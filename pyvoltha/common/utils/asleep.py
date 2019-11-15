@@ -16,6 +16,7 @@
 
 """ Async sleep (asleep) method and other twisted goodies """
 
+from __future__ import absolute_import
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 
