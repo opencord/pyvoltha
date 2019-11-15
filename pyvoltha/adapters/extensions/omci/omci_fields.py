@@ -13,23 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import binascii
 import json
 from scapy.fields import Field, StrFixedLenField, PadField, IntField, FieldListField, ByteField, StrField, \
     StrFixedLenField, PacketField
 from scapy.packet import Raw
+import six
 
 class FixedLenField(PadField):
     """
     This Pad field limits parsing of its content to its size
     """
-    def __init__(self, fld, align, padwith='\x00'):
+    def __init__(self, fld, align, padwith=b'\x00'):
         super(FixedLenField, self).__init__(fld, align, padwith)
 
     def getfield(self, pkt, s):
         remain, val = self._fld.getfield(pkt, s[:self._align])
         if isinstance(val.payload, Raw) and \
-                not val.payload.load.replace(self._padwith, ''):
+                not val.payload.load.replace(self._padwith, b''):
             # raw payload is just padding
             val.remove_payload()
         return remain + s[self._align:], val
@@ -47,7 +49,7 @@ class StrCompoundField(Field):
     def addfield(self, pkt, s, val):
         for fld in self.flds:
             # run though fake add/get to consume the relevant portion of the input value for this field
-            x, extracted = fld.getfield(pkt, fld.addfield(pkt, '', val))
+            x, extracted = fld.getfield(pkt, fld.addfield(pkt, b'', val))
             l = len(extracted)
             s = fld.addfield(pkt, s, val[0:l])
             val = val[l:]
@@ -226,7 +228,7 @@ class OmciTableField(MultipleTypeField):
                 key_value_pairs[index] = new
 
         new_table = []
-        for k, v in sorted(key_value_pairs.iteritems()):
+        for k, v in sorted(six.iteritems(key_value_pairs)):
             assert isinstance(v, self.default.cls), 'object type for Omci Table row object invalid'
             new_table.append(v.fields)
 
@@ -247,7 +249,7 @@ class OmciTableField(MultipleTypeField):
             key_value_pairs[index] = v
 
         table = []
-        for k, v in sorted(key_value_pairs.iteritems()):
+        for k, v in sorted(six.iteritems(key_value_pairs)):
             table.append(v)
 
         return table

@@ -16,6 +16,7 @@
 
 """Setting up proper logging for Voltha"""
 
+from __future__ import absolute_import
 import logging
 import logging.config
 from collections import OrderedDict

@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import, division
 from voltha_protos.device_pb2 import PmConfig, PmConfigs, PmGroupConfig
 from pyvoltha.adapters.extensions.kpi.adapter_pm_metrics import AdapterPmMetrics
+import six
 
 
 class OltPmMetrics(AdapterPmMetrics):
@@ -226,7 +228,7 @@ class OltPmMetrics(AdapterPmMetrics):
                                                       enabled=pm.enabled)])
         if self.grouped:
             pm_config.groups.extend([stats for stats in
-                                     self.pm_group_metrics.itervalues()])
+                                     six.itervalues(self.pm_group_metrics)])
 
         return pm_config
 

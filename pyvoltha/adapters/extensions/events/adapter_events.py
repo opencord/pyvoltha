@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import arrow
 import structlog
 from twisted.internet.task import LoopingCall
 from twisted.internet.defer import inlineCallbacks, returnValue
 from voltha_protos.events_pb2 import Event, EventType, EventCategory, EventSubCategory, DeviceEvent, EventHeader
+import six
 
 log = structlog.get_logger()
 
@@ -169,7 +171,7 @@ class DeviceEventBase(object):
 
         current_context = {}
         if isinstance(context_data, dict):
-            for key, value in context_data.iteritems():
+            for key, value in six.iteritems(context_data):
                 current_context[key] = str(value)
         # Always insert serial number of the OLT, ONU serial number comes in the context
         current_context["serial-number"] = self.event_mgr.serial_number

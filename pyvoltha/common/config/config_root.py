@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from uuid import uuid4
 
 import structlog
@@ -22,6 +23,7 @@ from voltha.core.config.config_node import ConfigNode
 from voltha.core.config.config_rev import ConfigRevision
 from voltha.core.config.config_rev_persisted import PersistedConfigRevision
 from voltha.core.config.merge_3way import MergeConflictException
+import six
 
 log = structlog.get_logger()
 
@@ -199,7 +201,7 @@ class ConfigRoot(ConfigNode):
         if self._kv_store is not None and branch._txid is None:
             root_data = dict(
                 latest=branch._latest._hash,
-                tags=dict((k, v._hash) for k, v in self._tags.iteritems())
+                tags=dict((k, v._hash) for k, v in six.iteritems(self._tags))
             )
             blob = dumps(root_data)
             self._kv_store['root'] = blob
@@ -209,7 +211,7 @@ class ConfigRoot(ConfigNode):
             root_data = loads(self.kv_store['root'])
             root_data = dict(
                 latest=root_data['latest'],
-                tags=dict((k, v._hash) for k, v in self._tags.iteritems())
+                tags=dict((k, v._hash) for k, v in six.iteritems(self._tags))
             )
             blob = dumps(root_data)
             self._kv_store['root'] = blob
@@ -219,7 +221,7 @@ class ConfigRoot(ConfigNode):
         blob = self._kv_store['root']
         root_data = loads(blob)
 
-        for tag, hash in root_data['tags'].iteritems():
+        for tag, hash in six.iteritems(root_data['tags']):
             self.load_latest(hash)
             self._tags[tag] = self.latest
 
