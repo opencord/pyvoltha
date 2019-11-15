@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from pyvoltha.adapters.extensions.omci.tasks.task import Task
 from pyvoltha.common.utils.asleep import asleep
-from twisted.internet.defer import inlineCallbacks, failure
+from twisted.internet.defer import inlineCallbacks, failure, AlreadyCalledError, CancelledError
 from twisted.internet import reactor
 
 
@@ -87,8 +88,10 @@ class SimpleTask(Task):
 
             if self._success:
                 self.deferred.callback(self._value)
+            else:
+                self.deferred.errback(failure.Failure(self._value))
 
-            self.deferred.errback(failure.Failure(self._value))
-
+        except AlreadyCalledError as all:
+            pass
         except Exception as e:
             self.deferred.errback(failure.Failure(e))

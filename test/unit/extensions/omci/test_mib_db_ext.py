@@ -13,15 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from unittest import main, TestCase
 
 from pyvoltha.adapters.extensions.omci.database.mib_db_ext import *
 from pyvoltha.adapters.extensions.omci.database.mib_db_api import MODIFIED_KEY, CREATED_KEY,\
     DEVICE_ID_KEY, MDS_KEY, LAST_SYNC_KEY
 from pyvoltha.adapters.extensions.omci.omci_cc import UNKNOWN_CLASS_ATTRIBUTE_KEY
-from mock.mock_adapter_agent import MockAdapterAgent, MockDevice
+from .mock.mock_adapter_agent import MockAdapterAgent, MockDevice
 from nose.tools import raises, assert_raises
 import time
+import six
 
 _DEVICE_ID = 'br-549'
 
@@ -372,7 +374,7 @@ class TestOmciMibDbExt(TestCase):
         self.assertLessEqual(dev_data[CREATED_KEY], set_time)
         self.assertLessEqual(self.db.created, set_time)
 
-        self.assertFalse(any(isinstance(cls, int) for cls in dev_data.iterkeys()))
+        self.assertFalse(any(isinstance(cls, int) for cls in six.iterkeys(dev_data)))
 
     def test_str_field_serialization(self):
         self.db.start()
@@ -384,8 +386,8 @@ class TestOmciMibDbExt(TestCase):
             'olt_vendor_id': 'ABCD',             # StrFixedLenField(4)
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
-        self.assertTrue(all(isinstance(data[k], basestring) for k in attributes.keys()))
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
+        self.assertTrue(all(isinstance(data[k], six.string_types) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
     def test_mac_address_ip_field_serialization(self):
@@ -399,8 +401,8 @@ class TestOmciMibDbExt(TestCase):
             'ip_address': '1.2.3.4',                        # IPField
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
-        self.assertTrue(all(isinstance(data[k], basestring) for k in attributes.keys()))
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
+        self.assertTrue(all(isinstance(data[k], six.string_types) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
     def test_byte_and_short_field_serialization(self):
@@ -414,7 +416,7 @@ class TestOmciMibDbExt(TestCase):
             'non_omci_management_identifier': int(12345)   # IPField
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         self.assertTrue(all(isinstance(data[k], type(attributes[k])) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
@@ -428,7 +430,7 @@ class TestOmciMibDbExt(TestCase):
             'related_port': int(1234567)    # IntField
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         self.assertTrue(all(isinstance(data[k], type(attributes[k])) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
@@ -442,7 +444,7 @@ class TestOmciMibDbExt(TestCase):
             'packet_drop_queue_thresholds': int(0x1234)        # LongField
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         self.assertTrue(all(isinstance(data[k], type(attributes[k])) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
@@ -453,10 +455,10 @@ class TestOmciMibDbExt(TestCase):
         class_id = OntG.class_id
         inst_id = 0
         attributes = {
-            'extended_tc_layer_options': long(0x1234),        # BitField(16)
+            'extended_tc_layer_options': int(0x1234),        # BitField(16)
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         self.assertTrue(all(isinstance(data[k], type(attributes[k])) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
@@ -475,7 +477,7 @@ class TestOmciMibDbExt(TestCase):
             'number_of_entries': 1
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         self.assertTrue(all(isinstance(data[k], type(attributes[k])) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
@@ -503,7 +505,7 @@ class TestOmciMibDbExt(TestCase):
         )
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
 
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
         table_as_dict = json.loads(table_data.to_json())
 
         self.assertTrue(all(isinstance(data['received_frame_vlan_tagging_operation_table'][0].fields[k],
@@ -527,9 +529,9 @@ class TestOmciMibDbExt(TestCase):
         }
         self.db.set(_DEVICE_ID, class_id, inst_id, attributes)
 
-        data = self.db.query(_DEVICE_ID, class_id, inst_id, attributes.keys())
-        self.assertTrue(isinstance(UNKNOWN_CLASS_ATTRIBUTE_KEY, basestring))
-        self.assertTrue(all(isinstance(attributes[k], basestring) for k in attributes.keys()))
+        data = self.db.query(_DEVICE_ID, class_id, inst_id, list(attributes.keys()))
+        self.assertTrue(isinstance(UNKNOWN_CLASS_ATTRIBUTE_KEY, six.string_types))
+        self.assertTrue(all(isinstance(attributes[k], six.string_types) for k in attributes.keys()))
         self.assertTrue(all(data[k] == attributes[k] for k in attributes.keys()))
 
 

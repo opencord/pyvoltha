@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from twisted.internet.defer import inlineCallbacks, TimeoutError, failure, returnValue
 from twisted.internet import reactor
 from pyvoltha.common.utils.asleep import asleep
 from pyvoltha.adapters.extensions.omci.database.mib_db_dict import *
 from pyvoltha.adapters.extensions.omci.omci_defs import AttributeAccess
 from pyvoltha.adapters.extensions.omci.database.alarm_db_ext import AlarmDbExternal
+import six
+from six.moves import range
 
 AA = AttributeAccess
 
@@ -184,7 +187,7 @@ class AlarmResyncTask(Task):
         try:
             max_tries = AlarmResyncTask.max_retries - 1
 
-            for retries in xrange(0, max_tries + 1):
+            for retries in range(0, max_tries + 1):
                 # Send ALARM Upload so ONU snapshots its ALARM
                 try:
                     command_sequence_number = yield self.send_alarm_upload()
@@ -250,10 +253,10 @@ class AlarmResyncTask(Task):
         # Begin ALARM Upload
         seq_no = None
 
-        for seq_no in xrange(command_sequence_number):
+        for seq_no in range(command_sequence_number):
             max_tries = AlarmResyncTask.max_alarm_upload_next_retries
 
-            for retries in xrange(0, max_tries):
+            for retries in range(0, max_tries):
                 try:
                     response = yield self._device.omci_cc.send_get_all_alarm_next(seq_no)
                     self.strobe_watchdog()
@@ -378,8 +381,8 @@ class AlarmResyncTask(Task):
                         if isinstance(inst_id, int) and inst_id in onu_cls}
 
             for inst_id in inst_ids:
-                omci_attributes = {k for k in olt_cls[inst_id][ATTRIBUTES_KEY].iterkeys()}
-                onu_attributes = {k for k in onu_cls[inst_id][ATTRIBUTES_KEY].iterkeys()}
+                omci_attributes = {k for k in six.iterkeys(olt_cls[inst_id][ATTRIBUTES_KEY])}
+                onu_attributes = {k for k in six.iterkeys(onu_cls[inst_id][ATTRIBUTES_KEY])}
 
                 # Get attributes that exist in one database, but not the other
                 sym_diffs = (omci_attributes ^ onu_attributes)

@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 from unittest import TestCase, main
-from mock.mock_adapter_agent import MockAdapterAgent
+from .mock.mock_adapter_agent import MockAdapterAgent
 
 
 

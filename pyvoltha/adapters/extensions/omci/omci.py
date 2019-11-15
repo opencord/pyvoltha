@@ -18,6 +18,7 @@
 Omci message generator and parser implementation using scapy
 """
 
-from omci_frame import OmciFrame
-from omci_messages import *
-from omci_entities import *
+from __future__ import absolute_import
+from .omci_frame import OmciFrame
+from .omci_messages import *
+from .omci_entities import *

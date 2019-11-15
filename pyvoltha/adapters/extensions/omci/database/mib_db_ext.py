@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from mib_db_api import *
+from __future__ import absolute_import, division
+from .mib_db_api import *
 from voltha_protos.omci_mib_db_pb2 import MibInstanceData, MibClassData, \
     MibDeviceData, MibAttributeData, MessageType, ManagedEntity
 from pyvoltha.adapters.extensions.omci.omci_entities import *
@@ -21,6 +22,9 @@ from pyvoltha.adapters.extensions.omci.omci_fields import *
 from pyvoltha.common.config.config_backend import EtcdStore
 from scapy.fields import StrField, FieldListField, PacketField
 from pyvoltha.common.utils.registry import registry
+import six
+import codecs
+from six.moves import range
 
 class MibDbStatistic(object):
     """
@@ -125,7 +129,7 @@ class MibDbExternal(MibDbApi):
 
         if not self._started:
             super(MibDbExternal, self).start()
-            
+
             try:
                 self.log.info('db-exists')
             except Exception as e:
@@ -175,7 +179,7 @@ class MibDbExternal(MibDbApi):
 
             if isinstance(field, StrFixedLenField):
                 from scapy.base_classes import Packet_metaclass
-                if hasattr(value, 'to_json') and not isinstance(value, basestring):
+                if hasattr(value, 'to_json') and not isinstance(value, six.string_types):
                     # Packet Class to string
                     str_value = value.to_json()
                 elif isinstance(field.default, Packet_metaclass) \
@@ -266,7 +270,7 @@ class MibDbExternal(MibDbApi):
                 value = int(str_value)
 
             elif isinstance(field, BitField):
-                value = long(str_value)
+                value = int(str_value)
 
             elif hasattr(field, 'load_json'):
                 value = field.load_json(str_value)
@@ -342,7 +346,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         try:
@@ -361,7 +365,7 @@ class MibDbExternal(MibDbApi):
     def _get_device_path(self, device_id):
         return MibDbExternal.DEVICE_PATH.format(device_id)
 
-    def _get_class_path(self, device_id, class_id):        
+    def _get_class_path(self, device_id, class_id):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
@@ -411,7 +415,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID is a string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -522,7 +526,7 @@ class MibDbExternal(MibDbApi):
                                  format(value))
             data = MibDeviceData()
             path = self._get_device_path(device_id)
-                                    
+
             data.ParseFromString(self._kv_store[path])
 
             now = datetime.utcnow()
@@ -630,8 +634,8 @@ class MibDbExternal(MibDbApi):
         for k, v in attributes.items():
             if k == 'serial_number':
                 vendor_id = str(v[0:4])
-                vendor_specific = v[4:]
-                vendor_specific = str(vendor_specific.encode('hex'))
+                vendor_specific_ext = v[4:]
+                vendor_specific = codecs.encode(vendor_specific_ext, 'hex')
                 str_value = vendor_id + vendor_specific
                 attrs.append(MibAttributeData(name=k, value=str_value))
             else:
@@ -669,8 +673,8 @@ class MibDbExternal(MibDbApi):
         for k, v in attributes.items():
             if k == 'serial_number':
                 vendor_id = str(v[0:4])
-                vendor_specific = v[4:]
-                vendor_specific = str(vendor_specific.encode('hex'))
+                vendor_specific_ext = v[4:]
+                vendor_specific = codecs.encode(vendor_specific_ext, 'hex')
                 str_value = vendor_id+vendor_specific
                 attrs.append(MibAttributeData(name=k, value=str_value))
             else:
@@ -686,7 +690,7 @@ class MibDbExternal(MibDbApi):
         #class_path = self._get_class_path(device_id, class_id)
         #class_data = MibClassData()
         #class_data.ParseFromString(self._kv_store[class_path])
-        
+
         #class_data.instances.extend([instance_data])
 
         #self._kv_store[class_path] = class_data.SerializeToString()
@@ -714,7 +718,7 @@ class MibDbExternal(MibDbApi):
         self.log.debug('set', device_id=device_id, class_id=class_id,
                        instance_id=instance_id, attributes=attributes)
         try:
-            if not isinstance(device_id, basestring):
+            if not isinstance(device_id, six.string_types):
                 raise TypeError('Device ID should be a string')
 
             if not 0 <= class_id <= 0xFFFF:
@@ -753,7 +757,7 @@ class MibDbExternal(MibDbApi):
                     exist_attr_indexes = dict()
                     attr_len = len(inst_data.attributes)
 
-                    for index in xrange(0, attr_len):
+                    for index in range(0, attr_len):
                         name = inst_data.attributes[index].name
                         value = inst_data.attributes[index].value
                         exist_attr_indexes[name] = index
@@ -831,7 +835,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -851,7 +855,7 @@ class MibDbExternal(MibDbApi):
             classpath = self._get_class_path(device_id, class_id)
             class_data = MibClassData()
             class_data.ParseFromString(self._kv_store[classpath])
-            
+
             if len(class_data.instances) == 0:
                 del self._kv_store[classpath]
 
@@ -937,7 +941,7 @@ class MibDbExternal(MibDbApi):
 
                     else:
                         # Specific attribute(s)
-                        if isinstance(attributes, basestring):
+                        if isinstance(attributes, six.string_types):
                             attributes = {attributes}
 
                         data = {
@@ -1067,7 +1071,7 @@ class MibDbExternal(MibDbApi):
                              for msg_type in msg_types]
             data = MibDeviceData()
             device_path = self._get_device_path(device_id)
-            data.ParseFromString(self._kv_store[device_path]) 
+            data.ParseFromString(self._kv_store[device_path])
             data.message_types.extend(msg_type_list)
 
             # Update
