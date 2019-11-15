@@ -17,6 +17,7 @@
 OMCI Message support
 """
 
+from __future__ import absolute_import
 import sys
 import arrow
 from twisted.internet import reactor, defer
@@ -31,12 +32,7 @@ from pyvoltha.common.event_bus import EventBusClient
 from voltha_protos.inter_container_pb2 import InterAdapterMessageType, InterAdapterOmciMessage
 from enum import IntEnum
 from binascii import hexlify
-
-
-def hexify(buffer):
-    """Return a hexadecimal string encoding of input buffer"""
-    return ''.join('%02x' % ord(c) for c in buffer)
-
+import codecs
 
 DEFAULT_OMCI_TIMEOUT = 10       # 3               # Seconds
 MAX_OMCI_REQUEST_AGE = 60                          # Seconds
@@ -843,7 +839,7 @@ class OMCI_CC(object):
                                        errbackArgs=(tx_tid, high_priority))
 
                     omci_msg = InterAdapterOmciMessage(
-                        message=hexify(str(frame)),
+                        message=hexify(frame),
                         proxy_address=self._proxy_address,
                         connect_status=self._device.connect_status)
 

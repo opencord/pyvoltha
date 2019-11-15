@@ -21,6 +21,7 @@ Immutability cannot be enforced in Python, so anyoen working with these
 classes directly must obey the rules.
 """
 
+from __future__ import absolute_import
 import weakref
 from copy import copy
 from hashlib import md5
@@ -32,6 +33,7 @@ from pyvoltha.common.utils.json_format import MessageToJson
 from voltha_protos import meta_pb2
 
 import structlog
+import six
 
 log = structlog.get_logger()
 
@@ -300,7 +302,7 @@ class ConfigRevision(object):
         data.CopyFrom(orig_data)
         if depth:
             # collect children
-            cfields = children_fields(self.type).iteritems()
+            cfields = six.iteritems(children_fields(self.type))
             for field_name, field in cfields:
                 if field.is_container:
                     for rev in self._children[field_name]:

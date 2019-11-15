@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import structlog
 import arrow
 from datetime import datetime
@@ -28,6 +29,8 @@ from pyvoltha.adapters.extensions.omci.omci_entities import CircuitPack, PptpEth
 
 from pyvoltha.common.event_bus import EventBusClient
 from voltha_protos.omci_alarm_db_pb2 import AlarmOpenOmciEventType
+import six
+from six.moves import range
 
 RxEvent = OmciCCRxEvents
 RC = ReasonCodes
@@ -218,7 +221,7 @@ class AlarmSynchronizer(object):
             task.stop()
 
         # Drop Response and Autonomous notification subscriptions
-        for event, sub in self._omci_cc_subscriptions.iteritems():
+        for event, sub in six.iteritems(self._omci_cc_subscriptions):
             if sub is not None:
                 self._omci_cc_subscriptions[event] = None
                 self._device.omci_cc.event_bus.unsubscribe(sub)
@@ -252,7 +255,7 @@ class AlarmSynchronizer(object):
 
         # Set up Response and Autonomous notification subscriptions
         try:
-            for event, sub in self._omci_cc_sub_mapping.iteritems():
+            for event, sub in six.iteritems(self._omci_cc_sub_mapping):
                 if self._omci_cc_subscriptions[event] is None:
                     self._omci_cc_subscriptions[event] = \
                         self._device.omci_cc.event_bus.subscribe(
@@ -363,7 +366,7 @@ class AlarmSynchronizer(object):
         """
         for cid_eid in olt_only:
             # First process the alarm clearing
-            self.process_alarm_data(cid_eid[0], cid_eid[1], 0L, -1)
+            self.process_alarm_data(cid_eid[0], cid_eid[1], 0, -1)
             # Now remove from alarm DB so we match the ONU alarm table
             self._database.delete(self._device_id, cid_eid[0], cid_eid[1])
 
@@ -466,7 +469,7 @@ class AlarmSynchronizer(object):
         prev_entry = self._database.query(self._device_id, class_id, entity_id)
         try:
             # Need to access the bit map structure which is nested in dict attributes
-            prev_bitmap = 0 if len(prev_entry) == 0 else long(prev_entry['attributes'][key])
+            prev_bitmap = 0 if len(prev_entry) == 0 else int(prev_entry['attributes'][key])
         except Exception as e:
             self.log.exception('alarm-prev-entry-collection-failure', class_id=class_id,
                                device_id=self._device_id, entity_id=entity_id, value=bitmap, e=e)
@@ -480,11 +483,11 @@ class AlarmSynchronizer(object):
 
         if self._alarm_manager is not None:
             # Generate a set of alarm number that are raised in current and previous
-            previously_raised = {alarm_no for alarm_no in xrange(224)
-                                 if prev_bitmap & (1L << (223-alarm_no)) != 0L}
+            previously_raised = {alarm_no for alarm_no in range(224)
+                                 if prev_bitmap & (1 << (223-alarm_no)) != 0}
 
-            currently_raised = {alarm_no for alarm_no in xrange(224)
-                                if bitmap & (1L << (223-alarm_no)) != 0L}
+            currently_raised = {alarm_no for alarm_no in range(224)
+                                if bitmap & (1 << (223-alarm_no)) != 0}
 
             newly_cleared = previously_raised - currently_raised
             newly_raised = currently_raised - previously_raised

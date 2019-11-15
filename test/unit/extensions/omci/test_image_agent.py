@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 import binascii
 import structlog
 from unittest import TestCase, TestSuite, skip

@@ -19,6 +19,7 @@ Class to hold revisions, latest revision, etc., for a config node, used
 for the active committed revisions or revisions part of a transaction.
 """
 
+from __future__ import absolute_import
 from collections import OrderedDict
 from weakref import WeakValueDictionary
 

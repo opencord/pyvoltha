@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from mib_db_api import *
+from __future__ import absolute_import
+from .mib_db_api import *
 from voltha_protos.omci_mib_db_pb2 import MibInstanceData, MibClassData, \
     MibDeviceData, MibAttributeData, MessageType, ManagedEntity
 from pyvoltha.adapters.extensions.omci.omci_entities import *
@@ -21,6 +22,8 @@ from pyvoltha.adapters.extensions.omci.omci_fields import *
 from pyvoltha.common.config.config_backend import EtcdStore
 from scapy.fields import StrField, FieldListField, PacketField
 from pyvoltha.common.utils.registry import registry
+import six
+from six.moves import range
 
 class MibDbStatistic(object):
     """
@@ -175,7 +178,7 @@ class MibDbExternal(MibDbApi):
 
             if isinstance(field, StrFixedLenField):
                 from scapy.base_classes import Packet_metaclass
-                if hasattr(value, 'to_json') and not isinstance(value, basestring):
+                if hasattr(value, 'to_json') and not isinstance(value, six.string_types):
                     # Packet Class to string
                     str_value = value.to_json()
                 elif isinstance(field.default, Packet_metaclass) \
@@ -266,7 +269,7 @@ class MibDbExternal(MibDbApi):
                 value = int(str_value)
 
             elif isinstance(field, BitField):
-                value = long(str_value)
+                value = int(str_value)
 
             elif hasattr(field, 'load_json'):
                 value = field.load_json(str_value)
@@ -342,7 +345,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         try:
@@ -411,7 +414,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID is a string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -714,7 +717,7 @@ class MibDbExternal(MibDbApi):
         self.log.debug('set', device_id=device_id, class_id=class_id,
                        instance_id=instance_id, attributes=attributes)
         try:
-            if not isinstance(device_id, basestring):
+            if not isinstance(device_id, six.string_types):
                 raise TypeError('Device ID should be a string')
 
             if not 0 <= class_id <= 0xFFFF:
@@ -753,7 +756,7 @@ class MibDbExternal(MibDbApi):
                     exist_attr_indexes = dict()
                     attr_len = len(inst_data.attributes)
 
-                    for index in xrange(0, attr_len):
+                    for index in range(0, attr_len):
                         name = inst_data.attributes[index].name
                         value = inst_data.attributes[index].value
                         exist_attr_indexes[name] = index
@@ -831,7 +834,7 @@ class MibDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -937,7 +940,7 @@ class MibDbExternal(MibDbApi):
 
                     else:
                         # Specific attribute(s)
-                        if isinstance(attributes, basestring):
+                        if isinstance(attributes, six.string_types):
                             attributes = {attributes}
 
                         data = {

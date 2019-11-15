@@ -18,10 +18,11 @@
 Agent to play gateway between adapters.
 """
 
+from __future__ import absolute_import
 import structlog
 from uuid import uuid4
 from twisted.internet.defer import inlineCallbacks, returnValue
-from container_proxy import ContainerProxy
+from .container_proxy import ContainerProxy
 from voltha_protos.inter_container_pb2 import InterAdapterHeader, \
     InterAdapterMessage
 import time

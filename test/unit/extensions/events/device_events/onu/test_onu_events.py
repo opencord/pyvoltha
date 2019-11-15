@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 import arrow
 from unittest import TestCase, main
 from pyvoltha.adapters.kafka.core_proxy import CoreProxy

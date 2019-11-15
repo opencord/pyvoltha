@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import arrow
 from twisted.internet.defer import inlineCallbacks, returnValue 
 from voltha_protos.device_pb2 import PmConfig, PmGroupConfig
@@ -27,6 +28,7 @@ from pyvoltha.adapters.extensions.omci.omci_entities import \
     GemPortNetworkCtpMonitoringHistoryData, XgPonTcPerformanceMonitoringHistoryData, \
     XgPonDownstreamPerformanceMonitoringHistoryData, \
     XgPonUpstreamPerformanceMonitoringHistoryData
+import six
 
 
 class OnuPmIntervalMetrics(AdapterPmMetrics):
@@ -322,7 +324,7 @@ class OnuPmIntervalMetrics(AdapterPmMetrics):
                                                                type=pm.type,
                                                                enabled=pm.enabled)])
 
-        pm_config.groups.extend([stats for stats in self.pm_group_metrics.itervalues()])
+        pm_config.groups.extend([stats for stats in six.itervalues(self.pm_group_metrics)])
 
         return pm_config
 

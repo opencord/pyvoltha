@@ -17,19 +17,21 @@
 """
 Agent to play gateway between CORE and an adapter.
 """
+from __future__ import absolute_import
 import structlog
 import arrow
 from google.protobuf.message import Message
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from container_proxy import ContainerProxy
+from .container_proxy import ContainerProxy
 
 from voltha_protos.common_pb2 import ID, ConnectStatus, OperStatus
 from voltha_protos.inter_container_pb2 import StrType, BoolType, IntType, Packet
 from voltha_protos.device_pb2 import Device, Ports, Devices
-from voltha_protos.voltha_pb2 import CoreInstance, AlarmFilterRuleKey
+from voltha_protos.voltha_pb2 import CoreInstance, EventFilterRuleKey
 from voltha_protos.events_pb2 import Event
 from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, MetricInformation, MetricMetaData
+import six
 
 log = structlog.get_logger()
 
@@ -161,7 +163,7 @@ class CoreProxy(ContainerProxy):
 
     def _to_proto(self, **kwargs):
         encoded = {}
-        for k, v in kwargs.iteritems():
+        for k, v in six.iteritems(kwargs):
             if isinstance(v, Message):
                 encoded[k] = v
             elif type(v) == int:
@@ -472,19 +474,19 @@ class CoreProxy(ContainerProxy):
                                 device_reason=rsn)
 
         returnValue(res)
-                
+
     # ~~~~~~~~~~~~~~~~~~~ Handle event submissions ~~~~~~~~~~~~~~~~~~~~~
 
     def filter_alarm(self, device_id, alarm_event):
         '''
         TODO
         alarm filtering functionality is not implemented
-        in Voltha 1.x 
+        in Voltha 1.x
         '''
         log.warn('filter_alarm is not implemented')
-        return 
+        return
         #alarm_filters = self.root_proxy.get('/alarm_filters')
-        
+
         rule_values = {
             'id': alarm_event.id,
             'type': AlarmEventType.AlarmEventType.Name(alarm_event.type),
@@ -501,15 +503,15 @@ class CoreProxy(ContainerProxy):
                 exclude = True
                 for rule in alarm_filter.rules:
                     log.debug("compare-alarm-event",
-                                   key=AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                   key=EventFilterRuleKey.EventFilterRuleKey.Name(
                                        rule.key),
                                    actual=rule_values[
-                                       AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                       EventFilterRuleKey.EventFilterRuleKey.Name(
                                            rule.key)].lower(),
                                    expected=rule.value.lower())
                     exclude = exclude and \
                               (rule_values[
-                                   AlarmFilterRuleKey.AlarmFilterRuleKey.Name(
+                                   EventFilterRuleKey.EventFilterRuleKey.Name(
                                        rule.key)].lower() == rule.value.lower())
                     if not exclude:
                         break

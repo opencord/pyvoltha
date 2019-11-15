@@ -15,6 +15,7 @@
 #
 
 
+from __future__ import absolute_import
 from confluent_kafka import Producer as _kafkaProducer
 from structlog import get_logger
 from twisted.internet import reactor
@@ -23,10 +24,11 @@ from twisted.internet.threads import deferToThread
 from zope.interface import implementer
 
 from pyvoltha.common.utils.consulhelpers import get_endpoint_from_consul
-from event_bus_publisher import EventBusPublisher
+from .event_bus_publisher import EventBusPublisher
 from pyvoltha.common.utils.registry import IComponent
 from confluent_kafka import Consumer, KafkaError
 import threading
+import six
 
 log = get_logger()
 
@@ -93,7 +95,7 @@ class KafkaProxy(object):
                     yield self.kclient.close()
                     self.kclient = None
                     log.debug('stopped-kclient-kafka-proxy')
-            except Exception, e:
+            except Exception as e:
                 log.exception('failed-stopped-kclient-kafka-proxy', e=e)
 
             try:
@@ -101,19 +103,19 @@ class KafkaProxy(object):
                     yield self.kproducer.flush()
                     self.kproducer = None
                     log.debug('stopped-kproducer-kafka-proxy')
-            except Exception, e:
+            except Exception as e:
                 log.exception('failed-stopped-kproducer-kafka-proxy', e=e)
 
             # Stop all consumers
             try:
                 self.topic_any_map_lock.acquire()
                 log.debug('stopping-consumers-kafka-proxy')
-                for _, c in self.topic_consumer_map.iteritems():
+                for _, c in six.iteritems(self.topic_consumer_map):
                     yield deferToThread(c.close)
                 self.topic_consumer_map.clear()
                 self.topic_callbacks_map.clear()
                 log.debug('stopped-consumers-kafka-proxy')
-            except Exception, e:
+            except Exception as e:
                 log.exception('failed-stopped-consumers-kafka-proxy', e=e)
             finally:
                 self.topic_any_map_lock.release()
@@ -130,7 +132,7 @@ class KafkaProxy(object):
 
             log.debug('stopped-kafka-proxy')
 
-        except Exception, e:
+        except Exception as e:
             self.kclient = None
             self.kproducer = None
             # self.event_bus_publisher = None
@@ -161,7 +163,7 @@ class KafkaProxy(object):
                  }
             )
             pass
-        except Exception, e:
+        except Exception as e:
             log.exception('failed-get-kafka-producer', e=e)
             return
 
@@ -226,7 +228,7 @@ class KafkaProxy(object):
             self.topic_callbacks_map[topic] = [callback]
             # Start the consumer
             reactor.callLater(0, self._wait_for_messages, c, topic)
-        except Exception, e:
+        except Exception as e:
             log.exception("topic-subscription-error", e=e)
         finally:
             self.topic_any_map_lock.release()
@@ -267,7 +269,7 @@ class KafkaProxy(object):
                 else:
                     log.debug("consumers-for-topic-still-exist", topic=topic,
                               num=len(self.topic_callbacks_map[topic]))
-        except Exception, e:
+        except Exception as e:
             log.exception("topic-unsubscription-error", e=e)
         finally:
             self.topic_any_map_lock.release()
@@ -305,7 +307,7 @@ class KafkaProxy(object):
                 else:
                     return
 
-        except Exception, e:
+        except Exception as e:
             self.faulty = True
             log.error('failed-to-send-kafka-msg', topic=topic,
                       e=e)
@@ -321,7 +323,7 @@ class KafkaProxy(object):
                     self.stopping = False
                     self.faulty = False
                     log.debug('stopped-kafka-proxy')
-                except Exception, e:
+                except Exception as e:
                     log.exception('failed-stopping-kafka-proxy', e=e)
                     pass
             else:
