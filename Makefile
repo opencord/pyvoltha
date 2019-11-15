@@ -44,10 +44,9 @@ upload: dist
 VENVDIR := venv-pyvoltha
 
 venv:
-	virtualenv ${VENVDIR};\
-        source ./${VENVDIR}/bin/activate ; set -u ;\
-        rm ${VENVDIR}/local/bin ${VENVDIR}/local/lib ${VENVDIR}/local/include ;\
-        pip install -r requirements.txt
+	virtualenv --python=python3.6 ${VENVDIR};\
+    source ./${VENVDIR}/bin/activate ; set -u ;\
+    pip install -r requirements.txt
 
 test:
 	@ echo "Executing unit tests w/tox"
@@ -57,7 +56,7 @@ clean:
 	find . -name '*.pyc' | xargs rm -f
 	rm -rf \
     .tox \
-		.coverage \
+    .coverage \
     coverage.xml \
     dist \
     nose-results.xml \

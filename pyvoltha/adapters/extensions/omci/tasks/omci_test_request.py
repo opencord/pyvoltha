@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import, division
 import arrow
-from task import Task
+from .task import Task
 from twisted.internet.task import LoopingCall
 from twisted.internet.defer import failure, inlineCallbacks, TimeoutError, \
     returnValue
@@ -28,6 +29,7 @@ from voltha_protos.events_pb2 import MetricInformation, MetricMetaData
 from voltha_protos.events_pb2 import Event, EventType, EventCategory, \
     EventSubCategory, EventHeader
 from voltha_protos.events_pb2 import Event
+import six
 
 RC = ReasonCodes
 OP = EntityOperations
@@ -201,8 +203,8 @@ class OmciTestRequest(Task):
         event_name = topic.split(':')[-1]
         onu_device_id = topic.split(':')[-2]
         frame = msg['rx-response']
-        for key, value in (frame.fields['omci_message'].fields).iteritems():
-            result_frame[key] = long(value)
+        for key, value in six.iteritems((frame.fields['omci_message'].fields)):
+            result_frame[key] = int(value)
         self.publish_metrics(result_frame, event_name, onu_device_id)
 
     @inlineCallbacks
@@ -211,7 +213,7 @@ class OmciTestRequest(Task):
         Perform the initial test request
         """
         ani_g_entities = self._device.configuration.ani_g_entities
-        ani_g_entities_ids = ani_g_entities.keys() if ani_g_entities \
+        ani_g_entities_ids = list(ani_g_entities.keys()) if ani_g_entities \
                                                       is not None else None
         self._entity_id = ani_g_entities_ids[0]
         self.log.info('perform-test', entity_class=self._entity_class,

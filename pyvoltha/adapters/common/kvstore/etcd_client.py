@@ -23,7 +23,8 @@
 #
 ################################################################################
 
-from kv_client import DEFAULT_TIMEOUT, Event, KVClient, KVPair
+from __future__ import absolute_import
+from .kv_client import DEFAULT_TIMEOUT, Event, KVClient, KVPair
 from structlog import get_logger
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks, returnValue, Deferred

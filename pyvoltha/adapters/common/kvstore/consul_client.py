@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kv_client import DEFAULT_TIMEOUT, Event, KVClient, KVPair, RETRY_BACKOFF
+from __future__ import absolute_import
+from .kv_client import DEFAULT_TIMEOUT, Event, KVClient, KVPair, RETRY_BACKOFF
 from pyvoltha.common.utils.asleep import asleep
 from pyvoltha.common.utils.deferred_utils import DeferredWithTimeout, TimeOutError
 from consul import ConsulException
