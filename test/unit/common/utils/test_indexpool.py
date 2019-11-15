@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import absolute_import
 from unittest import TestCase, main
 from pyvoltha.common.utils.indexpool import IndexPool
+from six.moves import range
 
 class TestIndexPool(TestCase):
     pool = IndexPool(8, 0)

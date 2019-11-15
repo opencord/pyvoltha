@@ -18,6 +18,7 @@
 OpenOMCI MIB Database API
 """
 
+from __future__ import absolute_import
 import structlog
 from datetime import datetime
 

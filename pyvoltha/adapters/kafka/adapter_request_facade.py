@@ -18,6 +18,7 @@
 This facade handles kafka-formatted messages from the Core, extracts the kafka
 formatting and forwards the request to the concrete handler.
 """
+from __future__ import absolute_import
 import structlog
 from twisted.internet.defer import inlineCallbacks
 from zope.interface import implementer

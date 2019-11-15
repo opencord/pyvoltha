@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from twisted.internet.defer import inlineCallbacks, TimeoutError, failure, returnValue
 from twisted.internet import reactor
 from pyvoltha.common.utils.asleep import asleep
@@ -22,6 +23,8 @@ from pyvoltha.adapters.extensions.omci.omci_entities import OntData, Omci
 from pyvoltha.adapters.extensions.omci.omci_defs import AttributeAccess, EntityOperations
 from pyvoltha.adapters.extensions.omci.omci_fields import OmciTableField
 from pyvoltha.adapters.extensions.omci.omci_me import OntDataFrame
+import six
+from six.moves import range
 
 AA = AttributeAccess
 OP = EntityOperations
@@ -178,7 +181,7 @@ class MibResyncTask(Task):
         try:
             max_tries = MibResyncTask.max_db_copy_retries - 1
 
-            for retries in xrange(0, max_tries + 1):
+            for retries in range(0, max_tries + 1):
                 # Send MIB Upload so ONU snapshots its MIB
                 try:
                     self.strobe_watchdog()
@@ -252,10 +255,10 @@ class MibResyncTask(Task):
         # Begin MIB Upload
         seq_no = None
 
-        for seq_no in xrange(number_of_commands):
+        for seq_no in range(number_of_commands):
             max_tries = MibResyncTask.max_mib_upload_next_retries
 
-            for retries in xrange(0, max_tries):
+            for retries in range(0, max_tries):
                 try:
                     self.strobe_watchdog()
                     response = yield self._device.omci_cc.send_mib_upload_next(seq_no)
@@ -425,8 +428,8 @@ class MibResyncTask(Task):
                         if isinstance(inst_id, int) and inst_id in onu_cls}
 
             for inst_id in inst_ids:
-                omci_attributes = {k for k in olt_cls[inst_id][ATTRIBUTES_KEY].iterkeys()}
-                onu_attributes = {k for k in onu_cls[inst_id][ATTRIBUTES_KEY].iterkeys()}
+                omci_attributes = {k for k in six.iterkeys(olt_cls[inst_id][ATTRIBUTES_KEY])}
+                onu_attributes = {k for k in six.iterkeys(onu_cls[inst_id][ATTRIBUTES_KEY])}
 
                 # Get attributes that exist in one database, but not the other
                 sym_diffs = (omci_attributes ^ onu_attributes) - ro_attrs

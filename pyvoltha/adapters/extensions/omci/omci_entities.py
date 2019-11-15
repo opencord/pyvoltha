@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import, division
 import inspect
 
 import sys
@@ -27,6 +28,8 @@ from pyvoltha.adapters.extensions.omci.omci_defs import OmciUninitializedFieldEr
     AttributeAccess, OmciNullPointer, EntityOperations, OmciInvalidTypeError
 from pyvoltha.adapters.extensions.omci.omci_fields import OmciSerialNumberField, OmciTableField
 from pyvoltha.adapters.extensions.omci.omci_defs import bitpos_from_mask
+import six
+from six.moves import range
 
 
 class EntityClassAttribute(object):
@@ -85,11 +88,11 @@ class EntityClassAttribute(object):
         return self._deprecated
 
     _type_checker_map = {
-        'ByteField': lambda val: isinstance(val, (int, long)) and 0 <= val <= 0xFF,
-        'ShortField': lambda val: isinstance(val, (int, long)) and 0 <= val <= 0xFFFF,
-        'IntField': lambda val: isinstance(val, (int, long)) and 0 <= val <= 0xFFFFFFFF,
-        'LongField': lambda val: isinstance(val, (int, long)) and 0 <= val <= 0xFFFFFFFFFFFFFFFF,
-        'StrFixedLenField': lambda val: isinstance(val, basestring),
+        'ByteField': lambda val: isinstance(val, (int, int)) and 0 <= val <= 0xFF,
+        'ShortField': lambda val: isinstance(val, (int, int)) and 0 <= val <= 0xFFFF,
+        'IntField': lambda val: isinstance(val, (int, int)) and 0 <= val <= 0xFFFFFFFF,
+        'LongField': lambda val: isinstance(val, (int, int)) and 0 <= val <= 0xFFFFFFFFFFFFFFFF,
+        'StrFixedLenField': lambda val: isinstance(val, six.string_types),
         'MACField': lambda val: True,   # TODO: Add a constraint for this field type
         'BitField': lambda val: True,   # TODO: Add a constraint for this field type
         'IPField': lambda val: True,    # TODO: Add a constraint for this field type
@@ -133,7 +136,7 @@ class EntityClassMeta(type):
             (a._fld.name, idx) for idx, a in enumerate(cls.attributes))
 
 
-class EntityClass(object):
+class EntityClass(six.with_metaclass(EntityClassMeta, object)):
 
     class_id = 'to be filled by subclass'
     attributes = []
@@ -147,16 +150,15 @@ class EntityClass(object):
 
     # will be map of attr_name -> index in attributes, initialized by metaclass
     attribute_name_to_index_map = None
-    __metaclass__ = EntityClassMeta
 
     def __init__(self, **kw):
         assert(isinstance(kw, dict))
-        for k, v in kw.iteritems():
+        for k, v in six.iteritems(kw):
             assert(k in self.attribute_name_to_index_map)
         self._data = kw
 
     def serialize(self, mask=None, operation=None):
-        octets = ''
+        octets = b''
 
         # generate ordered list of attribute indices needed to be processed
         # if mask is provided, we use that explicitly
@@ -189,7 +191,7 @@ class EntityClass(object):
     def attribute_indices_from_data(self):
         return sorted(
             self.attribute_name_to_index_map[attr_name]
-            for attr_name in self._data.iterkeys())
+            for attr_name in six.iterkeys(self._data))
 
     byte1_mask_to_attr_indices = dict(
         (m, bitpos_from_mask(m, 8, -1)) for m in range(256))
@@ -620,13 +622,13 @@ class VlanTaggingOperation(Packet):
         return json.dumps(temp.fields, separators=(',', ':'))
 
     def index(self):
-        return '{:02}'.format(self.fields.get('filter_outer_priority',0)) + \
-               '{:03}'.format(self.fields.get('filter_outer_vid',0)) + \
-               '{:01}'.format(self.fields.get('filter_outer_tpid_de',0)) + \
-               '{:03}'.format(self.fields.get('filter_inner_priority',0)) + \
-               '{:04}'.format(self.fields.get('filter_inner_vid',0)) + \
-               '{:01}'.format(self.fields.get('filter_inner_tpid_de',0)) + \
-               '{:02}'.format(self.fields.get('filter_ether_type',0))
+        return b'%02d' % (self.fields.get('filter_outer_priority',0)) + \
+               b'%03d' % (self.fields.get('filter_outer_vid',0)) + \
+               b'%01d' % (self.fields.get('filter_outer_tpid_de',0)) + \
+               b'%03d' % (self.fields.get('filter_inner_priority',0)) + \
+               b'%04d' % (self.fields.get('filter_inner_vid',0)) + \
+               b'%01d' % (self.fields.get('filter_inner_tpid_de',0)) + \
+               b'%02d' % (self.fields.get('filter_ether_type',0))
 
     def is_delete(self):
         return self.fields.get('treatment_tags_to_remove',0) == 0x3 and \
@@ -1181,7 +1183,7 @@ class OmciMeTypeTable(Packet):
         return json.dumps(temp.fields, separators=(',', ':'))
 
     def index(self):
-        return '{:04}'.format(self.fields.get('me_type', 0))
+        return b'%04d' % (self.fields.get('me_type', 0))
 
     def is_delete(self):
         return self.fields.get('me_type', 0) == 0
@@ -1210,7 +1212,7 @@ class OmciMsgTypeTable(Packet):
         return json.dumps(temp.fields, separators=(',', ':'))
 
     def index(self):
-        return '{:02}'.format(self.fields.get('msg_type', 0))
+        return b'%02d' % (self.fields.get('msg_type', 0))
 
     def is_delete(self):
         return self.fields.get('me_type', 0) == 0
@@ -1614,5 +1616,5 @@ entity_classes_name_map = dict(
               o is not EntityClass)
 )
 
-entity_classes = [c for c in entity_classes_name_map.itervalues()]
+entity_classes = [c for c in six.itervalues(entity_classes_name_map)]
 entity_id_to_class_map = dict((c.class_id, c) for c in entity_classes)

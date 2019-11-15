@@ -13,20 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from unittest import TestCase, main
 from nose.tools import assert_raises
 from nose.twistedtools import deferred
 from copy import deepcopy
-from mock.mock_adapter_agent import MockAdapterAgent, MockCore
-from mock.mock_onu_handler import MockOnuHandler
-from mock.mock_olt_handler import MockOltHandler
-from mock.mock_onu import MockOnu
+from .mock.mock_adapter_agent import MockAdapterAgent, MockCore
+from .mock.mock_onu_handler import MockOnuHandler
+from .mock.mock_olt_handler import MockOltHandler
+from .mock.mock_onu import MockOnu
 from pyvoltha.adapters.extensions.omci.openomci_agent import OpenOMCIAgent, OpenOmciAgentDefaults
 from pyvoltha.adapters.extensions.omci.omci_defs import *
 from pyvoltha.common.utils.asleep import asleep
 from pyvoltha.adapters.extensions.omci.database.mib_db_api import DEVICE_ID_KEY, CLASS_ID_KEY, CREATED_KEY, \
     MODIFIED_KEY, MDS_KEY, LAST_SYNC_KEY, VERSION_KEY, DatabaseStateError
 from pyvoltha.adapters.extensions.omci.database.mib_db_dict import MibDbVolatileDict
+from six.moves import range
 
 
 DEFAULT_OLT_DEVICE_ID = 'default_olt_mock'
