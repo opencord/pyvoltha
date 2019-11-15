@@ -23,6 +23,7 @@ directly supported) we need to run the receiver select loop on a dedicated
 thread.
 """
 
+from __future__ import absolute_import
 import os
 import socket
 import struct
@@ -30,6 +31,7 @@ import uuid
 from pcapy import BPFProgram
 from threading import Thread, Condition
 
+import codecs
 import fcntl
 
 import select
@@ -43,18 +45,19 @@ from zope.interface import implementer
 from pyvoltha.common.utils.registry import IComponent
 
 if sys.platform.startswith('linux'):
-    from third_party.oftest import afpacket, netutils
+    from .third_party.oftest import afpacket, netutils
 elif sys.platform == 'darwin':
-    from scapy.arch import pcapdnet, BIOCIMMEDIATE, dnet
+    # config is per https://scapy.readthedocs.io/en/latest/installation.html#mac-os-x
+    from scapy.config import conf
+    conf.use_pcap = True
+    from scapy.arch import pcapdnet, BIOCIMMEDIATE
 
 log = structlog.get_logger()
 
 
-def hexify(buffer):
-    """
-    Return a hexadecimal string encoding of input buffer
-    """
-    return ''.join('%02x' % ord(c) for c in buffer)
+def hexify(frame):
+    """Return a hexadecimal string encoding of input buffer"""
+    return codecs.encode(bytes(frame),'hex')
 
 
 class _SelectWakerDescriptor(object):
@@ -189,8 +192,8 @@ class FrameIOPort(object):
     def send_frame(self, frame):
         try:
             return self.socket.send(frame)
-        except socket.error, err:
-            if err[0] == os.errno.EINVAL:
+        except socket.error as err:
+            if err.args[0] == os.errno.EINVAL:
                 if len(frame) < self.MIN_PKT_SIZE:
                     padding = '\x00' * (self.MIN_PKT_SIZE - len(frame))
                     frame = frame + padding
@@ -239,16 +242,10 @@ class DarwinFrameIOPort(FrameIOPort):
         except:
             pass
 
-        # need a different kind of socket for sending out
-        self.sout = dnet.eth(iface_name)
-
         return sin
 
-    def send_frame(self, frame):
-        return self.sout.send(frame)
-
     def rcv_frame(self):
-        pkt = self.socket.next()
+        pkt = next(self.socket)
         if pkt is not None:
             ts, pkt = pkt
         return pkt
@@ -403,7 +400,7 @@ class FrameIOManager(Thread):
 
         # outer loop constructs sockets list for select
         while not self.stopped:
-            sockets = [self.waker] + self.ports.values()
+            sockets = [self.waker] + list(self.ports.values())
             self.ports_changed = False
             empty = []
             # inner select loop

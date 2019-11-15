@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import, division
 import os
 import structlog
 from datetime import datetime
@@ -27,6 +28,7 @@ from pyvoltha.adapters.extensions.omci.omci_defs import ReasonCodes, OmciSection
 from pyvoltha.adapters.extensions.omci.omci_entities import SoftwareImage
 from pyvoltha.adapters.extensions.omci.omci_cc import DEFAULT_OMCI_TIMEOUT
 from pyvoltha.adapters.extensions.omci.omci_messages import OmciEndSoftwareDownloadResponse, OmciActivateImageResponse
+from six.moves import range
 
 ###################################################################################
 ##              OLT out-of-band download image procedure

@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
 from pyvoltha.common.utils.asleep import asleep
 from pyvoltha.adapters.extensions.omci.tasks.task import Task
 from twisted.internet import reactor
@@ -435,7 +436,7 @@ class MibReconcileTask(Task):
                                         writeable_data[key] = value
 
                     if len(writeable_data):
-                        attributes_mask = me_entry.mask_for(*writeable_data.keys())
+                        attributes_mask = me_entry.mask_for(*list(writeable_data.keys()))
                         frame = OmciFrame(transaction_id=None,
                                           message_type=OmciSet.message_id,
                                           omci_message=OmciSet(entity_class=cid,
@@ -449,7 +450,7 @@ class MibReconcileTask(Task):
                     for key, value in table_data.items():
                         for row in value:
                             setvalue = { key : row }
-                            attributes_mask = me_entry.mask_for(*setvalue.keys())
+                            attributes_mask = me_entry.mask_for(*list(setvalue.keys()))
                             frame = OmciFrame(transaction_id=None,
                                               message_type=OmciSet.message_id,
                                               omci_message=OmciSet(entity_class=cid,
@@ -560,7 +561,7 @@ class MibReconcileTask(Task):
         failures = 0
         try:
             # Get current and verify same as during audit it is missing from our DB
-            attributes = mib_data.keys()
+            attributes = list(mib_data.keys())
             current_entry = self._device.query_mib(cid, eid, attributes)
 
             if current_entry is not None and len(current_entry):
@@ -603,9 +604,9 @@ class MibReconcileTask(Task):
             # update on the ONU. Verify the data for the OLT is the same as
             # at time of audit
             olt_db_entries = {k: v for k, v in olt_db[cid][eid][ATTRIBUTES_KEY].items()
-                              if k in onu_data.keys()}
+                              if k in list(onu_data.keys())}
             current_entries = self._sync_sm.query_mib(class_id=cid, instance_id=eid,
-                                                      attributes=onu_data.keys())
+                                                      attributes=list(onu_data.keys()))
 
             still_the_same = all(current_entries.get(k) == v for k, v in olt_db_entries.items())
             if not still_the_same:
@@ -624,7 +625,7 @@ class MibReconcileTask(Task):
             # OLT data still matches, do the set operations now
             # while len(onu_data):
             if len(writeable_data):
-                attributes_mask = me_entry.mask_for(*writeable_data.keys())
+                attributes_mask = me_entry.mask_for(*list(writeable_data.keys()))
                 frame = OmciFrame(transaction_id=None,
                                   message_type=OmciSet.message_id,
                                   omci_message=OmciSet(entity_class=cid,
@@ -639,7 +640,7 @@ class MibReconcileTask(Task):
             for key, value in table_data.items():
                 for row in value:
                     setvalue = {key: row}
-                    attributes_mask = me_entry.mask_for(*setvalue.keys())
+                    attributes_mask = me_entry.mask_for(*list(setvalue.keys()))
                     frame = OmciFrame(transaction_id=None,
                                       message_type=OmciSet.message_id,
                                       omci_message=OmciSet(entity_class=cid,

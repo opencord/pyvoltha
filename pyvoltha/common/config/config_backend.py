@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 from consul import Consul, ConsulException
 from pyvoltha.common.utils.asleep import asleep
 from requests import ConnectionError
@@ -19,6 +20,8 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 
 import etcd3
 import structlog
+import six
+import codecs
 
 
 class ConsulStore(object):
@@ -71,10 +74,10 @@ class ConsulStore(object):
 
     def __setitem__(self, key, value):
         try:
-            assert isinstance(value, basestring)
+            assert isinstance(value, six.string_types)
             self._cache[key] = value
             self._kv_put(self.make_path(key), value)
-        except Exception, e:
+        except Exception as e:
             self.log.exception('cannot-set-item', e=e)
 
     def __delitem__(self, key):
@@ -128,13 +131,13 @@ class ConsulStore(object):
                     result = operation(*args, **kw)
                 self._clear_backoff()
                 break
-            except ConsulException, e:
+            except ConsulException as e:
                 self.log.exception('consul-not-up', e=e)
                 self._backoff('consul-not-up')
-            except ConnectionError, e:
+            except ConnectionError as e:
                 self.log.exception('cannot-connect-to-consul', e=e)
                 self._backoff('cannot-connect-to-consul')
-            except Exception, e:
+            except Exception as e:
                 self.log.exception(e)
                 self._backoff('unknown-error')
             self._redo_consul_connection()
@@ -191,10 +194,10 @@ class EtcdStore(object):
 
     def __setitem__(self, key, value):
         try:
-            assert isinstance(value, basestring)
+            assert isinstance(value, six.string_types)
             self._cache[key] = value
             self._kv_put(self.make_path(key), value)
-        except Exception, e:
+        except Exception as e:
             self.log.exception('cannot-set-item', e=e)
 
     def __delitem__(self, key):
@@ -236,14 +239,14 @@ class EtcdStore(object):
         # etcd data sometimes contains non-utf8 sequences, replace
         self.log.debug('backend-op',
                   operation=operation,
-                  args=map(lambda x : unicode(x,'utf8','replace'), args),
+                  args=[codecs.encode(x,'utf8','replace') for x in args],
                   kw=kw)
 
         while 1:
             try:
                 etcd = self._get_etcd()
                 self.log.debug('etcd', etcd=etcd, operation=operation,
-                    args=map(lambda x : unicode(x,'utf8','replace'), args))
+                    args=[codecs.encode(x,'utf8','replace') for x in args])
                 if operation == 'GET':
                     (value, meta) = etcd.get(*args, **kw)
                     result = (value, meta)
@@ -256,7 +259,7 @@ class EtcdStore(object):
                     result = operation(*args, **kw)
                 self._clear_backoff()
                 break
-            except Exception, e:
+            except Exception as e:
                 self.log.exception(e)
                 self._backoff('unknown-error-with-etcd')
             self._redo_etcd_connection()

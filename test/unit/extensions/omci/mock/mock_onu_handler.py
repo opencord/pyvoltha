@@ -14,7 +14,8 @@
 # limitations under the License.
 #
 
-from mock_adapter_agent import MockProxyAddress, MockDevice
+from __future__ import absolute_import
+from .mock_adapter_agent import MockProxyAddress, MockDevice
 from pyvoltha.adapters.extensions.omci.omci_cc import *
 from pyvoltha.adapters.extensions.omci.omci_entities import entity_id_to_class_map
 

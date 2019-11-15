@@ -14,7 +14,9 @@
 # limitations under the License.
 #
 # import binascii
+from __future__ import absolute_import
 import structlog
+import six
 # from twisted.internet.defer import Deferred
 # from voltha.core.config.config_root import ConfigRoot
 # from pyvoltha.protos.voltha_pb2 import VolthaInstance
@@ -85,7 +87,7 @@ class MockAdapterAgent(object):
     
     def tearDown(self):
         """Test case cleanup"""
-        for device in self._devices.itervalues():
+        for device in six.itervalues(self._devices):
             device.tearDown()
         self._devices.clear()
 
@@ -115,7 +117,7 @@ class MockAdapterAgent(object):
             return None
 
         # Get all child devices with the same parent ID
-        children_ids = set(d.id for d in self._devices.itervalues()
+        children_ids = set(d.id for d in six.itervalues(self._devices)
                            if d.parent_id == parent_device_id)
 
         # Loop through all the child devices with this parent ID

@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from task import Task
+from __future__ import absolute_import
+from .task import Task
 from datetime import datetime
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks, TimeoutError, failure
@@ -116,7 +117,7 @@ class IntervalDataTask(Task):
                       entity_id=self._entity_id)
 
         device = self.omci_agent.get_device(self.device_id)
-        attr_names = self._counter_attributes.keys()
+        attr_names = list(self._counter_attributes.keys())
 
         final_results = {
             'class_id': self._class_id,

@@ -13,11 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from mib_db_api import *
+from __future__ import absolute_import
+from .mib_db_api import *
 from voltha_protos.omci_alarm_db_pb2 import AlarmInstanceData, AlarmClassData, \
     AlarmDeviceData, AlarmAttributeData
 from pyvoltha.common.config.config_backend import EtcdStore
 from pyvoltha.common.utils.registry import registry
+import six
+from six.moves import range
 
 class AlarmDbExternal(MibDbApi):
     """
@@ -94,7 +97,7 @@ class AlarmDbExternal(MibDbApi):
         :raises KeyError: Device, Class ID, or Attribute does not exist
         """
         # Alarms are always a bitmap which is a long
-        return long(str_value) if len(str_value) else 0L
+        return int(str_value) if len(str_value) else 0
 
     def add(self, device_id, overwrite=False):
         """
@@ -151,7 +154,7 @@ class AlarmDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         try:
@@ -185,7 +188,7 @@ class AlarmDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID is a string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -373,7 +376,7 @@ class AlarmDbExternal(MibDbApi):
         self.log.debug('set', device_id=device_id, class_id=class_id,
                        instance_id=instance_id, attributes=attributes)
         try:
-            if not isinstance(device_id, basestring):
+            if not isinstance(device_id, six.string_types):
                 raise TypeError('Device ID should be a string')
 
             if not 0 <= class_id <= 0xFFFF:
@@ -403,7 +406,7 @@ class AlarmDbExternal(MibDbApi):
                     exist_attr_indexes = dict()
                     attr_len = len(inst_data.attributes)
 
-                    for index in xrange(0, attr_len):
+                    for index in range(0, attr_len):
                         exist_attr_indexes[inst_data.attributes[index].name] = index
 
                     str_value = ''
@@ -471,7 +474,7 @@ class AlarmDbExternal(MibDbApi):
         if not self._started:
             raise DatabaseStateError('The Database is not currently active')
 
-        if not isinstance(device_id, basestring):
+        if not isinstance(device_id, six.string_types):
             raise TypeError('Device ID should be an string')
 
         if not 0 <= class_id <= 0xFFFF:
@@ -553,7 +556,7 @@ class AlarmDbExternal(MibDbApi):
                         self.log.debug('query-result-all', data=data)
                     else:
                         # Specific attribute(s)
-                        if isinstance(attributes, basestring):
+                        if isinstance(attributes, six.string_types):
                             attributes = {attributes}
 
                         data = {

@@ -18,6 +18,8 @@
 Some network related convenience functions
 """
 
+from __future__ import absolute_import
+from __future__ import print_function
 from netifaces import AF_INET
 
 import netifaces as ni
@@ -36,7 +38,7 @@ def _get_my_primary_interface():
     assert 'default' in gateways, \
         ("No default gateway on host/container, "
          "cannot determine primary interface")
-    default_gw_index = gateways['default'].keys()[0]
+    default_gw_index = list(gateways['default'].keys())[0]
     # gateways[default_gw_index] has the format (example):
     # [('10.15.32.1', 'en0', True)]
     interface_name = gateways[default_gw_index][0][1]
@@ -88,4 +90,4 @@ def mac_str_to_tuple(mac):
 
 
 if __name__ == '__main__':
-    print get_my_primary_local_ipv4()
+    print(get_my_primary_local_ipv4())

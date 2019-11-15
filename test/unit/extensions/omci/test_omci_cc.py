@@ -13,20 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from __future__ import absolute_import
 import binascii
 from pyvoltha.adapters.common.frameio.frameio import hexify
 from twisted.python.failure import Failure
 from unittest import TestCase, main, skip
-from mock.mock_adapter_agent import MockAdapterAgent
-from mock.mock_onu_handler import MockOnuHandler
-from mock.mock_olt_handler import MockOltHandler
-from mock.mock_onu import MockOnu
+from .mock.mock_adapter_agent import MockAdapterAgent
+from .mock.mock_onu_handler import MockOnuHandler
+from .mock.mock_olt_handler import MockOltHandler
+from .mock.mock_onu import MockOnu
 from pyvoltha.adapters.extensions.omci.omci_defs import *
 from pyvoltha.adapters.extensions.omci.omci_frame import *
 from pyvoltha.adapters.extensions.omci.omci_entities import *
 from pyvoltha.adapters.extensions.omci.omci_me import ExtendedVlanTaggingOperationConfigurationDataFrame
 from pyvoltha.adapters.extensions.omci.omci_cc import OMCI_CC, UNKNOWN_CLASS_ATTRIBUTE_KEY,\
     MAX_OMCI_REQUEST_AGE
+from six.moves import range
 
 DEFAULT_OLT_DEVICE_ID = 'default_olt_mock'
 DEFAULT_ONU_DEVICE_ID = 'default_onu_mock'
@@ -838,7 +840,6 @@ class TestOmciCc(TestCase):
         self.assertEqual(expected, val)
         return results
 
-    @skip('for unknown omci failure')
     #@deferred()
     def test_rx_table_get_extvlantagging(self):
         self.setup_one_of_each()
