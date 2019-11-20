@@ -46,6 +46,30 @@
       "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6df669fb_28eae3d2",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-11-20T16:56:34Z",
+      "side": 1,
+      "message": "It\u0027s being used to fill in fields in the kafka interadapter header. Absent code comments about the intent from whomever wrote it, it\u0027s hard to say whether they wanted \"\" or None in those fields (not sure what happens if the Kafka inter-adapter proxy encounters a None, whether it skips the field or attempts to place a None in the message). Your interpretation seems consistent with the _to_string() implemented in kafka_inter_library_container.py. I\u0027m fine with it, though I do wonder why it was written the way it was in the original implementation.",
+      "parentUuid": "a3552bcb_9eee31e9",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 23
+      },
+      "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
