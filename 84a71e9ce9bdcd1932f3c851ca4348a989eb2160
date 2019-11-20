@@ -70,6 +70,30 @@
       "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a0ce605_db9e634c",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2019-11-20T23:59:19Z",
+      "side": 1,
+      "message": "If i recalled correctly,  _to_string() is used when setting kafka topic for a given request.   The consumer of that request will read the header of the kafka message to know where to send a response back.   The consumer can be in any language, like go.  A None in python was not converting correctly in go.  That was a while back when I first wrote it.  With changes all other the place this may not be an issue anymore.  In practice, the None path would \"never\" be executed.",
+      "parentUuid": "6df669fb_28eae3d2",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 23
+      },
+      "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
