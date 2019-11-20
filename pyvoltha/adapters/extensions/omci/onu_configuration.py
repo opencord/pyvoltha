@@ -432,7 +432,7 @@ class OnuConfiguration(object):
         """
         ag = self._get_capability('_ani_g', AniG.class_id)
         results = dict()
-
+        self.log.debug("Got AniG", value=ag)
         if ag is not None:
             for inst, inst_data in ag.items():
                 if isinstance(inst, int):
@@ -443,6 +443,8 @@ class OnuConfiguration(object):
                         'total-tcont-count':       inst_data[ATTRIBUTES_KEY].get('total_tcont_number', 0),
                         'piggyback-dba-reporting': inst_data[ATTRIBUTES_KEY].get('piggyback_dba_reporting', 0),
                     }
+                    self.log.debug("result", value=results[inst])
+
         return results if len(results) else None
 
     @property
