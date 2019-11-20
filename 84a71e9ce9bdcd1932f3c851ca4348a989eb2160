@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7737536_f8d7139d",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2019-11-20T01:14:54Z",
+      "side": 1,
+      "message": "Does returning None here instead of \"\" present any issues?",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 23
+      },
+      "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
