@@ -235,25 +235,25 @@ class MibDbVolatileDict(MibDbApi):
         now = datetime.utcnow()
         try:
             device_db = self._data[device_id]
-            class_db = device_db.get(class_id)
+            class_db = device_db.get(str(class_id))
             created = False
 
             if class_db is None:
-                device_db[class_id] = {CLASS_ID_KEY: class_id}
+                device_db[str(class_id)] = {CLASS_ID_KEY: class_id}
 
-                class_db = device_db[class_id]
+                class_db = device_db[str(class_id)]
                 self._modified = now
                 created = True
 
-            instance_db = class_db.get(instance_id)
+            instance_db = class_db.get(str(instance_id))
             if instance_db is None:
-                class_db[instance_id] = {
+                class_db[str(instance_id)] = {
                     INSTANCE_ID_KEY: instance_id,
                     CREATED_KEY: now,
                     MODIFIED_KEY: now,
                     ATTRIBUTES_KEY: dict()
                 }
-                instance_db = class_db[instance_id]
+                instance_db = class_db[str(instance_id)]
                 self._modified = now
                 created = True
 
@@ -312,7 +312,7 @@ class MibDbVolatileDict(MibDbApi):
             if changed:
                 instance_db[MODIFIED_KEY] = now
                 self._modified = now
-
+ 
             return changed or created
 
         except Exception as e:
@@ -405,16 +405,18 @@ class MibDbVolatileDict(MibDbApi):
             raise TypeError('Class ID is an integer')
 
         me_map = self._omci_agent.get_device(device_id).me_map
+        self.log.debug("devdb",devdb=device_db.keys())
         entity = me_map.get(class_id)
 
-        class_db = device_db.get(class_id, dict())
+        class_db = device_db.get(str(class_id), dict())
+        self.log.debug("class fetched", class_id=class_id, class_db=class_db)
         if instance_id is None or len(class_db) == 0:
             return self._fix_cls_json_attributes(copy.deepcopy(class_db), entity)
 
         if not isinstance(instance_id, int):
             raise TypeError('Instance ID is an integer')
 
-        instance_db = class_db.get(instance_id, dict())
+        instance_db = class_db.get(str(instance_id), dict())
         if attributes is None or len(instance_db) == 0:
             return self._fix_inst_json_attributes(copy.deepcopy(instance_db), entity)
 
@@ -443,16 +445,24 @@ class MibDbVolatileDict(MibDbApi):
 
     def _fix_dev_json_attributes(self, dev_data, device_id):
         for cls_id, cls_data in dev_data.items():
-            if isinstance(cls_id, int):
+            try:
+                new_cls_id = int(cls_id)
                 me_map = self._omci_agent.get_device(device_id).me_map
-                entity = me_map.get(cls_id)
-                dev_data[cls_id] = self._fix_cls_json_attributes(copy.deepcopy(cls_data), entity)
+                entity = me_map.get(new_cls_id)
+                dev_data[new_cls_id] = self._fix_cls_json_attributes(copy.deepcopy(cls_data), entity)
+            except (ValueError, AttributeError, TypeError):
+                pass
+
         return dev_data
 
     def _fix_cls_json_attributes(self, cls_data, entity):
         for inst_id, inst_data in cls_data.items():
-            if isinstance(inst_id, int):
-                cls_data[inst_id] = self._fix_inst_json_attributes(copy.deepcopy(inst_data), entity)
+            try:
+                new_inst_id = int(inst_id)
+                cls_data[new_inst_id] = self._fix_inst_json_attributes(copy.deepcopy(inst_data), entity)
+            except (ValueError, AttributeError, TypeError):
+                    pass
+
         return cls_data
 
     def _fix_inst_json_attributes(self, inst_data, entity):
@@ -524,3 +534,29 @@ class MibDbVolatileDict(MibDbApi):
         except Exception as e:
             self.log.error('set-me-failure', e=e)
             raise
+
+    def dump_to_json(self):
+        def myconverter(o):
+            import datetime
+            if isinstance(o, datetime.datetime):
+                return o.__str__()
+
+        with open('data-save.json', 'w') as fp:
+            json.dump(self._data, fp, default = myconverter)
+
+    def load_from_json(self, device_id):
+        import dateutil.parser
+
+        def datetime_parser(json_dict):
+            for (key, value) in json_dict.items():
+                try:
+                    json_dict[key] = dateutil.parser.parse(value)
+                except (ValueError, AttributeError, TypeError):
+                    pass
+            return json_dict
+        template_data = {}
+        with open('data.json', 'r') as fp:
+            template_data = json.load(fp, object_hook=datetime_parser)
+    
+        self._data[device_id] = template_data["bbsim_default"]
+        self._data[device_id][DEVICE_ID_KEY] = device_id
