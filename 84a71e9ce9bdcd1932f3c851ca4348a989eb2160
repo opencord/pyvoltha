@@ -22,6 +22,30 @@
       "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3552bcb_9eee31e9",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000011
+      },
+      "writtenOn": "2019-11-20T16:04:25Z",
+      "side": 1,
+      "message": "I would say it\u0027s more correct - the conditional at top:  `is not None`\n\nCalling this function with `None` as an argument and expecting to get an empty string doesn\u0027t seem correct.",
+      "parentUuid": "c7737536_f8d7139d",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 23
+      },
+      "revId": "84a71e9ce9bdcd1932f3c851ca4348a989eb2160",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
