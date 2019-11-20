@@ -131,3 +131,4 @@ class ContainerProxy(object):
                 retry += 1
                 if retry == max_retry:
                     to_topic = self.remote_topic
+        returnValue(None)
