@@ -56,9 +56,11 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     packages=find_packages(exclude=['test']),
     install_requires=[required],
     include_package_data=True,
-    dependency_links=["git+https://github.com/ciena/afkak.git#egg=afkak-3.0.0.dev20181106"]
 )
