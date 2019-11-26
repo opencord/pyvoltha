@@ -397,7 +397,8 @@ class IKafkaMessagingProxy(object):
             else:
                 log.debug("unsupported-msg", msg_type=type(message.body))
                 return None
-            log.debug("parsed-response", input=message, output=resp)
+            log.debug("parsed-response", type=message.header.type, from_topic=message.header.from_topic,
+                  to_topic=message.header.to_topic)
             return resp
         except Exception as e:
             log.exception("parsing-response-failed", msg=msg, e=e)
@@ -466,14 +467,15 @@ class IKafkaMessagingProxy(object):
                     augmented_args = _augment_args_with_FromTopic(msg_body.args,
                                                         msg_body.reply_to_topic)
                     if augmented_args:
-                        log.debug("message-body-args-present", body=msg_body)
+                        log.debug("message-body-args-present", rpc=msg_body.rpc,
+                                  response_required=msg_body.response_required, reply_to_topic=msg_body.reply_to_topic)
                         (status, res) = yield getattr(
                             self.topic_target_cls_map[targetted_topic],
                             self._to_string(msg_body.rpc))(
                             **_toDict(augmented_args))
                     else:
-                        log.debug("message-body-args-absent", body=msg_body,
-                                  rpc=msg_body.rpc)
+                        log.debug("message-body-args-absent", rpc=msg_body.rpc,
+                                  response_required=msg_body.response_required, reply_to_topic=msg_body.reply_to_topic,)
                         (status, res) = yield getattr(
                             self.topic_target_cls_map[targetted_topic],
                             self._to_string(msg_body.rpc))()
@@ -488,7 +490,7 @@ class IKafkaMessagingProxy(object):
                                 response.header.to_topic)
                             self._send_kafka_message(res_topic, response)
 
-                        log.debug("Response-sent", response=response.body,
+                        log.debug("Response-sent",
                                   to_topic=res_topic)
             elif message.header.type == MessageType.Value("RESPONSE"):
                 trns_id = self._to_string(message.header.id)
@@ -554,10 +556,10 @@ class IKafkaMessagingProxy(object):
                 self.transaction_id_deferred_map[
                     self._to_string(request.header.id)] = wait_for_result
             log.debug("message-send", transaction_id=transaction_id, to_topic=to_topic,
-                                          from_topic=reply_topic, kafka_request=request)
+                      from_topic=reply_topic)
             yield self._send_kafka_message(to_topic, request)
             log.debug("message-sent", transaction_id=transaction_id, to_topic=to_topic,
-                      from_topic=reply_topic, kafka_request=request)
+                      from_topic=reply_topic)
 
             if response_required:
                 res = yield wait_for_result
@@ -567,7 +569,7 @@ class IKafkaMessagingProxy(object):
 
                 if res is not None:
                     if res.success:
-                        log.debug("send-message-response", rpc=rpc, result=res)
+                        log.debug("send-message-response", rpc=rpc)
                         if callback:
                             callback((res.success, res.result))
                         else:
