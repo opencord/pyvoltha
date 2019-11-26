@@ -466,14 +466,16 @@ class IKafkaMessagingProxy(object):
                     augmented_args = _augment_args_with_FromTopic(msg_body.args,
                                                         msg_body.reply_to_topic)
                     if augmented_args:
-                        log.debug("message-body-args-present", body=msg_body)
+                        log.debug("message-body-args-present", rpc=msg_body.rpc,
+                                  response_required=msg_body.response_required, reply_to_topic=msg_body.reply_to_topic,
+                                  args=msg_body.args)
                         (status, res) = yield getattr(
                             self.topic_target_cls_map[targetted_topic],
                             self._to_string(msg_body.rpc))(
                             **_toDict(augmented_args))
                     else:
-                        log.debug("message-body-args-absent", body=msg_body,
-                                  rpc=msg_body.rpc)
+                        log.debug("message-body-args-absent", rpc=msg_body.rpc,
+                                  response_required=msg_body.response_required, reply_to_topic=msg_body.reply_to_topic,)
                         (status, res) = yield getattr(
                             self.topic_target_cls_map[targetted_topic],
                             self._to_string(msg_body.rpc))()
@@ -554,10 +556,10 @@ class IKafkaMessagingProxy(object):
                 self.transaction_id_deferred_map[
                     self._to_string(request.header.id)] = wait_for_result
             log.debug("message-send", transaction_id=transaction_id, to_topic=to_topic,
-                                          from_topic=reply_topic, kafka_request=request)
+                      from_topic=reply_topic, kafka_request_header=request.header)
             yield self._send_kafka_message(to_topic, request)
             log.debug("message-sent", transaction_id=transaction_id, to_topic=to_topic,
-                      from_topic=reply_topic, kafka_request=request)
+                      from_topic=reply_topic, kafka_request_header=request.header)
 
             if response_required:
                 res = yield wait_for_result
