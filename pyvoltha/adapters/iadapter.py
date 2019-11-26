@@ -171,7 +171,7 @@ class IAdapter(object):
         raise NotImplementedError()
 
     def update_flows_bulk(self, device, flows, groups):
-        log.info('bulk-flow-update', device_id=device.id,
+        log.debug('bulk-flow-update', device_id=device.id,
                  flows=flows, groups=groups)
         assert len(groups.items) == 0
         reactor.callLater(0, self.devices_handlers[device.id].update_flow_table,

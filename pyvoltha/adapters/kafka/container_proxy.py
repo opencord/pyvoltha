@@ -61,15 +61,14 @@ class ContainerProxy(object):
                 try:
                     (success, d) = yield func(*args, **kw)
                     if success:
-                        log.debug("successful-response", func=func, val=d)
+                        log.debug("successful-response", func=func)
                         if return_cls is not None:
                             rc = return_cls()
                             if d is not None:
                                 d.Unpack(rc)
                             returnValue(rc)
                         else:
-                            log.debug("successful-response-none", func=func,
-                                      val=None)
+                            log.debug("successful-response-none", func=func)
                             returnValue(None)
                     else:
                         log.warn("unsuccessful-request", func=func, args=args,
