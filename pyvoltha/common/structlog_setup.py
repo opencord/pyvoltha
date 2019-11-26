@@ -80,7 +80,7 @@ def setup_logging(log_config, instance_id, verbosity_adjust=0):
 
     # Configure standard logging
     logging.config.dictConfig(log_config)
-    logging.root.level -= 10 * verbosity_adjust
+    logging.root.level += 10 * verbosity_adjust
 
     processors = [
         add_exc_info_flag_for_exception,
@@ -96,7 +96,7 @@ def setup_logging(log_config, instance_id, verbosity_adjust=0):
 
     # Mark first line of log
     log = structlog.get_logger()
-    log.info("first-line")
+    log.info("first-line", log_level=logging.root.level, verbosity_adjust=verbosity_adjust)
     return log
 
 

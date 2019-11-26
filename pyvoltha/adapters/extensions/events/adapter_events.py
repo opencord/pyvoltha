@@ -112,7 +112,7 @@ class AdapterEvents:
         except Exception as e:
             self.log.exception('failed-to-send-event', e=e)
             raise
-        log.debug('event-sent-to-kafka', event_header=event_header, event_body=event_body)
+        log.debug('event-sent-to-kafka', event_type=event_header.type)
 
 
 

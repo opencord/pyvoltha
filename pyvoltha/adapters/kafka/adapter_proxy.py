@@ -102,7 +102,8 @@ class AdapterProxy(ContainerProxy):
             iaMsg.header.CopyFrom(h)
             iaMsg.body.Pack(msg)
 
-            log.debug("sending-inter-adapter-message", header=iaMsg.header)
+            log.debug("sending-inter-adapter-message", type=iaMsg.header.type, from_topic=iaMsg.header.from_topic,
+                  to_topic=iaMsg.header.to_topic, to_device_id=iaMsg.header.to_device_id)
             res = yield self.invoke(rpc="process_inter_adapter_message",
                                     to_topic=iaMsg.header.to_topic,
                                     msg=iaMsg)

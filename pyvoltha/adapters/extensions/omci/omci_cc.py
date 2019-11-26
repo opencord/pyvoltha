@@ -337,7 +337,7 @@ class OMCI_CC(object):
 
             try:
                 rx_frame = msg if isinstance(msg, OmciFrame) else OmciFrame(msg)
-
+                self.log.debug('omci-frame-decoded', msg=hexlify(msg))
             except KeyError as e:
                 # Unknown, Unsupported, or vendor-specific ME. Key is the unknown classID
                 self.log.debug('frame-decode-key-error', msg=hexlify(msg), e=e)
