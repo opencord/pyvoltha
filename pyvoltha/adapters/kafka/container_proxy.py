@@ -124,6 +124,7 @@ class ContainerProxy(object):
             _send_request(rpc, cb, to_topic, reply_topic, **kwargs)
             try:
                 res = yield cb
+                log.debug("RPC returned", rpc=rpc)
                 returnValue(res)
             except TimeOutError as e:
                 log.warn('invoke-timeout', e=e)

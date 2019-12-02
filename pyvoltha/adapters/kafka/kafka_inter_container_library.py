@@ -95,6 +95,7 @@ class IKafkaMessagingProxy(object):
         self.total_time_responses = 0
         log.debug("KafkaProxy-initialized")
 
+    @inlineCallbacks
     def start(self):
         try:
             log.debug("KafkaProxy-starting")
@@ -115,7 +116,7 @@ class IKafkaMessagingProxy(object):
             # Subscribe using the default topic and default group id.  Whenever
             # a message is received on that topic then teh target_cls will be
             # invoked.
-            reactor.callLater(0, self.subscribe,
+            yield self.subscribe(
                               topic=self.default_topic,
                               target_cls=self.target_cls,
                               group_id=self.default_group_id)
@@ -505,8 +506,8 @@ class IKafkaMessagingProxy(object):
     @inlineCallbacks
     def _send_kafka_message(self, topic, msg):
         try:
-            yield self.kafka_proxy.send_message(topic, msg.SerializeToString())
-        except Exception as e:
+            yield self.kafka_proxy.send_message(topic, msg.SerializeToString(), msg)
+        except Exception, e:
             log.exception("Failed-sending-message", message=msg, e=e)
 
     @inlineCallbacks
