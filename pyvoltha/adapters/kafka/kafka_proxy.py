@@ -26,7 +26,7 @@ from zope.interface import implementer
 from pyvoltha.common.utils.consulhelpers import get_endpoint_from_consul
 from .event_bus_publisher import EventBusPublisher
 from pyvoltha.common.utils.registry import IComponent
-from confluent_kafka import Consumer, KafkaError
+from confluent_kafka import Consumer, KafkaError, TopicPartition
 import threading
 import six
 
@@ -50,7 +50,8 @@ class KafkaProxy(object):
                  ack_timeout=1000,
                  max_req_attempts=10,
                  consumer_poll_timeout=10,
-                 config={}):
+                 config={},
+                 partition=0):
 
         # return an exception if the object already exist
         if KafkaProxy._kafka_instance:
@@ -71,6 +72,8 @@ class KafkaProxy(object):
         self.topic_consumer_map = {}
         self.topic_callbacks_map = {}
         self.topic_any_map_lock = threading.Lock()
+        self.consumer = None
+        self.partition = partition
         log.debug('initialized', endpoint=kafka_endpoint)
 
     @inlineCallbacks
@@ -219,13 +222,17 @@ class KafkaProxy(object):
             # Create consumer for that topic
             c = Consumer({
                 'bootstrap.servers': self.kafka_endpoint,
-                'group.id': groupId,
+                'group.id': "main",
                 'auto.offset.reset': offset
             })
-            yield deferToThread(c.subscribe, [topic])
-            # c.subscribe([topic])
+            self.consumer = c
+            #yield deferToThread(c.subscribe, [topic])
+            #yield c.subscribe([topic])
+            partitions = [TopicPartition(topic,self.partition)]
+            yield c.assign(partitions)
             self.topic_consumer_map[topic] = c
             self.topic_callbacks_map[topic] = [callback]
+            log.debug('consumer-map-added-to', topic=topic,cmap=self.topic_consumer_map.keys())
             # Start the consumer
             reactor.callLater(0, self._wait_for_messages, c, topic)
         except Exception as e:
@@ -276,7 +283,7 @@ class KafkaProxy(object):
             log.debug("unsubscribing-to-topic-release-lock", topic=topic)
 
     @inlineCallbacks
-    def send_message(self, topic, msg, key=None):
+    def send_message(self, topic, msg, msgOrig=None, key=None):
         assert topic is not None
         assert msg is not None
 
@@ -293,10 +300,19 @@ class KafkaProxy(object):
                         log.error('no-kafka-producer',
                                   endpoint=self.kafka_endpoint)
                         return
-
-                log.debug('sending-kafka-msg', topic=topic)
-                msgs = [msg]
-
+                if not msgOrig == None:
+                    log.debug('consumer-map', cmap=self.topic_consumer_map.keys(), topic=msgOrig.header.from_topic)
+                    if msgOrig.header.from_topic in  self.topic_consumer_map.keys():
+                        assignment = self.topic_consumer_map[msgOrig.header.from_topic].assignment()
+                        log.debug("assignments", assignment=assignment)
+                        partition = assignment[0].partition
+                        msgOrig.header.partition = str(partition)
+                        log.debug('send-from-partition', partition=partition, msg=msgOrig.SerializeToString())
+                    log.debug('sending-kafka-msg', topic=topic)
+                    msg = msgOrig.SerializeToString()
+                else:
+                    log.debug('sending-kafka-msg', topic=topic)
+                    
                 if self.kproducer is not None and self.event_bus_publisher and self.faulty is False:
                     d = deferToThread(self.kproducer.produce, topic, msg, key)
                     yield d
