@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47842ccb_3c59e509",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_cc.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 846,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2019-12-03T01:46:53Z",
+      "side": 1,
+      "message": "this is already hexified when creating the InterAdapterOmciMessage above, so no need to do it again.  currently openolt agent expects hex ascii rather than binary.",
+      "range": {
+        "startLine": 846,
+        "startChar": 83,
+        "endLine": 846,
+        "endChar": 89
+      },
+      "revId": "ba1b242b9e4aebd442e67701516d838cc9efff6f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
