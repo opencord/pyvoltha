@@ -873,46 +873,26 @@ class OMCI_CC(object):
     # MIB Action shortcuts
 
     def send_mib_reset(self, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        """
-        Perform a MIB Reset
-        """
-        self.log.debug('send-mib-reset')
-
         frame = OntDataFrame().mib_reset()
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
     def send_mib_upload(self, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        self.log.debug('send-mib-upload')
-
         frame = OntDataFrame().mib_upload()
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
     def send_mib_upload_next(self, seq_no, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        self.log.debug('send-mib-upload-next')
-
         frame = OntDataFrame(sequence_number=seq_no).mib_upload_next()
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
     def send_reboot(self, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        """
-        Send an ONU Device reboot request (ONU-G ME).
-
-        NOTICE: This method is being deprecated and replaced with a tasks to preform this function
-        """
-        self.log.debug('send-mib-reboot')
-
         frame = OntGFrame().reboot()
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
     def send_get_all_alarm(self, alarm_retrieval_mode=0, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        self.log.debug('send_get_alarm')
-
         frame = OntDataFrame().get_all_alarm(alarm_retrieval_mode)
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
     def send_get_all_alarm_next(self, seq_no, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
-        self.log.debug('send_get_alarm_next')
-
         frame = OntDataFrame().get_all_alarm_next(seq_no)
         return self.send(frame, timeout=timeout, high_priority=high_priority)
 
@@ -921,27 +901,16 @@ class OMCI_CC(object):
         return self.send(frame, timeout, 3, high_priority=high_priority)
 
     def send_download_section(self, image_inst_id, section_num, data, size=DEFAULT_OMCI_DOWNLOAD_SECTION_SIZE, timeout=0, high_priority=False):
-        """
-        # timeout=0 indicates no repons needed
-        """
-        # self.log.debug("send_download_section", instance_id=image_inst_id, section=section_num, timeout=timeout)
+        # timeout=0 indicates no response needed
         if timeout > 0:
             frame = SoftwareImageFrame(image_inst_id).download_section(True, section_num, data)
         else:
             frame = SoftwareImageFrame(image_inst_id).download_section(False, section_num, data)
         return self.send(frame, timeout, high_priority=high_priority)
 
-        # if timeout > 0:
-        #     self.reactor.callLater(0, self.sim_receive_download_section_resp,
-        #                            frame.fields["transaction_id"],
-        #                            frame.fields["omci_message"].fields["section_number"])
-        # return d
-
     def send_end_software_download(self, image_inst_id, crc32, image_size, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
         frame = SoftwareImageFrame(image_inst_id).end_software_download(crc32, image_size)
         return self.send(frame, timeout, high_priority=high_priority)
-        # self.reactor.callLater(0, self.sim_receive_end_software_download_resp, frame.fields["transaction_id"])
-        # return d
 
     def send_active_image(self, image_inst_id, flag=0, timeout=DEFAULT_OMCI_TIMEOUT, high_priority=False):
         frame = SoftwareImageFrame(image_inst_id).activate_image(flag)
