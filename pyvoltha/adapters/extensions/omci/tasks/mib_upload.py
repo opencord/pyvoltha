@@ -95,18 +95,6 @@ class MibUploadTask(Task):
         try:
             device = self.omci_agent.get_device(self.device_id)
 
-            #########################################
-            # MIB Reset
-            self.strobe_watchdog()
-            results = yield device.omci_cc.send_mib_reset()
-
-            status = results.fields['omci_message'].fields['success_code']
-            if status != ReasonCodes.Success.value:
-                raise MibUploadFailure('MIB Reset request failed with status code: {}'.
-                                       format(status))
-
-            ########################################
-            # Begin MIB Upload
             self.strobe_watchdog()
             results = yield device.omci_cc.send_mib_upload()
 
@@ -139,7 +127,7 @@ class MibUploadTask(Task):
                         yield asleep(0.3)
 
             # Successful if here
-            self.log.info('mib-synchronized')
+            self.log.info('mib-uploaded')
             self.deferred.callback('success, loaded {} ME Instances'.
                                    format(number_of_commands))
 
