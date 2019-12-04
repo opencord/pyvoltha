@@ -18,6 +18,7 @@ import copy
 from .mib_db_api import *
 import json
 import six
+import dateutil.parser
 
 
 class MibDbVolatileDict(MibDbApi):
@@ -524,3 +525,30 @@ class MibDbVolatileDict(MibDbApi):
         except Exception as e:
             self.log.error('set-me-failure', e=e)
             raise
+
+    def load_from_template(self, device_id, template):
+        # TODO: really vet this, make sure its truly ready
+        now = datetime.utcnow()
+        headerdata = {
+            DEVICE_ID_KEY: device_id,
+            CREATED_KEY: now,
+            LAST_SYNC_KEY: None,
+            MDS_KEY: 0,
+            VERSION_KEY: MibDbVolatileDict.CURRENT_VERSION,
+            ME_KEY: dict(),
+            MSG_TYPE_KEY: set()
+        }
+        template.update(headerdata)
+        self._data[device_id] = template
+
+    def dump_to_json(self, device_id):
+        device_db = self._data.get(device_id, dict())
+        device_db = self._fix_dev_json_attributes(device_db, device_id)
+
+        def json_converter(o):
+            if isinstance(o, datetime):
+                return o.__str__()
+
+        json_string = json.dumps(device_db, default=json_converter, indent=4)
+
+        return json_string
