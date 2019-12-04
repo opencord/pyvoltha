@@ -569,12 +569,16 @@ class SoftwareImageFrame(MEFrame):
     """
     This managed entity models an executable software image stored in the ONU.
     """
-    def __init__(self, entity_id):
+    def __init__(self, entity_id, attributes=None):
         """
         :param entity_id: (int) This attribute uniquely identifies each instance of
                                 this managed entity. (0..65535)
+        :param attributes: (basestring, list, set, dict) attributes. For gets
+                           a string, list, or set can be provided. For create/set
+                           operations, a dictionary should be provided, for
+                           deletes None may be specified.
         """
-        super(SoftwareImageFrame, self).__init__(SoftwareImage, entity_id, None)
+        super(SoftwareImageFrame, self).__init__(SoftwareImage, entity_id, MEFrame._attr_to_data(attributes))
 
 
 class TcontFrame(MEFrame):

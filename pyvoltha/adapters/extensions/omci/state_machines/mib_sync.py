@@ -42,15 +42,17 @@ class MibSynchronizer(object):
     """
     OpenOMCI MIB Synchronizer state machine
     """
-    DEFAULT_STATES = ['disabled', 'starting', 'uploading', 'examining_mds',
+    DEFAULT_STATES = ['disabled', 'starting', 'loading_mib_template', 'uploading', 'examining_mds',
                       'in_sync', 'out_of_sync', 'auditing', 'resynchronizing']
 
     DEFAULT_TRANSITIONS = [
         {'trigger': 'start', 'source': 'disabled', 'dest': 'starting'},
 
-        {'trigger': 'upload_mib', 'source': 'starting', 'dest': 'uploading'},
+        {'trigger': 'load_mib_template', 'source': 'starting', 'dest': 'loading_mib_template'},
+        {'trigger': 'upload_mib', 'source': 'loading_mib_template', 'dest': 'uploading'},
         {'trigger': 'examine_mds', 'source': 'starting', 'dest': 'examining_mds'},
 
+        {'trigger': 'success', 'source': 'loading_mib_template', 'dest': 'in_sync'},
         {'trigger': 'success', 'source': 'uploading', 'dest': 'in_sync'},
 
         {'trigger': 'success', 'source': 'examining_mds', 'dest': 'in_sync'},
@@ -122,6 +124,7 @@ class MibSynchronizer(object):
         self._resync_fail_limit = resync_fail_limit
 
         self._upload_task = mib_sync_tasks['mib-upload']
+        self._load_mib_template_task = mib_sync_tasks['mib-template']
         self._get_mds_task = mib_sync_tasks['get-mds']
         self._audit_task = mib_sync_tasks['mib-audit']
         self._resync_task = mib_sync_tasks['mib-resync']
@@ -366,12 +369,47 @@ class MibSynchronizer(object):
         if self.is_new_onu:
             # clear resync failure counter if we "started over"
             self._failed_resync_count = 0
-            # Start full MIB upload
-            self._deferred = reactor.callLater(0, self.upload_mib)
+            # Attempt to load a MIB template then start full MIB upload if needed
+            self._deferred = reactor.callLater(0, self.load_mib_template)
 
         else:
             # Examine the MIB Data Sync
             self._deferred = reactor.callLater(0, self.examine_mds)
+
+    def on_enter_loading_mib_template(self):
+        """
+        Find and load a mib template.  If not found proceed with mib_upload
+        """
+        self.advertise(OpenOmciEventType.state_change, self.state)
+
+        def success(template):
+            self.log.debug('mib-template-load-success')
+            self._current_task = None
+            self._next_resync = datetime.utcnow() + timedelta(seconds=self._resync_delay)
+
+            if template is not None:
+                self._database.load_from_template(self._device_id, template)
+
+                # DEBUG: Dump raw json db:
+                jsondb = self._database.dump_to_json(self.device_id)
+                self.log.debug('in-sync-device-db', json=jsondb)
+
+                self._deferred = reactor.callLater(0, self.success)
+            else:
+                # Start full MIB upload
+                self._deferred = reactor.callLater(0, self.upload_mib)
+
+        def failure(reason):
+            self.log.info('mib-template-load-failure', reason=reason)
+            self._current_task = None
+            self._deferred = reactor.callLater(self._timeout_delay, self.timeout)
+
+        self._device.mib_db_in_sync = False
+        self._current_task = self._load_mib_template_task(self._agent, self._device_id)
+
+        self.log.debug('starting-mib-template', task=self._current_task)
+        self._task_deferred = self._device.task_runner.queue_task(self._current_task)
+        self._task_deferred.addCallbacks(success, failure)
 
     def on_enter_uploading(self):
         """
@@ -383,6 +421,11 @@ class MibSynchronizer(object):
             self.log.debug('mib-upload-success', results=results)
             self._current_task = None
             self._next_resync = datetime.utcnow() + timedelta(seconds=self._resync_delay)
+
+            # DEBUG: Dump raw json db:
+            jsondb = self._database.dump_to_json(self.device_id)
+            self.log.debug('in-sync-device-db', json=jsondb)
+
             self._deferred = reactor.callLater(0, self.success)
 
         def failure(reason):
@@ -393,6 +436,7 @@ class MibSynchronizer(object):
         self._device.mib_db_in_sync = False
         self._current_task = self._upload_task(self._agent, self._device_id)
 
+        self.log.debug('starting-mib-upload', task=self._current_task)
         self._task_deferred = self._device.task_runner.queue_task(self._current_task)
         self._task_deferred.addCallbacks(success, failure)
 
@@ -589,7 +633,8 @@ class MibSynchronizer(object):
             response = msg[RX_RESPONSE_KEY]
 
             # Check if expected in current mib_sync state
-            if self.state != 'uploading' or self._omci_cc_subscriptions[RxEvent.MIB_Reset] is None:
+            if self.state not in ['uploading', 'loading_mib_template'] or \
+                    self._omci_cc_subscriptions[RxEvent.MIB_Reset] is None:
                 self.log.error('rx-in-invalid-state', state=self.state)
 
             else:
@@ -721,7 +766,7 @@ class MibSynchronizer(object):
         self.log.debug('on-create-response', state=self.state)
 
         if self._omci_cc_subscriptions[RxEvent.Create]:
-            if self.state in ['disabled', 'uploading']:
+            if self.state in ['disabled', 'uploading', 'loading_mib_template']:
                 self.log.error('rx-in-invalid-state', state=self.state)
                 return
             try:
@@ -808,7 +853,7 @@ class MibSynchronizer(object):
         self.log.debug('on-delete-response', state=self.state)
 
         if self._omci_cc_subscriptions[RxEvent.Delete]:
-            if self.state in ['disabled', 'uploading']:
+            if self.state in ['disabled', 'uploading', 'loading_mib_template']:
                 self.log.error('rx-in-invalid-state', state=self.state)
                 return
             try:
@@ -847,7 +892,7 @@ class MibSynchronizer(object):
         self.log.debug('on-set-response', state=self.state)
 
         if self._omci_cc_subscriptions[RxEvent.Set]:
-            if self.state in ['disabled', 'uploading']:
+            if self.state in ['disabled', 'uploading', 'loading_mib_template']:
                 self.log.error('rx-in-invalid-state', state=self.state)
                 return
             try:
@@ -922,7 +967,7 @@ class MibSynchronizer(object):
 
         # All events for software run this method, checking for one is good enough
         if self._omci_cc_subscriptions[RxEvent.Start_Software_Download]:
-            if self.state in ['disabled', 'uploading']:
+            if self.state in ['disabled', 'uploading', 'loading_mib_template']:
                 self.log.error('rx-in-invalid-state', state=self.state)
                 return
             try:

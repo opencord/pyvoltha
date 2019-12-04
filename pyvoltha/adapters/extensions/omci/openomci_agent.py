@@ -20,6 +20,7 @@ from pyvoltha.adapters.extensions.omci.database.mib_db_dict import MibDbVolatile
 from pyvoltha.adapters.extensions.omci.database.mib_db_ext import MibDbExternal
 from pyvoltha.adapters.extensions.omci.state_machines.mib_sync import MibSynchronizer
 from pyvoltha.adapters.extensions.omci.tasks.mib_upload import MibUploadTask
+from pyvoltha.adapters.extensions.omci.tasks.mib_template_task import MibTemplateTask
 from pyvoltha.adapters.extensions.omci.tasks.get_mds_task import GetMdsTask
 from pyvoltha.adapters.extensions.omci.tasks.mib_resync_task import MibResyncTask
 from pyvoltha.adapters.extensions.omci.tasks.mib_reconcile_task import MibReconcileTask
@@ -48,6 +49,7 @@ OpenOmciAgentDefaults = {
         'audit-delay': 60,                 # Time to wait between MIB audits.  0 to disable audits.
         'tasks': {
             'mib-upload': MibUploadTask,
+            'mib-template': MibTemplateTask,
             'get-mds': GetMdsTask,
             'mib-audit': GetMdsTask,
             'mib-resync': MibResyncTask,

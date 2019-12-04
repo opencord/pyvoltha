@@ -43,7 +43,7 @@ class ContainerProxy(object):
         self.kafka_proxy = kafka_proxy
         self.listening_topic = my_listening_topic
         self.remote_topic = remote_topic
-        self.default_timeout = 3
+        self.default_timeout = 6
 
     def start(self):
         log.info('started')

@@ -301,6 +301,12 @@ class MibDbVolatileDict(MibDbApi):
                 elif isinstance(value, (list, dict)):
                     value = json.dumps(value, separators=(',', ':'))
 
+                if isinstance(value, six.string_types):
+                    value = value.rstrip('\x00')
+
+                if isinstance(value, six.binary_type):
+                    value = value.decode('ascii').rstrip('\x00')
+
                 assert db_value is None or isinstance(value, type(db_value)), \
                     "New value type for attribute '{}' type is changing from '{}' to '{}'".\
                     format(attribute, type(db_value), type(value))
@@ -467,19 +473,25 @@ class MibDbVolatileDict(MibDbApi):
     def _fix_attr_json_attribute(self, attr_data, eca):
 
         try:
-            if eca is not None:
-                field = eca.field
-                if hasattr(field, 'load_json'):
-                    value = field.load_json(attr_data)
+            if eca is not None and hasattr(eca.field, 'load_json'):
+                try:
+                    value = eca.field.load_json(attr_data)
                     return value
+                except ValueError:
+                    pass
 
-            return json.loads(attr_data) if isinstance(attr_data, six.string_types) else attr_data
+            if isinstance(attr_data, six.string_types):
+                try:
+                    value = json.loads(attr_data)
+                    return value
+                except ValueError:
+                    pass
 
-        except ValueError:
             return attr_data
 
         except Exception as e:
-            pass
+            self.log.error('could-not-parse-attribute-returning-as-is', field=eca.field, attr_data=attr_data, e=e)
+            return attr_data
 
     def update_supported_managed_entities(self, device_id, managed_entities):
         """
@@ -524,3 +536,31 @@ class MibDbVolatileDict(MibDbApi):
         except Exception as e:
             self.log.error('set-me-failure', e=e)
             raise
+
+    def load_from_template(self, device_id, template):
+        now = datetime.utcnow()
+        headerdata = {
+            DEVICE_ID_KEY: device_id,
+            CREATED_KEY: now,
+            LAST_SYNC_KEY: None,
+            MDS_KEY: 0,
+            VERSION_KEY: MibDbVolatileDict.CURRENT_VERSION,
+            ME_KEY: dict(),
+            MSG_TYPE_KEY: set()
+        }
+        template.update(headerdata)
+        self._data[device_id] = template
+
+    def dump_to_json(self, device_id):
+        device_db = self._data.get(device_id, dict())
+        device_db = self._fix_dev_json_attributes(device_db, device_id)
+
+        def json_converter(o):
+            if isinstance(o, datetime):
+                return o.__str__()
+            if isinstance(o, six.binary_type):
+                return o.decode('ascii')
+
+        json_string = json.dumps(device_db, default=json_converter, indent=4)
+
+        return json_string
