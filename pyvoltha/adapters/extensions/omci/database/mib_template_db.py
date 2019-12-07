@@ -14,12 +14,13 @@
 # limitations under the License.
 #
 from __future__ import absolute_import
+from twisted.internet.defer import inlineCallbacks, returnValue
 from .mib_db_api import CREATED_KEY, MODIFIED_KEY
 import json
 from datetime import datetime
 import structlog
 from pyvoltha.common.utils.registry import registry
-from pyvoltha.common.config.config_backend import EtcdStore
+from pyvoltha.adapters.common.kvstore.twisted_etcd_store import TwistedEtcdStore
 import six
 
 
@@ -43,11 +44,13 @@ class MibTemplateDb(object):
 
         self.args = registry('main').get_args()
         host, port = self.args.etcd.split(':', 1)
-        self._kv_store = EtcdStore(host, port, MibTemplateDb.BASE_PATH)
+        self._kv_store = TwistedEtcdStore(host, port, MibTemplateDb.BASE_PATH)
         self.loaded = False
-        self._load_template()
 
     def get_template_instance(self):
+        if not self._jsonstring:
+            return None
+
         # swap out tokens with specific data
         fixup = self._jsonstring.decode('ascii')
         fixup = fixup.replace('%SERIAL_NUMBER%', self._serial_number)
@@ -67,14 +70,19 @@ class MibTemplateDb(object):
 
         return newdb
 
-    def _load_template(self):
+    @inlineCallbacks
+    def load_template(self):
         path = self._get_template_path()
-        try:
-            self._jsonstring = self._kv_store[path]
+        results = yield self._kv_store.get(path)
+        if results:
+            self._jsonstring = results
             self.log.debug('found-template-data', path=path)
             self.loaded = True
-        except KeyError:
+            returnValue(True)
+        else:
             self.log.warn('no-template-found', path=path)
+
+        returnValue(False)
 
     def _get_template_path(self):
         if not isinstance(self._vendor_id, six.string_types):
