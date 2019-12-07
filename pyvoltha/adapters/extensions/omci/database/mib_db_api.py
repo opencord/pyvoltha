@@ -244,3 +244,21 @@ class MibDbApi(object):
         :param msg_types: (set) Message Type values (ints)
         """
         raise NotImplementedError('Implement this in your derive class')
+
+    def load_from_template(self, device_id, template):
+        """
+        Load a device instance database from a dictionary
+
+        :param device_id:  (str) ONU Device ID
+        :param template:  (dict) Dictionary of the template read from storage
+        """
+        raise NotImplementedError('Implement this in your derive class')
+
+    def dump_to_json(self, device_id):
+        """
+        Return a JSON encoded string of the device instance data
+
+        :param device_id: (str) ONU Device ID
+        :return: (str) JSON encoded string representing the device instance
+        """
+        raise NotImplementedError('Implement this in your derive class')
