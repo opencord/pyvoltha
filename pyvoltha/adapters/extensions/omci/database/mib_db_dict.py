@@ -553,7 +553,6 @@ class MibDbVolatileDict(MibDbApi):
 
     def dump_to_json(self, device_id):
         device_db = self._data.get(device_id, dict())
-        device_db = self._fix_dev_json_attributes(device_db, device_id)
 
         def json_converter(o):
             if isinstance(o, datetime):
@@ -561,6 +560,6 @@ class MibDbVolatileDict(MibDbApi):
             if isinstance(o, six.binary_type):
                 return o.decode('ascii')
 
-        json_string = json.dumps(device_db, default=json_converter, indent=4)
+        json_string = json.dumps(device_db, default=json_converter, indent=2)
 
         return json_string

@@ -127,15 +127,17 @@ class MibTemplateTask(Task):
 
             # Lookup template base on unique onu type info
             template = None
+            found = False
             if vendor_id and equipment_id and software_version:
                 self.log.debug('looking-up-template', vendor_id=vendor_id, equipment_id=equipment_id,
                                software_version=software_version)
                 template = MibTemplateDb(vendor_id, equipment_id, software_version, serial_number, mac_address)
+                found = yield template.load_template()
             else:
                 self.log.info('no-usable-template-lookup-data', vendor_id=vendor_id, equipment_id=equipment_id,
                               software_version=software_version)
 
-            if template and template.loaded:
+            if template and found:
                 # generate db instance
                 loaded_template_instance = template.get_template_instance()
                 self.deferred.callback(loaded_template_instance)
