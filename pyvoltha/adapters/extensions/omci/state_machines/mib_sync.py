@@ -18,6 +18,7 @@ import structlog
 from datetime import datetime, timedelta
 from transitions import Machine
 from twisted.internet import reactor
+from twisted.internet.defer import inlineCallbacks, returnValue
 from pyvoltha.adapters.extensions.omci.omci_frame import OmciFrame
 from pyvoltha.adapters.extensions.omci.database.mib_db_api import MDS_KEY
 from pyvoltha.adapters.extensions.omci.omci_defs import EntityOperations, ReasonCodes, \
@@ -305,12 +306,13 @@ class MibSynchronizer(object):
         # TODO: Stop and remove any currently running or scheduled tasks
         # TODO: Anything else?
 
+    @inlineCallbacks
     def _seed_database(self):
         if not self._device_in_db:
             try:
                 try:
                     self._database.start()
-                    self._database.add(self._device_id)
+                    yield self._database.add(self._device_id)
                     self.log.debug('seed-db-does-not-exist', device_id=self._device_id)
 
                 except KeyError:
@@ -324,6 +326,7 @@ class MibSynchronizer(object):
             except Exception as e:
                 self.log.exception('seed-database-failure', e=e)
 
+    @inlineCallbacks
     def on_enter_starting(self):
         """
         Determine ONU status and start/re-start MIB Synchronization tasks
@@ -332,7 +335,7 @@ class MibSynchronizer(object):
         self.advertise(OpenOmciEventType.state_change, self.state)
 
         # Make sure root of external MIB Database exists
-        self._seed_database()
+        yield self._seed_database()
 
         # Set up Response and Autonomous notification subscriptions
         try:
