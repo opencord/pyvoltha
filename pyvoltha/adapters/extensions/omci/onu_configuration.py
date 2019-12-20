@@ -40,6 +40,8 @@ class OMCCVersion(IntEnum):
     G_988_2011_Amd_1        = 0xB1  # Amd.1 (2011) Baseline and extended message set
     G_988_2012_Amd_2        = 0xB2  # Amd.2 (2012) Baseline and extended message set
     G_988_2012              = 0xB3  # (2012)Baseline and extended message set
+    G_988_2014_Amd_1        = 0xB4  # Amd1 (2014) Baseline and extended message
+    DO_NOT_USE              = 0xB5
 
     @staticmethod
     def values():
