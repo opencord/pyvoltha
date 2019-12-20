@@ -358,6 +358,11 @@ def get_goto_table_id(flow):
             return instruction.goto_table.table_id
     return None
 
+def get_write_metadata(flow):
+    for instruction in flow.instructions:
+        if instruction.type == ofp.OFPIT_WRITE_METADATA:
+            return instruction.write_metadata.metadata
+    return None
 
 def get_tunnelid(flow):
     for field in get_ofb_fields(flow):
