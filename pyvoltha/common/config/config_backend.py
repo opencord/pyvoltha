@@ -45,29 +45,22 @@ class ConsulStore(object):
         self.host = host
         self.port = port
         self._path_prefix = path_prefix
-        self._cache = {}
         self.retries = 0
 
     def make_path(self, key):
         return '{}/{}'.format(self._path_prefix, key)
 
     def __getitem__(self, key):
-        if key in self._cache:
-            return self._cache[key]
         value = self._kv_get(self.make_path(key))
         if value is not None:
             # consul turns empty strings to None, so we do the reverse here
-            self._cache[key] = value['Value'] or ''
             return value['Value'] or ''
         else:
             raise KeyError(key)
 
     def __contains__(self, key):
-        if key in self._cache:
-            return True
         value = self._kv_get(self.make_path(key))
         if value is not None:
-            self._cache[key] = value['Value']
             return True
         else:
             return False
@@ -75,13 +68,11 @@ class ConsulStore(object):
     def __setitem__(self, key, value):
         try:
             assert isinstance(value, six.string_types)
-            self._cache[key] = value
             self._kv_put(self.make_path(key), value)
         except Exception as e:
             self.log.exception('cannot-set-item', e=e)
 
     def __delitem__(self, key):
-        self._cache.pop(key, None)
         self._kv_delete(self.make_path(key))
 
     @inlineCallbacks
@@ -94,7 +85,6 @@ class ConsulStore(object):
 
     def _redo_consul_connection(self):
         self._consul = Consul(host=self.host, port=self.port)
-        self._cache.clear()
 
     def _clear_backoff(self):
         if self.retries:
@@ -166,28 +156,21 @@ class EtcdStore(object):
         self.host = host
         self.port = port
         self._path_prefix = path_prefix
-        self._cache = {}
         self.retries = 0
 
     def make_path(self, key):
         return '{}/{}'.format(self._path_prefix, key)
 
     def __getitem__(self, key):
-        if key in self._cache:
-            return self._cache[key]
         (value, meta) = self._kv_get(self.make_path(key))
         if value is not None:
-            self._cache[key] = value
             return value
         else:
             raise KeyError(key)
 
     def __contains__(self, key):
-        if key in self._cache:
-            return True
         (value, meta) = self._kv_get(self.make_path(key))
         if value is not None:
-            self._cache[key] = value
             return True
         else:
             return False
@@ -195,13 +178,11 @@ class EtcdStore(object):
     def __setitem__(self, key, value):
         try:
             assert isinstance(value, six.string_types)
-            self._cache[key] = value
             self._kv_put(self.make_path(key), value)
         except Exception as e:
             self.log.exception('cannot-set-item', e=e)
 
     def __delitem__(self, key):
-        self._cache.pop(key, None)
         self._kv_delete(self.make_path(key))
 
     @inlineCallbacks
@@ -214,7 +195,6 @@ class EtcdStore(object):
 
     def _redo_etcd_connection(self):
         self._etcd = etcd3.client(host=self.host, port=self.port)
-        self._cache.clear()
 
     def _clear_backoff(self):
         if self.retries:
