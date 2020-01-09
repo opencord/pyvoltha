@@ -130,7 +130,13 @@ class AdapterRequestFacade(object):
         return True, self.adapter.get_ofp_port_info(d, p.val)
 
     def reconcile_device(self, device, **kwargs):
-        return self.adapter.reconcile_device(device)
+        d = Device()
+        if device:
+            device.Unpack(d)
+            return True, self.adapter.reconcile_device(d)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="device-invalid")
 
     def abandon_device(self, device, **kwargs):
         return self.adapter.abandon_device(device)
