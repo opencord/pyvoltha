@@ -82,7 +82,7 @@ class AdapterPmMetrics(object):
 
         :param callback: (callable) Function to call to collect PM data
         """
-        self.log.info("starting-pm-collection", device_name=self.name)
+        self.log.info("starting-pm-collection", device_name=self.name, default_freq=self.default_freq)
         if callback is None:
             callback = self.collect_and_publish_metrics
 

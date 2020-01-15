@@ -112,6 +112,8 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
         self.openomci_interval_pm = OnuPmIntervalMetrics(event_mgr, core_proxy, device_id, logical_device_id,
                                                          serial_number)
 
+        self.last_collect_optical_metrics = None
+
     def update(self, pm_config):
         # TODO: Test frequency override capability for a particular group
         if self.default_freq != pm_config.default_freq:
@@ -221,6 +223,15 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
         if now is None or not self.pm_group_metrics[group_name].enabled:
             return []
 
+        # Because several different metrics are collected by this class,
+        # and the collection interval may be more often than the group interval,
+        # check and make sure these metrics are actually due at this time.
+        if self.last_collect_optical_metrics:
+            elapsed_tenths = (now-self.last_collect_optical_metrics)*10
+            if elapsed_tenths < self.pm_group_metrics[group_name].group_freq:
+                self.log.info("collect-optical-metrics-not-time-yet", elapsed_tenths=elapsed_tenths)
+                return []
+
         # Scan all ANI-G ports
         ani_g_entities = self._omci_onu_device.configuration.ani_g_entities
         ani_g_entities_ids = list(ani_g_entities.keys()) if ani_g_entities is not None else None
@@ -253,6 +264,8 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
                                                                             }),
                                                     metrics=metrics)
                     metrics_info.append(metric_data)
+
+        self.last_collect_optical_metrics = now
 
         return metrics_info
 
