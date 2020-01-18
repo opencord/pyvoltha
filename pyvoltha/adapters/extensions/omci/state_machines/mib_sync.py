@@ -234,7 +234,7 @@ class MibSynchronizer(object):
         if self._database is not None:
             self._database.save_mib_data_sync(self._device_id,
                                               self._mib_data_sync)
-            self.log.info("mds-updated", device=self._device_id, mds=self._mib_data_sync)
+            self.log.debug("mds-updated", device=self._device_id, mds=self._mib_data_sync)
 
     @property
     def last_mib_db_sync(self):
@@ -782,7 +782,7 @@ class MibSynchronizer(object):
         if len(missing_attributes) and class_id in self._device.me_map:
             from pyvoltha.adapters.extensions.omci.tasks.omci_get_request import OmciGetRequest
 
-            self.log.info('update-sbc-items', class_id=class_id, entity_id=entity_id,
+            self.log.debug('update-sbc-items', class_id=class_id, entity_id=entity_id,
                           attributes=missing_attributes)
 
             def success(results):

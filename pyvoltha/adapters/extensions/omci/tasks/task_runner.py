@@ -151,7 +151,7 @@ class TaskRunner(object):
                         if len(queue) == 0:
                             del self._pending_queue[highest_priority]
 
-                        self.log.debug('starting-task', task=str(next_task),
+                        self.log.info('starting-task', task=str(next_task),
                                        running=len(self._running_queue),
                                        pending=len(self._pending_queue))
 
@@ -172,7 +172,7 @@ class TaskRunner(object):
         :param task: (Task) The task that succeeded
         :return: deferred results
         """
-        self.log.debug('task-success', task_id=str(task),
+        self.log.info('task-success', task_id=str(task),
                        running=len(self._running_queue),
                        pending=len(self._pending_queue))
         try:
@@ -200,7 +200,7 @@ class TaskRunner(object):
         """
         from pyvoltha.adapters.extensions.omci.tasks.task import WatchdogTimeoutFailure
 
-        self.log.debug('task-failure', task_id=str(task),
+        self.log.warn('task-failure', task_id=str(task),
                        running=len(self._running_queue),
                        pending=len(self._pending_queue))
         try:
