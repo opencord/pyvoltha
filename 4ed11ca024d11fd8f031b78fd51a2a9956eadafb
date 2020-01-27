@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69e3823a_6993f3c2",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_upload.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2020-01-27T04:45:43Z",
+      "side": 1,
+      "message": "Is that means we are not going to send mib reset any more?  Isn\u0027t there a case that we should reset omci sate of ONU?",
+      "range": {
+        "startLine": 98,
+        "startChar": 12,
+        "endLine": 98,
+        "endChar": 16
+      },
+      "revId": "4ed11ca024d11fd8f031b78fd51a2a9956eadafb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
