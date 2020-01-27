@@ -28,7 +28,7 @@ from voltha_protos.events_pb2 import KpiEvent2, KpiEventType, KpiEvent
 from voltha_protos.events_pb2 import MetricInformation, MetricMetaData
 from voltha_protos.events_pb2 import Event, EventType, EventCategory, \
     EventSubCategory, EventHeader
-from voltha_protos.events_pb2 import Event
+from google.protobuf.timestamp_pb2 import Timestamp
 import six
 
 RC = ReasonCodes
@@ -57,7 +57,7 @@ class OmciTestRequest(Task):
     def __init__(self, core_proxy, omci_agent, device_id, entity_class,
                  serial_number,
                  logical_device_id,
-                 exclusive=True, allow_failure=False, **kwargs):
+                 exclusive=True, uuid=None, allow_failure=False, **kwargs):
         """
         Class initialization
 
@@ -92,6 +92,7 @@ class OmciTestRequest(Task):
         self.serial_number = serial_number
         self.logical_device_id = logical_device_id
         self.core_proxy = core_proxy
+        self.uuid = uuid
         topic = 'omci-rx:{}:{}'.format(self.device_id, 'Test_Result')
         self.msg = self.event_bus.subscribe(topic, self.process_messages)
 
@@ -158,14 +159,15 @@ class OmciTestRequest(Task):
 
         :return: (dict) Event header
         """
-        return EventHeader(id=self.format_id(event),
-                           category=category,
-                           sub_category=sub_category,
-                           type=_type,
-                           type_version="0.1",
-                           raised_ts=raised_ts,
-                           reported_ts=arrow.utcnow().timestamp
-                           )
+        hdr = EventHeader(id=self.format_id(event),
+                          category=category,
+                          sub_category=sub_category,
+                          type=_type,
+                          type_version="0.1",
+                          raised_ts=raised_ts
+                          )
+        hdr.reported_ts.GetCurrentTime()
+        return hdr
 
     def publish_metrics(self, data, event_name, onu_device_id):
         """
@@ -181,15 +183,19 @@ class OmciTestRequest(Task):
                                     logical_device_id=self.logical_device_id,
                                     serial_no=self.serial_number,
                                     device_id=onu_device_id,
+                                    uuid=self.uuid,
                                     context={
                                         'events': event_name
                                     }),
             metrics=data)
         self.log.info('Publish-Test-Result')
+        raised_ts = Timestamp()
+        raised_ts.GetCurrentTime()
         event_header = self.get_event_header(EventType.KPI_EVENT2,
                                              EventCategory.EQUIPMENT,
-                                             EventSubCategory.ONU, "KPI_EVENT",
-                                             arrow.utcnow().timestamp)
+                                             EventSubCategory.ONU,
+                                             "KPI_EVENT",
+                                             raised_ts)
         kpi_event = KpiEvent2(
             type=KpiEventType.slice,
             ts=arrow.utcnow().float_timestamp,
