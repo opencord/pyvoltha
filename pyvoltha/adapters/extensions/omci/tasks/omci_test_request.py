@@ -57,7 +57,7 @@ class OmciTestRequest(Task):
     def __init__(self, core_proxy, omci_agent, device_id, entity_class,
                  serial_number,
                  logical_device_id,
-                 exclusive=True, allow_failure=False, **kwargs):
+                 exclusive=True, uuid=None, allow_failure=False, **kwargs):
         """
         Class initialization
 
@@ -92,6 +92,7 @@ class OmciTestRequest(Task):
         self.serial_number = serial_number
         self.logical_device_id = logical_device_id
         self.core_proxy = core_proxy
+        self.uuid = uuid
         topic = 'omci-rx:{}:{}'.format(self.device_id, 'Test_Result')
         self.msg = self.event_bus.subscribe(topic, self.process_messages)
 
@@ -176,6 +177,7 @@ class OmciTestRequest(Task):
                                     logical_device_id=self.logical_device_id,
                                     serial_no=self.serial_number,
                                     device_id=onu_device_id,
+                                    uuid=self.uuid,
                                     context={
                                         'events': event_name
                                     }),
