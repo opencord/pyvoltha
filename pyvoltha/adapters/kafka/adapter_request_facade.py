@@ -30,8 +30,10 @@ from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrT
 from voltha_protos.device_pb2 import Device, Port, ImageDownload, SimulateAlarmRequest
 from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
+from voltha_protos.voltha_pb2 import OmciTestRequest
 from pyvoltha.adapters.kafka.kafka_inter_container_library import IKafkaMessagingProxy, \
     get_messaging_proxy, KAFKA_OFFSET_LATEST, KAFKA_OFFSET_EARLIEST, ARG_FROM_TOPIC
+
 
 log = structlog.get_logger()
 
@@ -77,6 +79,19 @@ class AdapterRequestFacade(object):
     #     # yield kafka_proxy.create_topic(topic=device_topic)
     #     yield kafka_proxy.subscribe(topic=device_topic, group_id=device_topic, target_cls=self, offset=KAFKA_OFFSET_EARLIEST)
     #     log.debug("subscribed-to-topic", topic=device_topic)
+
+    def start_omci_test(self, device, omcitestrequest, **kwargs):
+        d = Device()
+        if device:
+            device.Unpack(d)
+        if ARG_FROM_TOPIC in kwargs:
+            t = StrType()
+            kwargs[ARG_FROM_TOPIC].Unpack(t)
+        omci_test = OmciTestRequest()
+        if omcitestrequest:
+            omcitestrequest.Unpack(omci_test)
+        result = self.adapter.start_omci_test(d, omci_test.uuid)
+        return True, result
 
     def adopt_device(self, device, **kwargs):
         d = Device()
