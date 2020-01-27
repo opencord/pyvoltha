@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "5efb0cf3_2f90b622",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/mib_sync.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-01-27T11:01:06Z",
+      "side": 1,
+      "message": "template is always run first, which now contains the reset.  then upload is the next state after template.",
+      "range": {
+        "startLine": 51,
+        "startChar": 41,
+        "endLine": 51,
+        "endChar": 93
+      },
+      "revId": "4ed11ca024d11fd8f031b78fd51a2a9956eadafb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3202262e_c08a3a8b",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_template_task.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-01-27T11:01:06Z",
+      "side": 1,
+      "message": "moved here",
+      "range": {
+        "startLine": 96,
+        "startChar": 12,
+        "endLine": 98,
+        "endChar": 65
+      },
+      "revId": "4ed11ca024d11fd8f031b78fd51a2a9956eadafb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "69e3823a_6993f3c2",
         "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_upload.py",
         "patchSetId": 6
@@ -13,6 +59,30 @@
       "writtenOn": "2020-01-27T04:45:43Z",
       "side": 1,
       "message": "Is that means we are not going to send mib reset any more?  Isn\u0027t there a case that we should reset omci sate of ONU?",
+      "range": {
+        "startLine": 98,
+        "startChar": 12,
+        "endLine": 98,
+        "endChar": 16
+      },
+      "revId": "4ed11ca024d11fd8f031b78fd51a2a9956eadafb",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cfaaa0fe_f0bcc16e",
+        "filename": "pyvoltha/adapters/extensions/omci/tasks/mib_upload.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-01-27T11:01:06Z",
+      "side": 1,
+      "message": "its been moved to the mib_template_task.  That task is always attempted first in the state machine and if it cannot find a template then mib_upload task run.  At that point there seemed no reason to reset twice.",
+      "parentUuid": "69e3823a_6993f3c2",
       "range": {
         "startLine": 98,
         "startChar": 12,
