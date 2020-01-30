@@ -27,7 +27,7 @@ from twisted.internet import reactor
 from afkak.consumer import OFFSET_LATEST, OFFSET_EARLIEST
 from pyvoltha.adapters.interface import IAdapterInterface
 from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrType, Error, ErrorCode
-from voltha_protos.device_pb2 import Device, ImageDownload, SimulateAlarmRequest
+from voltha_protos.device_pb2 import Device, Port, ImageDownload, SimulateAlarmRequest
 from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
 from pyvoltha.adapters.kafka.kafka_inter_container_library import IKafkaMessagingProxy, \
@@ -248,6 +248,31 @@ class AdapterRequestFacade(object):
 
         return True, self.adapter.revert_image_update(device, request)
 
+    def enable_port(self, device_id, port, **kwargs):
+        if not device_id:
+            return False, Error(code=ErrorCode.INVALID_PARAMETER,
+                                reason="device")
+        p = Port()
+        if port:
+            port.Unpack(p)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="port-invalid")
+
+        return (True, self.adapter.enable_port(device_id, port))
+
+    def disable_port(self, device_id, port, **kwargs):
+        if not device_id:
+            return False, Error(code=ErrorCode.INVALID_PARAMETER,
+                                reason="device")
+        p = Port()
+        if port:
+            port.Unpack(p)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="port-invalid")
+
+        return (True, self.adapter.disable_port(device_id, port))
 
     def self_test(self, device, **kwargs):
         return self.adapter.self_test_device(device)
