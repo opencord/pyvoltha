@@ -162,6 +162,28 @@ class IAdapterInterface(Interface):
         :return: (Deferred) OperationResponse object.
         """
 
+    def enable_port(device_id, port):
+        """
+        This is called to enable the specified port.
+
+        Depending on the implementation, this call may or may
+        not cause port enable.
+        This call is expected to be non-blocking.
+        :param device_id: A voltha.Device.id object.
+        :param port: A voltha.Port object
+        """
+
+    def disable_port(device_id, port):
+        """
+        This is called to disable the specified port.
+
+        Depending on the implementation, this call may or may
+        not cause port disable.
+        This call is expected to be non-blocking.
+        :param device_id: A voltha.Device.id object.
+        :param port: A voltha.Port object
+        """
+
     def self_test_device(device):
         """
         This is called to Self a device based on a NBI call.
