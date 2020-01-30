@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "566535b0_d1a5c1d3",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-01-30T10:39:28Z",
+      "side": 1,
+      "message": "Remove redundant space here and line 180.",
+      "revId": "c2bd0e4eb6b29da3b8fc39bc1faf0de10a214c94",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a1846790_eff8e8a0",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-01-30T10:39:28Z",
+      "side": 1,
+      "message": "remove redundant spaces.",
+      "revId": "c2bd0e4eb6b29da3b8fc39bc1faf0de10a214c94",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
