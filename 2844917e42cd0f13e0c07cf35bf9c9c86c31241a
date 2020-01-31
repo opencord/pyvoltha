@@ -34,6 +34,24 @@
       "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "519d64f4_aec31edf",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-01-31T13:17:12Z",
+      "side": 1,
+      "message": "Ok. Since it\u0027s an interface then I prefer the wording to be generic.",
+      "parentUuid": "5695ed0d_23584223",
+      "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
