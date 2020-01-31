@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b1e3ba2_e7ad321e",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-01-31T13:08:03Z",
+      "side": 1,
+      "message": "Is this limited to UNI port only?  In the corresponding Core review it mentions PON ports.",
+      "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
