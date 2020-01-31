@@ -16,6 +16,24 @@
       "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5695ed0d_23584223",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2020-01-31T13:14:30Z",
+      "side": 1,
+      "message": "Yes from a interface perspective it could be any port. But I guess because the python code is being used by only the python onu adapter so this has been mentioned as UNI here.",
+      "parentUuid": "2b1e3ba2_e7ad321e",
+      "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
