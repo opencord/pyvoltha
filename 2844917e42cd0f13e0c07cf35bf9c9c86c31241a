@@ -52,6 +52,24 @@
       "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd855c0c_b2de860b",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000635
+      },
+      "writtenOn": "2020-02-01T14:37:11Z",
+      "side": 1,
+      "message": "Thank you, Khen and Matt. Changed the interface comment as suggested.",
+      "parentUuid": "519d64f4_aec31edf",
+      "revId": "2844917e42cd0f13e0c07cf35bf9c9c86c31241a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
