@@ -22,6 +22,30 @@
       "revId": "01351125d4e99f3820e99c6a1f78c713d6e23d2a",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a09b275_491cd5bc",
+        "filename": "pyvoltha/adapters/extensions/omci/onu_device_entry.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 648,
+      "author": {
+        "id": 1000544
+      },
+      "writtenOn": "2020-02-03T17:04:41Z",
+      "side": 1,
+      "message": "So, we don\u0027t have any use cases wherein we deal with OnuLosEvent .If so for time being we can raise onu event based only on ONUEthernetUNIEvent?",
+      "parentUuid": "0541381d_f0001df5",
+      "range": {
+        "startLine": 648,
+        "startChar": 11,
+        "endLine": 648,
+        "endChar": 41
+      },
+      "revId": "01351125d4e99f3820e99c6a1f78c713d6e23d2a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
