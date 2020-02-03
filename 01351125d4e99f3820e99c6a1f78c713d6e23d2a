@@ -46,6 +46,30 @@
       "revId": "01351125d4e99f3820e99c6a1f78c713d6e23d2a",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "706a1676_891b33c9",
+        "filename": "pyvoltha/adapters/extensions/omci/onu_device_entry.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 648,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-03T17:27:54Z",
+      "side": 1,
+      "message": "Yes id rather just raise ONUEthernetUNIEvent given thats all the onu adapter is looking for anyway. \n\nThere is no code in onu adapter to handle OnuLosEvent, other than add to kafka as an event, which should happen anyway.",
+      "parentUuid": "6a09b275_491cd5bc",
+      "range": {
+        "startLine": 648,
+        "startChar": 11,
+        "endLine": 648,
+        "endChar": 41
+      },
+      "revId": "01351125d4e99f3820e99c6a1f78c713d6e23d2a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
