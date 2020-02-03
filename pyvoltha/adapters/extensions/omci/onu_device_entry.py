@@ -29,7 +29,7 @@ from pyvoltha.adapters.extensions.omci.tasks.omci_modify_request import OmciModi
 from pyvoltha.adapters.extensions.omci.omci_me import OntGFrame
 from pyvoltha.adapters.extensions.omci.state_machines.image_agent import ImageAgent
 from pyvoltha.adapters.extensions.events.device_events.onu.onu_los_event import OnuLosEvent
-
+from pyvoltha.adapters.extensions.events.device_events.onu.onu_ethernet_uni_event import ONUEthernetUNIEvent
 from twisted.internet import reactor, defer
 from enum import IntEnum
 import six
@@ -645,7 +645,7 @@ class OnuDeviceEntry(object):
         
     def raise_onu_event(self, event, active):
         # Notify any event listeners
-        if isinstance(event, OnuLosEvent):
+        if isinstance(event, ONUEthernetUNIEvent):
             topic = OnuDeviceEntry.event_bus_topic(self.device_id,
                                                    OnuDeviceEvents.PortEvent)
             context = event.get_context_data()
