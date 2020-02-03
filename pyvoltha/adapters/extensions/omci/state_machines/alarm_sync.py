@@ -599,7 +599,7 @@ class AlarmSynchronizer(object):
         from pyvoltha.adapters.extensions.events.device_events.onu.onu_high_rx_optical_power_event import OnuHighRxOpticalEvent
         from pyvoltha.adapters.extensions.events.device_events.onu.onu_low_tx_optical_power_event import OnuLowTxOpticalEvent
         from pyvoltha.adapters.extensions.events.device_events.onu.onu_high_tx_optical_power_event import OnuHighTxOpticalEvent
-
+        from pyvoltha.adapters.extensions.events.device_events.onu.onu_ethernet_uni_event import ONUEthernetUNIEvent
         mgr = self._alarm_manager
         if class_id in (CircuitPack.class_id, PptpEthernetUni.class_id):
             intf_id = self.select_uni_port(class_id, entity_id)
@@ -618,7 +618,7 @@ class AlarmSynchronizer(object):
             (CircuitPack.class_id, 4): OnuTempYellowEvent,
             (CircuitPack.class_id, 5): OnuTempRedEvent,
 
-            (PptpEthernetUni.class_id, 0): OnuLosEvent,
+            (PptpEthernetUni.class_id, 0): ONUEthernetUNIEvent,
 
             (OntG.class_id, 0): OnuEquipmentEvent,
             (OntG.class_id, 6): OnuSelfTestFailureEvent,
