@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0541381d_f0001df5",
+        "filename": "pyvoltha/adapters/extensions/omci/onu_device_entry.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 648,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-03T16:58:02Z",
+      "side": 1,
+      "message": "i would leave off this case now since its usage in this context is not clear.  An OnuLosEvent being for an entire onu would not be port specific and below may have unintended consequences.  This case may at least need to be handled in its own \"elif\" block.\n\nToday when PLOAM is lost (which is presumably the same as an ONU Loss Event), the olt adapter already notifies the onu adapter via inter adapter messaging so this situation is already dealt with via another path.",
+      "range": {
+        "startLine": 648,
+        "startChar": 11,
+        "endLine": 648,
+        "endChar": 41
+      },
+      "revId": "01351125d4e99f3820e99c6a1f78c713d6e23d2a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
