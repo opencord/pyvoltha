@@ -144,6 +144,11 @@ class OmciTestRequest(Task):
         if self.default_freq > 0:
             self.lc.start(interval=self.default_freq / 10)
 
+    def stop_collector(self):
+        """ Stop the collection loop"""
+        if self.lc is not None and self.default_freq > 0:
+            self.lc.stop()
+
     def format_id(self, event):
         return 'voltha.{}.{}.{}'.format(self.core_proxy.listening_topic,
                                         self.device_id, event)
