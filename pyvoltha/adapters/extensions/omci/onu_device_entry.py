@@ -444,7 +444,11 @@ class OnuDeviceEntry(object):
                     self._state_machines.append(sm)
                     reactor.callLater(0, sm.start)
 
-            self._deferred = reactor.callLater(0, start_state_machines,
+            # Gemports will be created in ONU once ONU adapter receives tech-profile-download-request
+            # from OLT adapter, so to collect Gemport statistics delaying the performance interval state
+            # machine to start after 2 minutes.
+            self.log.debug("waiting-for-tech-profile-download-completion-in-onu")
+            self._deferred = reactor.callLater(120, start_state_machines,
                                                self._on_capabilities_state_machines)
 
     # def __on_omci_download_success(self, image_download):
