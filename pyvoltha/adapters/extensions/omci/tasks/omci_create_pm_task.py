@@ -76,6 +76,7 @@ class OmciCreatePMRequest(Task):
         """ Perform the create requests """
 
         try:
+            self.log.debug('create-pm-mes', mes=self._me_dict)
             for pm, me in self._me_dict.items():
                 pm_class_id = pm[0]
                 pm_entity_id = pm[1]

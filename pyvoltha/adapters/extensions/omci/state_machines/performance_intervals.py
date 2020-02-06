@@ -20,6 +20,8 @@ from transitions import Machine
 from datetime import datetime, timedelta
 from random import uniform, shuffle
 from twisted.internet import reactor
+from twisted.internet.defer import inlineCallbacks
+from pyvoltha.common.utils.asleep import asleep
 from pyvoltha.common.utils.indexpool import IndexPool
 from voltha_protos.omci_mib_db_pb2 import OpenOmciEventType
 from pyvoltha.adapters.extensions.omci.omci_defs import EntityOperations, ReasonCodes
@@ -30,6 +32,7 @@ from pyvoltha.adapters.extensions.omci.tasks.omci_get_request import OmciGetRequ
 from pyvoltha.adapters.extensions.omci.omci_entities import MacBridgePortConfigurationData
 from pyvoltha.adapters.extensions.omci.omci_entities import EthernetPMMonitoringHistoryData, \
     FecPerformanceMonitoringHistoryData, \
+    GemPortNetworkCtpMonitoringHistoryData, \
     XgPonTcPerformanceMonitoringHistoryData, \
     XgPonDownstreamPerformanceMonitoringHistoryData, \
     XgPonUpstreamPerformanceMonitoringHistoryData, \
@@ -350,6 +353,7 @@ class PerformanceIntervals(object):
         config = self._device.configuration
         anis = config.ani_g_entities
         unis = config.uni_g_entities
+        gem_ctps = config.gem_ctp_entities
 
         if anis is not None:
             for entity_id in six.iterkeys(anis):
@@ -359,15 +363,36 @@ class PerformanceIntervals(object):
                 self.delete_pm_me(XgPonUpstreamPerformanceMonitoringHistoryData.class_id, entity_id)
 
         if unis is not None:
-            for entity_id in six.iterkeys(config.uni_g_entities):
+            for entity_id in six.iterkeys(unis):
                 self.delete_pm_me(EthernetPMMonitoringHistoryData.class_id, entity_id)
+                self.delete_pm_me(EthernetFrameUpstreamPerformanceMonitoringHistoryData.class_id, entity_id)
+                self.delete_pm_me(EthernetFrameDownstreamPerformanceMonitoringHistoryData.class_id, entity_id)
 
+        if gem_ctps is not None:
+            for entity_id in six.iterkeys(gem_ctps):
+                self.delete_pm_me(GemPortNetworkCtpMonitoringHistoryData.class_id, entity_id)
+
+    @inlineCallbacks
+    def add_gem_ctp_pm_me(self):
+        config = self._device.configuration
+        gem_ctps = config.gem_ctp_entities
+        self.log.debug('gem-ctp-entities', gem_ctps=gem_ctps)
+
+        if gem_ctps is not None:
+            for entity_id in six.iterkeys(gem_ctps):
+                self.add_pm_me(GemPortNetworkCtpMonitoringHistoryData.class_id, entity_id)
+        else:
+            yield asleep(0.3)
+            self.add_gem_ctp_pm_me()
+
+    @inlineCallbacks
     def on_enter_starting(self):
         """ Add the PON/ANI and UNI PM intervals"""
         self.advertise(OpenOmciEventType.state_change, self.state)
 
         self._device = self._agent.get_device(self._device_id)
         self._cancel_deferred()
+        class_id = None
 
         # Set up OMCI ME Response subscriptions
         try:
@@ -386,6 +411,7 @@ class PerformanceIntervals(object):
             config = self._device.configuration
             anis = config.ani_g_entities
             unis = config.uni_g_entities
+            self.log.debug('ANI-UNI-entities', anis=anis, unis=unis)
 
             if anis is not None:
                 for entity_id in six.iterkeys(anis):
@@ -401,6 +427,10 @@ class PerformanceIntervals(object):
             if unis is not None:
                 for entity_id in six.iterkeys(config.uni_g_entities):
                     self.add_pm_me(EthernetPMMonitoringHistoryData.class_id, entity_id)
+                    self.add_pm_me(EthernetFrameUpstreamPerformanceMonitoringHistoryData.class_id, entity_id)
+                    self.add_pm_me(EthernetFrameDownstreamPerformanceMonitoringHistoryData.class_id, entity_id)
+
+            yield self.add_gem_ctp_pm_me()
 
             # Look for existing instances of dynamically created ME's that have PM
             # associated with them and add them now

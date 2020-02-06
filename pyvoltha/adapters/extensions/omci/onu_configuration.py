@@ -128,7 +128,8 @@ class OnuConfiguration(object):
             '_circuit_pack': None,
             '_software': None,
             '_pptp': None,
-            '_veip': None
+            '_veip': None,
+            '_gem_ctp' : None
         }
 
     @property
@@ -444,6 +445,25 @@ class OnuConfiguration(object):
                         'port-number':             inst & 0xff,
                         'total-tcont-count':       inst_data[ATTRIBUTES_KEY].get('total_tcont_number', 0),
                         'piggyback-dba-reporting': inst_data[ATTRIBUTES_KEY].get('piggyback_dba_reporting', 0),
+                    }
+        return results if len(results) else None
+
+    @property
+    def gem_ctp_entities(self):
+        """
+        This managed entity organizes data associated with each access network
+        interface supported by a G-PON ONU. The ONU automatically creates one
+        instance of this managed entity for each PON physical port.
+        """
+        gem_ctp = self._get_capability('_gem_ctp', GemPortNetworkCtp.class_id)
+        results = dict()
+
+        if gem_ctp is not None:
+            for inst, inst_data in gem_ctp.items():
+                if isinstance(inst, int):
+                    results[inst] = {
+                        'entity-id':                 inst,
+                        'port_id':                   inst_data[ATTRIBUTES_KEY].get('port_id', 0)
                     }
         return results if len(results) else None
 
