@@ -128,7 +128,10 @@ class OnuConfiguration(object):
             '_circuit_pack': None,
             '_software': None,
             '_pptp': None,
-            '_veip': None
+            '_veip': None,
+            '_gem_ctp' : None,
+            '_us_ethframe_monitor' : None,
+            '_ds_ethframe_monitor' : None
         }
 
     @property
@@ -448,6 +451,28 @@ class OnuConfiguration(object):
         return results if len(results) else None
 
     @property
+    def gem_ctp_entities(self):
+        """
+        This managed entity organizes data associated with each access network
+        interface supported by a G-PON ONU. The ONU automatically creates one
+        instance of this managed entity for each PON physical port.
+        """
+        gem_ctp = self._get_capability('_gem_ctp', GemPortNetworkCtpMonitoringHistoryData.class_id)
+        results = dict()
+
+        if gem_ctp is not None:
+            for inst, inst_data in gem_ctp.items():
+                if isinstance(inst, int):
+                    results[inst] = {
+                        'entity-id':                 inst,
+                        'transmitted_gem_frames':    inst_data[ATTRIBUTES_KEY].get('transmitted_gem_frames', 0),
+                        'received_gem_frames':       inst_data[ATTRIBUTES_KEY].get('received_gem_frames', 0),
+                        'received_payload_bytes':    inst_data[ATTRIBUTES_KEY].get('received_payload_bytes', 0),
+                        'transmitted_payload_bytes': inst_data[ATTRIBUTES_KEY].get('transmitted_payload_bytes', 0),
+                    }
+        return results if len(results) else None
+
+    @property
     def uni_g_entities(self):
         """
         This managed entity organizes data associated with user network interfaces
@@ -467,6 +492,73 @@ class OnuConfiguration(object):
                     results[inst] = {
                         'entity-id':               inst,
                         'management-capability':   inst_data[ATTRIBUTES_KEY].get('management_capability', 0)
+                    }
+        return results if len(results) else None
+
+    @property
+    def us_ethframe_monitor_entities(self):
+        """
+        This managed entity organizes data associated with each access network
+        interface supported by a G-PON ONU. The ONU automatically creates one
+        instance of this managed entity for each PON physical port.
+        """
+        us_ethframe_monitor_entities = self._get_capability('_us_ethframe_monitor',
+        EthernetFrameUpstreamPerformanceMonitoringHistoryData.class_id)
+        results = dict()
+
+        if us_ethframe_monitor_entities is not None:
+            for inst, inst_data in us_ethframe_monitor_entities.items():
+                if isinstance(inst, int):
+                    results[inst] = {
+                        'entity-id':                 inst,
+                        'threshold_data_1_2_id': inst_data[ATTRIBUTES_KEY].get('threshold_data_1_2_id', 0),
+                        'drop_events': inst_data[ATTRIBUTES_KEY].get('drop_events', 0),
+                        'octets': inst_data[ATTRIBUTES_KEY].get('octets', 0),
+                        'packets': inst_data[ATTRIBUTES_KEY].get('packets', 0),
+                        'broadcast_packets': inst_data[ATTRIBUTES_KEY].get('broadcast_packets', 0),
+                        'multicast_packets': inst_data[ATTRIBUTES_KEY].get('multicast_packets', 0),
+                        'crc_errored_packets': inst_data[ATTRIBUTES_KEY].get('crc_errored_packets', 0),
+                        'undersize_packets': inst_data[ATTRIBUTES_KEY].get('undersize_packets', 0),
+                        'oversize_packets': inst_data[ATTRIBUTES_KEY].get('oversize_packets', 0),
+                        '64_octets': inst_data[ATTRIBUTES_KEY].get('64_octets', 0),
+                        '65_to_127_octets': inst_data[ATTRIBUTES_KEY].get('65_to_127_octets', 0),
+                        '128_to_255_octets': inst_data[ATTRIBUTES_KEY].get('128_to_255_octets', 0),
+                        '256_to_511_octets': inst_data[ATTRIBUTES_KEY].get('256_to_511_octets', 0),
+                        '512_to_1023_octets': inst_data[ATTRIBUTES_KEY].get('512_to_1023_octets', 0),
+                        '1024_to_1518_octets': inst_data[ATTRIBUTES_KEY].get('1024_to_1518_octets', 0)
+                    }
+        return results if len(results) else None
+
+    def ds_ethframe_monitor_entities(self):
+        """
+        This managed entity organizes data associated with each access network
+        interface supported by a G-PON ONU. The ONU automatically creates one
+        instance of this managed entity for each PON physical port.
+        """
+        ds_ethframe_monitor_entities = self._get_capability('_ds_ethframe_monitor',
+        EthernetFrameDownstreamPerformanceMonitoringHistoryData.class_id)
+        results = dict()
+
+        if ds_ethframe_monitor_entities is not None:
+            for inst, inst_data in ds_ethframe_monitor_entities.items():
+                if isinstance(inst, int):
+                    results[inst] = {
+                        'entity-id':                 inst,
+                        'threshold_data_1_2_id': inst_data[ATTRIBUTES_KEY].get('threshold_data_1_2_id', 0),
+                        'drop_events': inst_data[ATTRIBUTES_KEY].get('drop_events', 0),
+                        'octets': inst_data[ATTRIBUTES_KEY].get('octets', 0),
+                        'packets': inst_data[ATTRIBUTES_KEY].get('packets', 0),
+                        'broadcast_packets': inst_data[ATTRIBUTES_KEY].get('broadcast_packets', 0),
+                        'multicast_packets': inst_data[ATTRIBUTES_KEY].get('multicast_packets', 0),
+                        'crc_errored_packets': inst_data[ATTRIBUTES_KEY].get('crc_errored_packets', 0),
+                        'undersize_packets': inst_data[ATTRIBUTES_KEY].get('undersize_packets', 0),
+                        'oversize_packets': inst_data[ATTRIBUTES_KEY].get('oversize_packets', 0),
+                        '64_octets': inst_data[ATTRIBUTES_KEY].get('64_octets', 0),
+                        '65_to_127_octets': inst_data[ATTRIBUTES_KEY].get('65_to_127_octets', 0),
+                        '128_to_255_octets': inst_data[ATTRIBUTES_KEY].get('128_to_255_octets', 0),
+                        '256_to_511_octets': inst_data[ATTRIBUTES_KEY].get('256_to_511_octets', 0),
+                        '512_to_1023_octets': inst_data[ATTRIBUTES_KEY].get('512_to_1023_octets', 0),
+                        '1024_to_1518_octets': inst_data[ATTRIBUTES_KEY].get('1024_to_1518_octets', 0)
                     }
         return results if len(results) else None
 
