@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3e14fb3d_9f44b7a0",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1362,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-09T21:47:57Z",
+      "side": 1,
+      "message": "per the specification (G.984 and G.988) these fields are not write-able:\n\nFrames 64 octets: The total number of received frames (including bad frames) that were\n64 octets long, excluding framing bits but including FCS. (R) (mandatory)\n(4 bytes)\n\nDuring the create operation for this ME you should only need to provide the SBC (Set-By-Create) attributes.  The rest should be left empty and will be later filled out during polling.",
+      "range": {
+        "startLine": 1362,
+        "startChar": 38,
+        "endLine": 1362,
+        "endChar": 50
+      },
+      "revId": "8eba9d4f45f55bedb53a3646764d483d6b060e83",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c0b53f_cb6e0825",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1393,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-09T21:47:57Z",
+      "side": 1,
+      "message": "same for these.",
+      "range": {
+        "startLine": 1393,
+        "startChar": 43,
+        "endLine": 1393,
+        "endChar": 55
+      },
+      "revId": "8eba9d4f45f55bedb53a3646764d483d6b060e83",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
