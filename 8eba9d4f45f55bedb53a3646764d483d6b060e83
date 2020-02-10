@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8fc14047_b75f7b51",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1362,
+      "author": {
+        "id": 1000472
+      },
+      "writtenOn": "2020-02-10T06:42:01Z",
+      "side": 1,
+      "message": "I Agree. Will test once by changing params to read only and then I will update the patch.",
+      "parentUuid": "3e14fb3d_9f44b7a0",
+      "range": {
+        "startLine": 1362,
+        "startChar": 38,
+        "endLine": 1362,
+        "endChar": 50
+      },
+      "revId": "8eba9d4f45f55bedb53a3646764d483d6b060e83",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c0b53f_cb6e0825",
         "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2020-02-09T21:47:57Z",
       "side": 1,
       "message": "same for these.",
+      "range": {
+        "startLine": 1393,
+        "startChar": 43,
+        "endLine": 1393,
+        "endChar": 55
+      },
+      "revId": "8eba9d4f45f55bedb53a3646764d483d6b060e83",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc332103_da2e4a86",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 1393,
+      "author": {
+        "id": 1000472
+      },
+      "writtenOn": "2020-02-10T06:42:01Z",
+      "side": 1,
+      "message": "I Agree. Will test once by changing params to read only and then I will update the patch.",
+      "parentUuid": "a7c0b53f_cb6e0825",
       "range": {
         "startLine": 1393,
         "startChar": 43,
