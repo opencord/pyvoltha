@@ -82,8 +82,11 @@ class EventBus(object):
         :param subscription: subscription object as was returned by subscribe
         :return: None
         """
-        topic_key = self.subs_topic_map[subscription]
-        self.subscriptions[topic_key].remove(subscription)
+        try:
+           topic_key = self.subs_topic_map[subscription]
+           self.subscriptions[topic_key].remove(subscription)
+        except KeyError:
+           log.error('key not found', key=subscription)
 
     def publish(self, topic, msg):
         """
