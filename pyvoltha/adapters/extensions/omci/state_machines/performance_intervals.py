@@ -859,8 +859,13 @@ class PerformanceIntervals(object):
 
             # Is this associated with the ANI or the UNI side of the bridge?
             # For VOLTHA v2.0, only high-speed internet data service is
-            attributes = request.fields['omci_message'].fields['data']
-            pm_class_ids, upstream = tp_type_to_pm(attributes['tp_type'])
+            if "data" in request.fields['omci_message'].fields:
+                attributes = request.fields['omci_message'].fields['data']
+                pm_class_ids, upstream = tp_type_to_pm(attributes['tp_type'])
+            else:
+                attributes = None
+                pm_class_ids = None
+                upstream = None
             cid = request.fields['omci_message'].fields['entity_class']
             eid = request.fields['omci_message'].fields['entity_id']
             if not add:
