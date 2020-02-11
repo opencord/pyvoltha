@@ -76,14 +76,14 @@ class AdapterEvents:
 
         :return: (dict) Event header
         """
-        return EventHeader(id=self.format_id(event),
+        hdr = EventHeader(id=self.format_id(event),
                            category=category,
                            sub_category=sub_category,
                            type=_type,
-                           type_version=self.type_version,
-                           raised_ts=raised_ts,
-                           reported_ts=arrow.utcnow().timestamp
-                           )
+                           type_version=self.type_version)
+        hdr.raised_ts.FromSeconds(raised_ts),
+        hdr.reported_ts.GetCurrentTime()
+        return hdr
 
     @inlineCallbacks
     def send_event(self, event_header, event_body):
