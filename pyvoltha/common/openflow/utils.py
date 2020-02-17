@@ -319,6 +319,15 @@ def ipv6_exthdr(_ipv6_exthdr):
 
 # frequently used extractors:
 
+def get_metadata_from_write_metadata(flow):
+    for instruction in flow.instructions:
+        if instruction.type == ofp.OFPIT_WRITE_METADATA:
+            return instruction.write_metadata.metadata
+    return None
+
+def get_tp_id_from_metadata(write_metadata_value):
+    return (write_metadata_value >> 32) & 0xffff
+
 def get_actions(flow):
     """Extract list of ofp_action objects from flow spec object"""
     assert isinstance(flow, ofp.ofp_flow_stats)
@@ -327,6 +336,11 @@ def get_actions(flow):
         if instruction.type == ofp.OFPIT_APPLY_ACTIONS:
             return instruction.actions.actions
 
+def get_default_vlan(flow):
+    for field in get_ofb_fields(flow):
+        if field.type == VLAN_VID:
+            return field.vlan_vid & 0xfff
+    return 0
 
 def get_ofb_fields(flow):
     assert isinstance(flow, ofp.ofp_flow_stats)
