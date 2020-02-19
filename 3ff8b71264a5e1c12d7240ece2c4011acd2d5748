@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5740840a_12da75a4",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1067,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-19T13:11:54Z",
+      "side": 1,
+      "message": "this one specifically",
+      "range": {
+        "startLine": 1067,
+        "startChar": 22,
+        "endLine": 1067,
+        "endChar": 50
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a8c62a1_fe0de611",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1069,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-19T13:11:54Z",
+      "side": 1,
+      "message": "this in omci_entites.py does not have all the fields set here, but there is an old TODO to add them:\n\n\nclass MulticastGemInterworkingTp(EntityClass):\n    class_id \u003d 281\n    attributes \u003d [\n        ECA(ShortField(\"managed_entity_id\", None), {AA.R, AA.SBC},\n            range_check\u003dlambda x: x !\u003d OmciNullPointer),\n        ECA(ShortField(\"gem_port_network_ctp_pointer\", None), {AA.R, AA.SBC}),\n        ECA(ByteField(\"interworking_option\", None), {AA.R, AA.W, AA.SBC},\n            range_check\u003dlambda x: x in [0, 1, 3, 5]),\n        ECA(ShortField(\"service_profile_pointer\", None), {AA.R, AA.W, AA.SBC}),\n        ECA(ShortField(\"interworking_tp_pointer\", 0), {AA.R, AA.W, AA.SBC},\n            deprecated\u003dTrue),\n        ECA(ByteField(\"pptp_counter\", None), {AA.R}),\n        ECA(ByteField(\"operational_state\", None), {AA.R}, avc\u003dTrue,\n            range_check\u003dlambda x: 0 \u003c\u003d x \u003c\u003d 1),\n        ECA(ShortField(\"gal_profile_pointer\", None), {AA.R, AA.W, AA.SBC}),\n        ECA(ByteField(\"gal_loopback_configuration\", None), {AA.R, AA.W, AA.SBC},\n            deprecated\u003dTrue),\n        # TODO add multicast_address_table here (page 85 of spec.)\n        # ECA(...(\"multicast_address_table\", None), {AA.R, AA.W})\n    ]\n    mandatory_operations \u003d {OP.Create, OP.Delete, OP.Get, OP.GetNext, OP.Set}\n    optional_operations \u003d {OP.SetTable}\n    notifications \u003d {OP.AttributeValueChange, OP.AlarmNotification}\n    alarms \u003d {\n        0: \u0027Deprecated\u0027,\n    }",
+      "range": {
+        "startLine": 1069,
+        "startChar": 62,
+        "endLine": 1069,
+        "endChar": 88
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6090ce0_ce20e36a",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-19T13:11:54Z",
+      "side": 1,
+      "message": "similar with these, omci_entites.py is not quite ready for them, even though you arent using them yet\n\nwhats more is they are table based attributes, like EVTO, and will be tricky to work with in the same way.",
+      "range": {
+        "startLine": 1114,
+        "startChar": 0,
+        "endLine": 1115,
+        "endChar": 72
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edd4a603_847a55b3",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1280,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-19T13:11:54Z",
+      "side": 1,
+      "message": "same for these, in omci_entites.py.  they are not table attributes yet and will likely not work as expected, or at all.",
+      "range": {
+        "startLine": 1275,
+        "startChar": 0,
+        "endLine": 1280,
+        "endChar": 71
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
