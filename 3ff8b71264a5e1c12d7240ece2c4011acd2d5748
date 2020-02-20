@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d98839b0_228ed247",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1067,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-20T07:03:38Z",
+      "side": 1,
+      "message": "yes, I can remove this attribute. But AT\u0026T OMCI specification includes it. And It\u0027s looking mandatory attribute.",
+      "parentUuid": "5740840a_12da75a4",
+      "range": {
+        "startLine": 1067,
+        "startChar": 22,
+        "endLine": 1067,
+        "endChar": 50
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a8c62a1_fe0de611",
         "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2020-02-19T13:11:54Z",
       "side": 1,
       "message": "this in omci_entites.py does not have all the fields set here, but there is an old TODO to add them:\n\n\nclass MulticastGemInterworkingTp(EntityClass):\n    class_id \u003d 281\n    attributes \u003d [\n        ECA(ShortField(\"managed_entity_id\", None), {AA.R, AA.SBC},\n            range_check\u003dlambda x: x !\u003d OmciNullPointer),\n        ECA(ShortField(\"gem_port_network_ctp_pointer\", None), {AA.R, AA.SBC}),\n        ECA(ByteField(\"interworking_option\", None), {AA.R, AA.W, AA.SBC},\n            range_check\u003dlambda x: x in [0, 1, 3, 5]),\n        ECA(ShortField(\"service_profile_pointer\", None), {AA.R, AA.W, AA.SBC}),\n        ECA(ShortField(\"interworking_tp_pointer\", 0), {AA.R, AA.W, AA.SBC},\n            deprecated\u003dTrue),\n        ECA(ByteField(\"pptp_counter\", None), {AA.R}),\n        ECA(ByteField(\"operational_state\", None), {AA.R}, avc\u003dTrue,\n            range_check\u003dlambda x: 0 \u003c\u003d x \u003c\u003d 1),\n        ECA(ShortField(\"gal_profile_pointer\", None), {AA.R, AA.W, AA.SBC}),\n        ECA(ByteField(\"gal_loopback_configuration\", None), {AA.R, AA.W, AA.SBC},\n            deprecated\u003dTrue),\n        # TODO add multicast_address_table here (page 85 of spec.)\n        # ECA(...(\"multicast_address_table\", None), {AA.R, AA.W})\n    ]\n    mandatory_operations \u003d {OP.Create, OP.Delete, OP.Get, OP.GetNext, OP.Set}\n    optional_operations \u003d {OP.SetTable}\n    notifications \u003d {OP.AttributeValueChange, OP.AlarmNotification}\n    alarms \u003d {\n        0: \u0027Deprecated\u0027,\n    }",
+      "range": {
+        "startLine": 1069,
+        "startChar": 62,
+        "endLine": 1069,
+        "endChar": 88
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e62e9665_d652676b",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1069,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-20T07:03:38Z",
+      "side": 1,
+      "message": "I need to remove the \"interworking_tp_pointer\" and \"gal_loopback_configuration\" attributes from omci_entities. Because, G988, G984 and AT\u0026T spec don\u0027t have this attribute. And We need to have a decision about added the \"ipv4_multicast_address_table\" attribute on omci_entities.py.",
+      "parentUuid": "7a8c62a1_fe0de611",
       "range": {
         "startLine": 1069,
         "startChar": 62,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "10ea1160_388cc462",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-20T07:03:38Z",
+      "side": 1,
+      "message": "yeah, it\u0027s the same but I just applied spec.",
+      "parentUuid": "c6090ce0_ce20e36a",
+      "range": {
+        "startLine": 1114,
+        "startChar": 0,
+        "endLine": 1115,
+        "endChar": 72
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "edd4a603_847a55b3",
         "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2020-02-19T13:11:54Z",
       "side": 1,
       "message": "same for these, in omci_entites.py.  they are not table attributes yet and will likely not work as expected, or at all.",
+      "range": {
+        "startLine": 1275,
+        "startChar": 0,
+        "endLine": 1280,
+        "endChar": 71
+      },
+      "revId": "3ff8b71264a5e1c12d7240ece2c4011acd2d5748",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1b9622d1_d27fe301",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_me.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 1280,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-20T07:03:38Z",
+      "side": 1,
+      "message": "It\u0027s mandatory for spec. So, I added it. In the future, maybe it\u0027ll use.",
+      "parentUuid": "edd4a603_847a55b3",
       "range": {
         "startLine": 1275,
         "startChar": 0,
