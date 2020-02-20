@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f0c8fdeb_686db916",
+        "filename": "pyvoltha/adapters/extensions/omci/state_machines/performance_intervals.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-02-20T15:06:08Z",
+      "side": 1,
+      "message": "is it better to use callLater mechanism (and remove inlineCallbacks) to achieve what you are doing here? Somehow this recursive call on itself spooks me :)",
+      "range": {
+        "startLine": 385,
+        "startChar": 0,
+        "endLine": 386,
+        "endChar": 36
+      },
+      "revId": "5f4ceaf6afc5823cc903b315f90b97cfc86b512c",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
