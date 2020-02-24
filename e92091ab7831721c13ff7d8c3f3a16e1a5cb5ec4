@@ -45,6 +45,30 @@
       "revId": "e92091ab7831721c13ff7d8c3f3a16e1a5cb5ec4",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99e7d850_dbc19adb",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 973,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-24T13:10:58Z",
+      "side": 1,
+      "message": "Yeah, I tried it with OmciTableField but it\u0027s not working. I took exception in the field. Sure, I\u0027ll investigate OmciTableField.",
+      "parentUuid": "f63bb0da_4d358957",
+      "range": {
+        "startLine": 973,
+        "startChar": 12,
+        "endLine": 973,
+        "endChar": 28
+      },
+      "revId": "e92091ab7831721c13ff7d8c3f3a16e1a5cb5ec4",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
