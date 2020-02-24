@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c891fad2_b1da75e2",
+        "filename": "VERSION",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-02-24T09:49:48Z",
+      "side": 1,
+      "message": "The naming convention is 2.3.17-dev (hyphen instead of underscore). Also, you might as well bump to next version, i.e., 2.3.18 if it is needed by openonu adapter.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 10
+      },
+      "revId": "a5560f5a9a544fc19b2d298720ca9a17cb805927",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bdac6313_ef35cb3e",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 973,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-02-24T09:49:48Z",
+      "side": 1,
+      "message": "Shouldn\u0027t IPv4MulticastAddressTable be added here?",
+      "revId": "a5560f5a9a544fc19b2d298720ca9a17cb805927",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
