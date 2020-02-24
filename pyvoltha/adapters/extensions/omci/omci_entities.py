@@ -523,6 +523,38 @@ class OltG(EntityClass):
     mandatory_operations = {OP.Get, OP.Set}
 
 
+class IPv4MulticastAddressTable(Packet):
+    name = "IPv4MulticastAddressTable"
+    fields_desc = [
+        BitField("gem_port_id", 0, 2),
+        BitField("secondary_key", 0, 2),
+        IPField("multicast_ip_range_start", None),
+        IPField("multicast_ip_range_stop", None)
+    ]
+
+    def to_json(self):
+        return json.dumps(self.fields, separators=(',', ':'))
+
+    def index(self):
+        return b'%02d' % (self.fields.get('gem_port_id',0)) + \
+               b'%03d' % (self.fields.get('secondary_key',0)) + \
+               b'%01d' % (self.fields.get('multicast_ip_range_start',0)) + \
+               b'%03d' % (self.fields.get('multicast_ip_range_stop',0))
+
+    def is_delete(self):
+        return self.fields.get('gem_port_id',0) == 0x1fff and \
+            self.fields.get('secondary_key',0) == 0x1fff and \
+            self.fields.get('multicast_ip_range_start',0) == 0x1fff and \
+            self.fields.get('multicast_ip_range_stop',0) == 0x1fff
+
+    def delete(self):
+        self.fields['gem_port_id'] = 0x1fff
+        self.fields['secondary_key'] = 0x1fff
+        self.fields['multicast_ip_range_start'] = 0x1fff
+        self.fields['multicast_ip_range_stop'] = 0x1fff
+        return self
+
+
 class OntPowerShedding(EntityClass):
     class_id = 133
     attributes = [
@@ -957,6 +989,8 @@ class MulticastGemInterworkingTp(EntityClass):
         ECA(ShortField("gal_profile_pointer", None), {AA.R, AA.W, AA.SBC}),
         ECA(ByteField("gal_loopback_configuration", None), {AA.R, AA.W, AA.SBC},
             deprecated=True),
+        ECA(OmciTableField(PacketLenField("ipv4_multicast_address_table", None, IPv4MulticastAddressTable,
+                                          length_from=lambda pkt: 12)), {AA.R, AA.W})
         # TODO add multicast_address_table here (page 85 of spec.)
         # ECA(...("multicast_address_table", None), {AA.R, AA.W})
     ]
