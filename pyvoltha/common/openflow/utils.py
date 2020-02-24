@@ -85,7 +85,8 @@ MPLS_BOS = ofp.OFPXMT_OFB_MPLS_BOS
 PBB_ISID = ofp.OFPXMT_OFB_PBB_ISID
 TUNNEL_ID = ofp.OFPXMT_OFB_TUNNEL_ID
 IPV6_EXTHDR = ofp.OFPXMT_OFB_IPV6_EXTHDR
-
+IPV4_DHCP_SRC_PORT = 68
+IPV6_DHCP_SRC_PORT = 546
 
 # ofp_action_* shortcuts
 
@@ -351,6 +352,11 @@ def get_ofb_fields(flow):
         ofb_fields.append(field.ofb_field)
     return ofb_fields
 
+def get_meter_id_from_flow(flow):
+    for instruction in flow.instructions:
+        if instruction.type == ofp.OFPIT_METER:
+            return instruction.meter.meter_id
+    return None
 
 def get_out_port(flow):
     for action in get_actions(flow):
@@ -384,6 +390,11 @@ def get_tunnelid(flow):
             return field.tunnel_id
     return None
 
+def is_dhcp_flow(flow):
+    for field in get_ofb_fields(flow):
+        if field.type == UDP_SRC and (field.udp_src == IPV4_DHCP_SRC_PORT or field.udp_src == IPV6_DHCP_SRC_PORT):
+            return True
+    return False
 
 def get_metadata(flow):
     ''' legacy get method (only want lower 32 bits '''
