@@ -523,6 +523,19 @@ class OltG(EntityClass):
     mandatory_operations = {OP.Get, OP.Set}
 
 
+class IPv4MulticastAddressTable(Packet):
+    name = "IPv4MulticastAddressTable"
+    fields_desc = [
+        BitField("gem_port_id", 0, 2),
+        BitField("secondary_key", 0, 2),
+        IPField("multicast_ip_range_start", None),
+        IPField("multicast_ip_range_stop", None)
+    ]
+
+    def to_json(self):
+        return json.dumps(self.fields, separators=(',', ':'))
+
+
 class OntPowerShedding(EntityClass):
     class_id = 133
     attributes = [
@@ -957,6 +970,7 @@ class MulticastGemInterworkingTp(EntityClass):
         ECA(ShortField("gal_profile_pointer", None), {AA.R, AA.W, AA.SBC}),
         ECA(ByteField("gal_loopback_configuration", None), {AA.R, AA.W, AA.SBC},
             deprecated=True),
+        ECA(StrFixedLenField("ipv4_multicast_address_table", None, 12), {AA.R, AA.W})
         # TODO add multicast_address_table here (page 85 of spec.)
         # ECA(...("multicast_address_table", None), {AA.R, AA.W})
     ]
