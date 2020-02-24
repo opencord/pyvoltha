@@ -39,6 +39,24 @@
       "revId": "a5560f5a9a544fc19b2d298720ca9a17cb805927",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfd92ce8_8582af36",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 973,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-02-24T11:18:22Z",
+      "side": 1,
+      "message": "Yeah, You\u0027re right. It\u0027ll be here. I added it.",
+      "parentUuid": "bdac6313_ef35cb3e",
+      "revId": "a5560f5a9a544fc19b2d298720ca9a17cb805927",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
