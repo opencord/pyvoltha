@@ -523,6 +523,19 @@ class OltG(EntityClass):
     mandatory_operations = {OP.Get, OP.Set}
 
 
+class IPv4MulticastAddressTable(Packet):
+    name = "IPv4MulticastAddressTable"
+    fields_desc = [
+        BitField("gem_port_id", 0, 2),
+        BitField("secondary_key", 0, 2),
+        IPField("multicast_ip_range_start", None),
+        IPField("multicast_ip_range_stop", None)
+    ]
+
+    def to_json(self):
+        return json.dumps(self.fields, separators=(',', ':'))
+
+
 class OntPowerShedding(EntityClass):
     class_id = 133
     attributes = [
