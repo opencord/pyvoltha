@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1bf4fc4_64bac6e1",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-25T14:45:41Z",
+      "side": 1,
+      "message": "this is what you are trying to mimic.",
+      "range": {
+        "startLine": 588,
+        "startChar": 6,
+        "endLine": 588,
+        "endChar": 26
+      },
+      "revId": "a65af87f8f5d7354f1e30849e7fcb2b17b25ec93",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77122a42_b2ee7dea",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-25T14:45:41Z",
+      "side": 1,
+      "message": "this is the missing function, but you can see from the other functions in this class, the may be needed too.",
+      "range": {
+        "startLine": 642,
+        "startChar": 8,
+        "endLine": 642,
+        "endChar": 13
+      },
+      "revId": "a65af87f8f5d7354f1e30849e7fcb2b17b25ec93",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
