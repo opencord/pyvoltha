@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "dfd7e00b_c0023274",
+        "filename": "VERSION",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000011
+      },
+      "writtenOn": "2020-02-25T22:36:45Z",
+      "side": 1,
+      "message": "on rebase make sure this is an increment over previous release.",
+      "range": {
+        "startLine": 1,
+        "startChar": 1,
+        "endLine": 1,
+        "endChar": 10
+      },
+      "revId": "5f4ceaf6afc5823cc903b315f90b97cfc86b512c",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f0c8fdeb_686db916",
         "filename": "pyvoltha/adapters/extensions/omci/state_machines/performance_intervals.py",
         "patchSetId": 6
