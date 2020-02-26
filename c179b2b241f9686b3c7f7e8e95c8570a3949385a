@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b9e0f0c_282dd8b2",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 673,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-02-26T15:52:25Z",
+      "side": 1,
+      "message": "you may need something like this as well.",
+      "range": {
+        "startLine": 664,
+        "startChar": 0,
+        "endLine": 673,
+        "endChar": 63
+      },
+      "revId": "c179b2b241f9686b3c7f7e8e95c8570a3949385a",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
