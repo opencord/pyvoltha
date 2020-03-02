@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "379a2821_8ef0f82b",
+        "filename": "pyvoltha/adapters/extensions/omci/database/mib_db_dict_lazy.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-02T21:51:37Z",
+      "side": 1,
+      "message": "still need to work on these.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 26
+      },
+      "revId": "188e9e85e23f1417b3901a0a6ff14c870398184f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
