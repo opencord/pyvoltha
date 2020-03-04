@@ -977,7 +977,7 @@ class MulticastGemInterworkingTp(EntityClass):
     attributes = [
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC},
             range_check=lambda x: x != OmciNullPointer),
-        ECA(ShortField("gem_port_network_ctp_pointer", None), {AA.R, AA.SBC}),
+        ECA(ShortField("gem_port_network_ctp_pointer", None), {AA.R, AA.W, AA.SBC}),
         ECA(ByteField("interworking_option", None), {AA.R, AA.W, AA.SBC},
             range_check=lambda x: x in [0, 1, 3, 5]),
         ECA(ShortField("service_profile_pointer", None), {AA.R, AA.W, AA.SBC}),
@@ -1169,7 +1169,7 @@ class MulticastSubscriberConfigInfo(EntityClass):
         ECA(ShortField("managed_entity_id", None), {AA.R, AA.SBC}),
         ECA(ByteField("me_type", None), {AA.R, AA.W, AA.SBC},
             range_check=lambda x: 0 <= x <= 1),
-        ECA(ShortField("mcast_operations_profile_pointer", None),
+        ECA(ShortField("multicast_operations_profile_pointer", None),
             {AA.R, AA.W, AA.SBC}),
         ECA(ShortField("max_simultaneous_groups", None), {AA.R, AA.W, AA.SBC}),
         ECA(IntField("max_multicast_bandwidth", None), {AA.R, AA.W, AA.SBC}),
