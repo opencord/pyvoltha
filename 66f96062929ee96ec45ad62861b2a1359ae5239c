@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ce3b2f2d_5b355eef",
+        "filename": "pyvoltha/adapters/extensions/omci/database/alarm_db_ext.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-11T19:30:55Z",
+      "side": 1,
+      "message": "It should be.  Both AlarmDbExternal and MibDbExternal inherit from the same MibDbApi interface.  Its just AlarmDbExternal had 90% duplicate code so it became easier to just override the functions that needed it.\n\nThat being said the MibDbApi has the public functions and anything without \"_funcname\" is defined in the interface.  All else does have an underscore and is private.",
+      "parentUuid": "5eee0204_f01e5ba1",
+      "revId": "66f96062929ee96ec45ad62861b2a1359ae5239c",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d92f6d3_5726d6f9",
         "filename": "pyvoltha/adapters/extensions/omci/database/alarm_db_ext.py",
         "patchSetId": 7
@@ -30,6 +48,30 @@
       "writtenOn": "2020-03-11T18:45:55Z",
       "side": 1,
       "message": "Does this need an update or CURRENT_VERSION? Since this module is local to brcm_openonu_adapter, does anyone care.",
+      "range": {
+        "startLine": 27,
+        "startChar": 46,
+        "endLine": 27,
+        "endChar": 69
+      },
+      "revId": "66f96062929ee96ec45ad62861b2a1359ae5239c",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8685477e_f60c303d",
+        "filename": "pyvoltha/adapters/extensions/omci/database/alarm_db_ext.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-11T19:30:55Z",
+      "side": 1,
+      "message": "Im not actually sure if this is used anywhere.   probably should just be removed in favor of letting pyvoltha SemVer be the guide.",
+      "parentUuid": "6d92f6d3_5726d6f9",
       "range": {
         "startLine": 27,
         "startChar": 46,
