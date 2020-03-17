@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f4aee_127cdce9",
+        "filename": "requirements.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-17T18:48:39Z",
+      "side": 1,
+      "message": "yeah i just checked, 3.2.8 has merged.",
+      "range": {
+        "startLine": 21,
+        "startChar": 15,
+        "endLine": 21,
+        "endChar": 20
+      },
+      "revId": "37265c5be495aadb9135acc3109ae0fe32a5acc6",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
