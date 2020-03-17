@@ -22,6 +22,30 @@
       "revId": "d4457919c07a7c428cf312a90d3bfa0698e4162d",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4081bbc8_f29b2fbc",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-17T18:19:13Z",
+      "side": 1,
+      "message": "My assumption is that Device should not be None. It\u0027s a required parameter to the API. I can try submitting an empty and/or bogus device id to make sure the error is caught. I think the right place to catch it (perhaps this is already done) is in the core.",
+      "parentUuid": "0fc957c5_23222f33",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 64
+      },
+      "revId": "d4457919c07a7c428cf312a90d3bfa0698e4162d",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
