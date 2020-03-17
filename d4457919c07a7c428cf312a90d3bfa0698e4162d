@@ -46,6 +46,30 @@
       "revId": "d4457919c07a7c428cf312a90d3bfa0698e4162d",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba48be15_d4a59c2f",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-17T18:32:40Z",
+      "side": 1,
+      "message": "I\u0027ve verified that the core fails in getDeviceAgent() with a `loading-device-failed` error, returning an `INVALID ARGUMENT` rpc response if the device id is blank. Also fails if the device id is unknown.",
+      "parentUuid": "4081bbc8_f29b2fbc",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 64
+      },
+      "revId": "d4457919c07a7c428cf312a90d3bfa0698e4162d",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
