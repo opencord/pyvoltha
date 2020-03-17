@@ -582,10 +582,15 @@ class OmciTestResult(OmciMessage):
     fields_desc = [
         ShortField("entity_class", None),
         ShortField("entity_id", 0),
-        ShortField("power_feed_voltage", 1),
-        ShortField('received_optical_power', 3),
-        ShortField('mean_optical_launch_power', 5),
-        ShortField('laser_bias_current', 9),
-        ShortField('temperature', 12)
+        ByteField("power_feed_type_id", 1),
+        ShortField("power_feed_voltage", None),
+        ByteField("received_optical_power_type_id", 3),
+        ShortField('received_optical_power', None),
+        ByteField("mean_optical_launch_power_type_id", 5),
+        ShortField('mean_optical_launch_power', None),
+        ByteField("laser_bias_current_type_id", 9),
+        ShortField('laser_bias_current', None),
+        ByteField("temperature_type_id", 12),
+        ShortField('temperature', None)
     ]
-    
+
