@@ -64,9 +64,12 @@ class KafkaProxy(object):
         self.config = config
         self.kclient = None
         self.kproducer = None
+        self.kproducer_heartbeat = None
+        self.alive_state_handler = None
         self.event_bus_publisher = None
         self.stopping = False
         self.faulty = False
+        self.alive = False
         self.consumer_poll_timeout = consumer_poll_timeout
         self.topic_consumer_map = {}
         self.topic_callbacks_map = {}
@@ -83,6 +86,7 @@ class KafkaProxy(object):
         log.info('started')
         KafkaProxy.faulty = False
         self.stopping = False
+        self.alive = True
         returnValue(self)
 
     @inlineCallbacks
@@ -90,6 +94,7 @@ class KafkaProxy(object):
         try:
             log.debug('stopping-kafka-proxy')
             self.stopping = True
+            self.alive = False
             try:
                 if self.kclient:
                     yield self.kclient.close()
@@ -309,6 +314,7 @@ class KafkaProxy(object):
 
         except Exception as e:
             self.faulty = True
+            self.alive_state_handler.callback(self.alive)
             log.error('failed-to-send-kafka-msg', topic=topic,
                       e=e)
 
@@ -317,19 +323,73 @@ class KafkaProxy(object):
             # port number.
             if self.stopping is False:
                 log.debug('stopping-kafka-proxy')
+                self.alive = False
                 try:
                     self.stopping = True
                     self.stop()
                     self.stopping = False
-                    self.faulty = False
                     log.debug('stopped-kafka-proxy')
                 except Exception as e:
                     log.exception('failed-stopping-kafka-proxy', e=e)
                     pass
             else:
                 log.info('already-stopping-kafka-proxy')
-
             return
+
+    # sending heartbeat message to check the readiness
+    def send_heartbeat_message(self, topic, msg):
+        assert topic is not None
+        assert msg is not None
+
+        try:
+            if self.kproducer_heartbeat is None:
+                if self.kafka_endpoint.startswith('@'):
+                    _k_endpoint = get_endpoint_from_consul(self.consul_endpoint,
+                                                           self.kafka_endpoint[
+                                                           1:])
+                else:
+                    _k_endpoint = self.kafka_endpoint
+
+                # Using 2 seconds timeout for heartbeat producer; default of 5 minutes is too long
+                self.kproducer_heartbeat = _kafkaProducer(
+                    {'bootstrap.servers': _k_endpoint,
+                     'default.topic.config' : {'message.timeout.ms': 2000},
+                    }
+                )
+
+            log.debug('sending-kafka-heartbeat-message', topic=topic)
+            msgs = [msg]
+
+            self.kproducer_heartbeat.produce(topic, msg, callback=self.handle_kafka_delivery_report)
+
+        except Exception as e:
+            self.faulty = True
+            self.alive_state_handler.callback(self.alive)
+            log.error('failed-to-send-kafka-heartbeat-msg', e=e)
+
+    def check_heartbeat_delivery(self):
+        try:
+            if self.kproducer_heartbeat is not None:
+                msg = self.kproducer_heartbeat.poll(0)
+        except Exception as e:
+            log.error('failed-to-check-heartbeat-msg-delivery', e=e)
+            self.faulty = True
+
+    def handle_kafka_delivery_report(self, err, msg):
+        if err is not None :
+            # Log and notify only in event of alive status change
+            if self.alive is True:
+                log.info('failed-to-deliver-message', msg=msg.value(), err=err.str())
+                self.alive_state_handler.callback(False)
+            self.alive = False
+        else :
+            if self.alive is not True:
+                log.info('message-delivered-successfully', msg=msg.value())
+                self.alive_state_handler.callback(True)
+            self.alive = True
+
+    def register_alive_state_update(self, defer_handler):
+        self.alive_state_handler = defer_handler
 
     def is_faulty(self):
         return self.faulty
