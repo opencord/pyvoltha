@@ -398,7 +398,7 @@ class IKafkaMessagingProxy(object):
                 log.debug("unsupported-msg", msg_type=type(message.body))
                 return None
             log.debug("parsed-response", type=message.header.type, from_topic=message.header.from_topic,
-                  to_topic=message.header.to_topic)
+                  to_topic=message.header.to_topic, transaction_id=message.header.id)
             return resp
         except Exception as e:
             log.exception("parsing-response-failed", msg=msg, e=e)
@@ -494,6 +494,7 @@ class IKafkaMessagingProxy(object):
                                   to_topic=res_topic)
             elif message.header.type == MessageType.Value("RESPONSE"):
                 trns_id = self._to_string(message.header.id)
+                log.debug('received-response', transaction_id=trns_id)
                 if trns_id in self.transaction_id_deferred_map:
                     resp = self._parse_response(val)
 
