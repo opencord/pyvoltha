@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a565ec3d_3b6305f3",
+        "filename": "pyvoltha/adapters/kafka/kafka_proxy.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-24T18:00:12Z",
+      "side": 1,
+      "message": "can this be removed?  the log.error just below should have enough detail to describe the problem",
+      "range": {
+        "startLine": 316,
+        "startChar": 12,
+        "endLine": 316,
+        "endChar": 71
+      },
+      "revId": "42f50e3c28934da61d71b4c4e14faf0ebd4446b4",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1326176f_742c5e33",
+        "filename": "pyvoltha/adapters/kafka/kafka_proxy.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-24T18:00:12Z",
+      "side": 1,
+      "message": "can defaulting this added to __init__ ? it helps when tracking down member variables:\n\n  self.alive_state_handler \u003d None   \n\nis fine.",
+      "range": {
+        "startLine": 392,
+        "startChar": 8,
+        "endLine": 392,
+        "endChar": 33
+      },
+      "revId": "42f50e3c28934da61d71b4c4e14faf0ebd4446b4",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
