@@ -80,7 +80,7 @@ def setup_logging(log_config, instance_id, verbosity_adjust=0):
 
     # Configure standard logging
     logging.config.dictConfig(log_config)
-    logging.root.level += 10 * verbosity_adjust
+    logging.root.level = 10 * verbosity_adjust
 
     processors = [
         add_exc_info_flag_for_exception,
@@ -99,8 +99,25 @@ def setup_logging(log_config, instance_id, verbosity_adjust=0):
     log.info("first-line", log_level=logging.root.level, verbosity_adjust=verbosity_adjust)
     return log
 
+def string_to_int(loglevel):
+    l = loglevel.upper()
+    if l == "DEBUG": return 1
+    elif l == "INFO": return 2
+    elif l == "WARN": return 3
+    elif l == "ERROR": return 4
+    elif l == "FATAL": return 5
+    else: return -1
 
-def update_logging(instance_id, vcore_id):
+def validate_loglevel(loglevel):
+    l = loglevel.upper()
+    if l == "DEBUG": return l
+    elif l == "INFO": return l
+    elif l == "WARN": return l
+    elif l == "ERROR": return l
+    elif l == "FATAL": return l
+    else: return ""
+
+def update_logging(instance_id, vcore_id, verbosity_adjust=0):
     """
     Add the vcore id to the structured logger
     :param vcore_id:  The assigned vcore id
@@ -118,6 +135,8 @@ def update_logging(instance_id, vcore_id):
     def add_vcore_id(_, __, event_dict):
         event_dict['vcore_id'] = vcore_id
         return event_dict
+
+    logging.root.level = 10 * verbosity_adjust
 
     processors = [
         add_exc_info_flag_for_exception,
