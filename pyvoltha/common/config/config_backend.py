@@ -23,7 +23,6 @@ import structlog
 import six
 import codecs
 
-
 class ConsulStore(object):
     """ Config kv store for consul with a cache for quicker subsequent reads
 
