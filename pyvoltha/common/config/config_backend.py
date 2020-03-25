@@ -18,11 +18,11 @@ from pyvoltha.common.utils.asleep import asleep
 from requests import ConnectionError
 from twisted.internet.defer import inlineCallbacks, returnValue
 
+import os
 import etcd3
 import structlog
 import six
 import codecs
-
 
 class ConsulStore(object):
     """ Config kv store for consul with a cache for quicker subsequent reads
@@ -136,6 +136,7 @@ class ConsulStore(object):
 
 
 class EtcdStore(object):
+
     """ Config kv store for etcd with a cache for quicker subsequent reads
 
         TODO: This will block the reactor. Should either change
@@ -184,6 +185,7 @@ class EtcdStore(object):
 
     def __delitem__(self, key):
         self._kv_delete(self.make_path(key))
+
 
     @inlineCallbacks
     def _backoff(self, msg):
