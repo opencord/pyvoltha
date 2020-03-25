@@ -17,7 +17,6 @@ from twisted.internet import threads
 
 import etcd3
 
-
 class TwistedEtcdStore(object):
 
     def __init__(self, host, port, path_prefix):
@@ -55,6 +54,19 @@ class TwistedEtcdStore(object):
             raise exception
 
         deferred = threads.deferToThread(self._etcd.put, self.make_path(key), value)
+        deferred.addCallback(success)
+        deferred.addErrback(failure)
+        return deferred
+
+    def watch(self, key, callback):
+
+        def success(results):
+            return results
+
+        def failure(exception):
+            raise exception
+
+        deferred = threads.deferToThread(self._etcd.add_watch_callback, self.make_path(key), callback)
         deferred.addCallback(success)
         deferred.addErrback(failure)
         return deferred
