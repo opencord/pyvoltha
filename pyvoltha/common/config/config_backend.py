@@ -18,10 +18,12 @@ from pyvoltha.common.utils.asleep import asleep
 from requests import ConnectionError
 from twisted.internet.defer import inlineCallbacks, returnValue
 
+import os
 import etcd3
 import structlog
 import six
 import codecs
+import time
 
 
 class ConsulStore(object):
@@ -136,6 +138,7 @@ class ConsulStore(object):
 
 
 class EtcdStore(object):
+
     """ Config kv store for etcd with a cache for quicker subsequent reads
 
         TODO: This will block the reactor. Should either change
@@ -185,6 +188,9 @@ class EtcdStore(object):
     def __delitem__(self, key):
         self._kv_delete(self.make_path(key))
 
+    def __watch_callback__(self, key):
+        self._kv_watch_callback(self.make_path(key))
+
     @inlineCallbacks
     def _backoff(self, msg):
         wait_time = self.RETRY_BACKOFF[min(self.retries,
@@ -214,6 +220,14 @@ class EtcdStore(object):
     def _kv_delete(self, *args, **kw):
         return self._retry('DELETE', *args, **kw)
 
+    def _kv_watch_callback(self, *args, **kw):
+        self._retry('WATCH-CALLBACK', *args, **kw)
+
+    def watch_callback(self, event):
+        from pyvoltha.adapters.log_controller import LogController
+        self.controller = LogController(self.host, self.port)
+        self.controller.process_log_config_change()
+
     def _retry(self, operation, *args, **kw):
 
         # etcd data sometimes contains non-utf8 sequences, replace
@@ -234,6 +248,8 @@ class EtcdStore(object):
                     result = etcd.put(*args, **kw)
                 elif operation == 'DELETE':
                     result = etcd.delete(*args, **kw)
+                elif operation == 'WATCH-CALLBACK':
+                    result = etcd.add_watch_callback(*args, self.watch_callback)
                 else:
                     # Default case - consider operation as a function call
                     result = operation(*args, **kw)
