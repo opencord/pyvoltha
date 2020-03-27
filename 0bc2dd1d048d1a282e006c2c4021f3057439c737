@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "2dfbcd21_dcf14a18",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-27T20:31:44Z",
+      "side": 1,
+      "message": "have a look at using:\n\npyvoltha.adapters.common.kvstore.twisted_etcd_store import TwistedEtcdStore\n\nthe handler and openomci library now use it rather than this one.\n\nthe old default EtcdStore called etcd3 directly which is not twisted compliant and does not return deferred.  This usage of etcd3 blocks the reactor loop.   TwistedEtcdStore is a wrapper around etcd3 that defers to threads and returns the deferred.  \n\nThe change will require @inlineCallbacks through the call stack.",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 59
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b645b57a_d38954c9",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 4
