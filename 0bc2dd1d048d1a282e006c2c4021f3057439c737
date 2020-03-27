@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b645b57a_d38954c9",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-27T19:56:58Z",
+      "side": 1,
+      "message": "not self.etcd_client ?",
+      "range": {
+        "startLine": 45,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 42
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e19831b8_117d38b0",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-27T19:56:58Z",
+      "side": 1,
+      "message": "Should we validate the loglevel here to make sure it is WARN, ERROR, DEBUG, ... ? or do we assume because it was set in etcd that it must be valid?",
+      "range": {
+        "startLine": 62,
+        "startChar": 15,
+        "endLine": 62,
+        "endChar": 26
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "139d0f3e_d851670b",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-27T19:56:58Z",
+      "side": 1,
+      "message": "Same question as above regarding validation.",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 26
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec3dea6c_7c9fceef",
+        "filename": "pyvoltha/common/config/config_backend.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-27T19:56:58Z",
+      "side": 1,
+      "message": "why the double_underscore syntax?",
+      "range": {
+        "startLine": 191,
+        "startChar": 8,
+        "endLine": 191,
+        "endChar": 26
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4fb1361d_e3c3e52f",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-03-27T19:56:58Z",
+      "side": 1,
+      "message": "could consider throwing exceptions",
+      "range": {
+        "startLine": 109,
+        "startChar": 4,
+        "endLine": 109,
+        "endChar": 19
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
