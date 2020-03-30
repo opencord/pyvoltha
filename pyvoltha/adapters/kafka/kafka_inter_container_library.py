@@ -557,10 +557,10 @@ class IKafkaMessagingProxy(object):
                 self.transaction_id_deferred_map[
                     self._to_string(request.header.id)] = wait_for_result
             log.debug("message-send", transaction_id=transaction_id, to_topic=to_topic,
-                      from_topic=reply_topic)
+                      from_topic=reply_topic, rpc=rpc)
             yield self._send_kafka_message(to_topic, request)
             log.debug("message-sent", transaction_id=transaction_id, to_topic=to_topic,
-                      from_topic=reply_topic)
+                      from_topic=reply_topic, rpc=rpc)
 
             if response_required:
                 res = yield wait_for_result
@@ -570,7 +570,7 @@ class IKafkaMessagingProxy(object):
 
                 if res is not None:
                     if res.success:
-                        log.debug("send-message-response", rpc=rpc)
+                        log.debug("send-message-response", transaction_id=transaction_id, rpc=rpc)
                         if callback:
                             callback((res.success, res.result))
                         else:
@@ -578,7 +578,7 @@ class IKafkaMessagingProxy(object):
                     else:
                         # this is the case where the core API returns a grpc code.NotFound.  Return or callback
                         # so the caller can act appropriately (i.e add whatever was not found)
-                        log.warn("send-message-response-error-result", kafka_request=request, kafka_result=res)
+                        log.warn("send-message-response-error-result", transaction_id=transaction_id, rpc=rpc, kafka_request=request, kafka_result=res)
                         if callback:
                             callback((res.success, None))
                         else:
