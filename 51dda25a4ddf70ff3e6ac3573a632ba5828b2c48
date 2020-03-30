@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f61d28c_15017f71",
+        "filename": "Makefile",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-03-30T23:54:14Z",
+      "side": 1,
+      "message": "youll need to optionally install the LOCAL_PROTOS package, similar to openonu\u0027s venv:\n\nifdef LOCAL_PROTOS\n\tsource ./${VENVDIR}/bin/activate ; set -u ;\\\n\tpip install local_imports/voltha-protos/dist/*.tar.gz\nendif",
+      "revId": "51dda25a4ddf70ff3e6ac3573a632ba5828b2c48",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
