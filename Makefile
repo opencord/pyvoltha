@@ -32,6 +32,14 @@ help:
 # ignore these directories
 .PHONY: test dist
 
+local-protos:
+	mkdir -p local_imports
+ifdef LOCAL_PROTOS
+	mkdir -p local_imports/voltha-protos/dist
+	rm -f local_imports/voltha-protos/dist/*.tar.gz
+	cp ${LOCAL_PROTOS}/dist/*.tar.gz local_imports/voltha-protos/dist/
+endif
+
 dist:
 	@ echo "Creating python source distribution"
 	rm -rf dist/
@@ -43,10 +51,14 @@ upload: dist
 
 VENVDIR := venv-pyvoltha
 
-venv:
+venv: local-protos
 	virtualenv --python=python3.6 ${VENVDIR};\
     source ./${VENVDIR}/bin/activate ; set -u ;\
     pip install -r requirements.txt
+ifdef LOCAL_PROTOS
+	source ./${VENVDIR}/bin/activate ; set -u ;\
+	pip install local_imports/voltha-protos/dist/*.tar.gz
+endif
 
 test:
 	@ echo "Executing unit tests w/tox"

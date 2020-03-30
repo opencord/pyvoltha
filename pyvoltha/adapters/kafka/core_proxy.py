@@ -68,6 +68,24 @@ class CoreProxy(ContainerProxy):
     @inlineCallbacks
     def register(self, adapter, deviceTypes):
         log.debug("register")
+
+        if adapter.totalReplicas == 0 and adapter.currentReplica != 0:
+            raise Exception("totalReplicas can't be 0, since you're here you have at least one")
+
+        if adapter.currentReplica == 0 and adapter.totalReplicas != 0:
+            raise Exception("currentReplica can't be 0, it has to start from 1")
+
+        if adapter.currentReplica == 0 and adapter.totalReplicas == 0:
+            # if the adapter is not setting these fields they default to 0,
+            # in that case it means the adapter is not ready to be scaled
+            # and thus it defaults to a single instance
+            adapter.currentReplica = 1
+            adapter.totalReplicas = 1
+
+        if adapter.currentReplica > adapter.totalReplicas:
+            raise Exception("currentReplica (%d) can't be greater than totalReplicas (%d)"
+                          % (adapter.currentReplica, adapter.totalReplicas))
+
         try:
             res = yield self.invoke(rpc="Register",
                                     adapter=adapter,
