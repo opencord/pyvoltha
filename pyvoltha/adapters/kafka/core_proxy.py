@@ -64,10 +64,18 @@ class CoreProxy(ContainerProxy):
             return self.deviceId_to_core_map[device_id]
         return self.core_default_topic
 
-    @ContainerProxy.wrap_request(CoreInstance)
+    # @ContainerProxy.wrap_request(CoreInstance)
     @inlineCallbacks
     def register(self, adapter, deviceTypes):
         log.debug("register")
+
+        if adapter.currentReplica == 0 and adapter.totalReplicas == 0:
+            # if the adapter is not setting these fields they default to 0,
+            # in that case it means the adapter is not ready to be scaled
+            # and thus it defaults to a single instance
+            adapter.currentReplica = 1
+            adapter.totalReplicas = 1
+
         try:
             res = yield self.invoke(rpc="Register",
                                     adapter=adapter,

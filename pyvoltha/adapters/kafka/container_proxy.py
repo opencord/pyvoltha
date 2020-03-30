@@ -59,6 +59,7 @@ class ContainerProxy(object):
             @inlineCallbacks
             def wrapper(*args, **kw):
                 try:
+                    log.debug("yield", func=func, args=args, kw=kw)
                     (success, d) = yield func(*args, **kw)
                     if success:
                         log.debug("successful-response", func=func)
