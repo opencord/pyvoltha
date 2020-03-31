@@ -16,6 +16,23 @@
       "revId": "51dda25a4ddf70ff3e6ac3573a632ba5828b2c48",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "640c19c3_5db6a5ab",
+        "filename": "pyvoltha/adapters/kafka/core_proxy.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-03-31T13:34:26Z",
+      "side": 1,
+      "message": "Same comment as the go version.  Do we need additional check?",
+      "revId": "51dda25a4ddf70ff3e6ac3573a632ba5828b2c48",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
