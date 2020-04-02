@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a31fc1cf_d0464460",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-04-02T14:53:47Z",
+      "side": 1,
+      "message": "i dont think this yield is necessary.  you should just be able to:  \n\nreturnValue(global_default_loglevel)",
+      "range": {
+        "startLine": 65,
+        "startChar": 17,
+        "endLine": 65,
+        "endChar": 22
+      },
+      "revId": "48c70df966ce3a4068b79fb41391f88a2f1d5ae1",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "37da4003_9ceb27ef",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-04-02T14:53:47Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 90,
+        "startChar": 17,
+        "endLine": 90,
+        "endChar": 22
+      },
+      "revId": "48c70df966ce3a4068b79fb41391f88a2f1d5ae1",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
