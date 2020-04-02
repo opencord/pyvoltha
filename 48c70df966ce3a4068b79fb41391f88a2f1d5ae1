@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "81e6feb1_e3399117",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000436
+      },
+      "writtenOn": "2020-04-02T16:25:49Z",
+      "side": 1,
+      "message": "also we dont need FUTURE anymore since 2.3 is released.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 7
+      },
+      "revId": "48c70df966ce3a4068b79fb41391f88a2f1d5ae1",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a31fc1cf_d0464460",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 7
