@@ -189,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "19feb73c_4ad754bf",
+        "filename": "pyvoltha/common/config/config_backend.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-02T09:19:40Z",
+      "side": 1,
+      "message": "Removed. Not using the config_backend.py now.",
+      "parentUuid": "ec3dea6c_7c9fceef",
+      "range": {
+        "startLine": 191,
+        "startChar": 8,
+        "endLine": 191,
+        "endChar": 26
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4fb1361d_e3c3e52f",
         "filename": "pyvoltha/common/structlog_setup.py",
         "patchSetId": 4
@@ -200,6 +224,30 @@
       "writtenOn": "2020-03-27T19:56:58Z",
       "side": 1,
       "message": "could consider throwing exceptions",
+      "range": {
+        "startLine": 109,
+        "startChar": 4,
+        "endLine": 109,
+        "endChar": 19
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be24d6fc_1cb69fbf",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-02T09:19:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4fb1361d_e3c3e52f",
       "range": {
         "startLine": 109,
         "startChar": 4,
