@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cc52755d_7e699b01",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-02T09:18:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2dfbcd21_dcf14a18",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 59
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b645b57a_d38954c9",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 4
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "9b2abb7a_c6697e83",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-02T09:18:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b645b57a_d38954c9",
+      "range": {
+        "startLine": 45,
+        "startChar": 8,
+        "endLine": 45,
+        "endChar": 42
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e19831b8_117d38b0",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 4
@@ -59,6 +107,30 @@
       "writtenOn": "2020-03-27T19:56:58Z",
       "side": 1,
       "message": "Should we validate the loglevel here to make sure it is WARN, ERROR, DEBUG, ... ? or do we assume because it was set in etcd that it must be valid?",
+      "range": {
+        "startLine": 62,
+        "startChar": 15,
+        "endLine": 62,
+        "endChar": 26
+      },
+      "revId": "0bc2dd1d048d1a282e006c2c4021f3057439c737",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "320c9fa1_b57db0fb",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-02T09:18:05Z",
+      "side": 1,
+      "message": "We are calling validate_loglevel method in previous line which would return empty string if the self.log_level is not a valid loglevel.",
+      "parentUuid": "e19831b8_117d38b0",
       "range": {
         "startLine": 62,
         "startChar": 15,
