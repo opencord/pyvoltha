@@ -68,6 +68,29 @@
       "revId": "48c70df966ce3a4068b79fb41391f88a2f1d5ae1",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a48f98a_c046867d",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-04-02T16:27:21Z",
+      "side": 1,
+      "message": "I\u0027m not sure these yields are necessary. Please have a look at the use of yield throughout.",
+      "range": {
+        "startLine": 106,
+        "startChar": 7,
+        "endLine": 106,
+        "endChar": 13
+      },
+      "revId": "48c70df966ce3a4068b79fb41391f88a2f1d5ae1",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
