@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4035c691_77f19f99",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2ff5b6ab_e34e3f79",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5310cc0_a231007d",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "2c974d8b_e53a105b",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5310cc0_a231007d",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebbc7309_0cf15865",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
@@ -47,6 +83,24 @@
       "writtenOn": "2020-04-03T09:06:17Z",
       "side": 1,
       "message": "Should set component_default_loglevel \u003d global_default_loglevel here as well",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49dc8f49_af22395e",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ebbc7309_0cf15865",
       "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "db56a9cf_bfabe419",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "07ae08b0_e587e1f0",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "33ccbf08_4e0823a1",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "45a015bc_b3c4e7ec",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33ccbf08_4e0823a1",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "88680499_be6d2eaa",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
@@ -115,6 +205,24 @@
       "writtenOn": "2020-04-03T09:06:17Z",
       "side": 1,
       "message": "Also have a else block with a log indicating that effective loglevel has not changed",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6325ebbd_7a6cf193",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:54:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "88680499_be6d2eaa",
       "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
