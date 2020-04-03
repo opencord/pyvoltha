@@ -124,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "44692dbc_848c1e10",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-04-03T11:55:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eba2a297_8d69d6ee",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "07ae08b0_e587e1f0",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
