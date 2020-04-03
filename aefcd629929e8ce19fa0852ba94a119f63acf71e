@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5310cc0_a231007d",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "Add retrieved log level in this statement.\n\nAnd this statement should be at end of try block. The warn log would anyway be logged in the except block",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebbc7309_0cf15865",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "Should set component_default_loglevel \u003d global_default_loglevel here as well",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eba2a297_8d69d6ee",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "We also need to handle a edge scenario when both global and component loglevel in etcd are missing/invalid. We will use GLOBAL_DEFAULT_LOGLEVEL as loglevel in such scenario",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "07ae08b0_e587e1f0",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "Should be last log statement of try block",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33ccbf08_4e0823a1",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "why use a instance variable of self.global_default_level. Local variable should work",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88680499_be6d2eaa",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:06:17Z",
+      "side": 1,
+      "message": "Also have a else block with a log indicating that effective loglevel has not changed",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
