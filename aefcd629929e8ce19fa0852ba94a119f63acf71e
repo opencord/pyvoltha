@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "2ff5b6ab_e34e3f79",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T09:13:23Z",
+      "side": 1,
+      "message": "use self.global_config_path and remove this line. You are already set self.global_config_path in the application startup in start_watch_log_config_change method\n\nsame for self.component_config_path",
+      "revId": "aefcd629929e8ce19fa0852ba94a119f63acf71e",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5310cc0_a231007d",
         "filename": "pyvoltha/adapters/log_controller.py",
         "patchSetId": 8
