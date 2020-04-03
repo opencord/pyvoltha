@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ebf309b_ca23007d",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T13:25:56Z",
+      "side": 1,
+      "message": "Use local variable level here; same for next method",
+      "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81fedeb0_0728e51d",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T13:25:56Z",
+      "side": 1,
+      "message": "I guess it should be if instead of elif condition\n\nAnd it should probably be just before the returnValue statement after the except block",
+      "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a32f63bf_4574ef32",
+        "filename": "pyvoltha/adapters/log_controller.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T13:25:56Z",
+      "side": 1,
+      "message": "As you have validated log level in previous method already, I feel this check is not required",
+      "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "22660ae5_b98bff55",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1000526
+      },
+      "writtenOn": "2020-04-03T13:25:56Z",
+      "side": 1,
+      "message": "Why can\u0027t we use a single method; both methods are validating but one is raising a exception while other is returning blank.\n\nBetter use a single method and raise exception in callee method if needed",
+      "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
