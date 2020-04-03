@@ -67,6 +67,29 @@
       "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6af6b589_7cdd464f",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000011
+      },
+      "writtenOn": "2020-04-03T18:05:54Z",
+      "side": 1,
+      "message": "Why not just use the python levels in string_to_int rather than multiplying them here? https://docs.python.org/3.7/library/logging.html#levels",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 139,
+        "endChar": 46
+      },
+      "revId": "9b3138eda637f2c014b37649c48320c90da28bb9",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
