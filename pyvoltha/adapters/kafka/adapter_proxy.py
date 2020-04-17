@@ -97,7 +97,7 @@ class AdapterProxy(ContainerProxy):
             else:
                 h.id = uuid4().hex
 
-            h.timestamp = int(round(time.time() * 1000))
+            h.timestamp.GetCurrentTime()
             iaMsg = InterAdapterMessage()
             iaMsg.header.CopyFrom(h)
             iaMsg.body.Pack(msg)

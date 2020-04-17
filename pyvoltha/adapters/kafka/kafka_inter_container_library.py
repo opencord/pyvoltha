@@ -339,7 +339,7 @@ class IKafkaMessagingProxy(object):
                 request_body.response_required = True
                 response_required = True
 
-            request.header.timestamp = int(round(time.time() * 1000))
+            request.header.timestamp.GetCurrentTime()
             request_body.rpc = rpc
             for a, b in six.iteritems(kwargs):
                 arg = Argument()
@@ -372,8 +372,7 @@ class IKafkaMessagingProxy(object):
             response = InterContainerMessage()
             response_body = InterContainerResponseBody()
             response.header.id = msg_header.id
-            response.header.timestamp = int(
-                round(time.time() * 1000))
+            response.header.timestamp.GetCurrentTime()
             response.header.type = MessageType.Value("RESPONSE")
             response.header.from_topic = msg_header.to_topic
             response.header.to_topic = msg_header.from_topic
