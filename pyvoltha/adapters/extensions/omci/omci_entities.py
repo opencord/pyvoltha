@@ -537,9 +537,9 @@ class IPv4MulticastAddressTable(Packet):
 
     def index(self):
         return b'%02d' % (self.fields.get('gem_port_id',0)) + \
-               b'%03d' % (self.fields.get('secondary_key',0)) + \
-               b'%01d' % (self.fields.get('multicast_ip_range_start',0)) + \
-               b'%03d' % (self.fields.get('multicast_ip_range_stop',0))
+               b'%02d' % (self.fields.get('secondary_key',0)) + \
+               b'%04r' % (self.fields.get('multicast_ip_range_start',0)) + \
+               b'%04r' % (self.fields.get('multicast_ip_range_stop',0))
 
     def is_delete(self):
         return self.fields.get('gem_port_id',0) == 0x1fff and \
