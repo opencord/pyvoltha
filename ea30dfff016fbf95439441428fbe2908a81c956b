@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3b437d1_7910fbc1",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-04-20T19:28:20Z",
+      "side": 1,
+      "message": "Are these string? Should we use \u0027s\u0027 format specifier?",
+      "range": {
+        "startLine": 541,
+        "startChar": 0,
+        "endLine": 542,
+        "endChar": 71
+      },
+      "revId": "ea30dfff016fbf95439441428fbe2908a81c956b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "18e1a0cd_76ad5c13",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-04-20T19:28:20Z",
+      "side": 1,
+      "message": "Here we seem to compare against integers? Do we need to some changes here?",
+      "range": {
+        "startLine": 547,
+        "startChar": 0,
+        "endLine": 548,
+        "endChar": 66
+      },
+      "revId": "ea30dfff016fbf95439441428fbe2908a81c956b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f12d5cb0_61af8d27",
+        "filename": "pyvoltha/adapters/extensions/omci/omci_entities.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-04-20T19:28:20Z",
+      "side": 1,
+      "message": "Same here. We are setting integers. Any change needed here?",
+      "range": {
+        "startLine": 553,
+        "startChar": 0,
+        "endLine": 554,
+        "endChar": 55
+      },
+      "revId": "ea30dfff016fbf95439441428fbe2908a81c956b",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
