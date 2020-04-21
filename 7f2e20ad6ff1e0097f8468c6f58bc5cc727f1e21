@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bc7925c4_cf31f3e2",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-04-21T18:12:47Z",
+      "side": 1,
+      "message": "I suppose GetCurrentTime() will also set the h.timestamp value, correct?",
+      "revId": "7f2e20ad6ff1e0097f8468c6f58bc5cc727f1e21",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
