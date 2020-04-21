@@ -16,6 +16,24 @@
       "revId": "7f2e20ad6ff1e0097f8468c6f58bc5cc727f1e21",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00c4d850_42c1371a",
+        "filename": "pyvoltha/adapters/kafka/adapter_proxy.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2020-04-21T19:02:10Z",
+      "side": 1,
+      "message": "Yeah, that\u0027s my understanding, and I\u0027ve verified timestamps are set on the messages on the bus.",
+      "parentUuid": "bc7925c4_cf31f3e2",
+      "revId": "7f2e20ad6ff1e0097f8468c6f58bc5cc727f1e21",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
