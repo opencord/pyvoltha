@@ -96,7 +96,7 @@ class OmciRebootRequest(Task):
         try:
             frame = OntGFrame().reboot(reboot_code=self._flags)
             self.strobe_watchdog()
-            results = yield self._device.omci_cc.send(frame, timeout=self._timeout)
+            results = yield self._device.omci_cc.send(frame, timeout=self._timeout, high_priority=True)
 
             status = results.fields['omci_message'].fields['success_code']
             self.log.debug('reboot-status', status=status)
