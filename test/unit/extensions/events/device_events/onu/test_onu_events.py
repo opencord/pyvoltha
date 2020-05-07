@@ -85,9 +85,9 @@ class TestOnuActiveEvent(TestCase):
             'pon-id': DEFAULT_PON_ID,
             'onu-id': DEFAULT_ONU_ID,
             'serial-number': DEFAULT_ONU_SN,
-            'olt_serial_number': DEFAULT_OLT_SN,
-            'device_id': DEFAULT_ONU_DEVICE_ID,
-            'registration_id': DEFAULT_ONU_REG
+            'olt-serial-number': DEFAULT_OLT_SN,
+            'device-id': DEFAULT_ONU_DEVICE_ID,
+            'registration-id': DEFAULT_ONU_REG
         }
 
         self.assertEqual(self.event.get_context_data(), expected_dict)

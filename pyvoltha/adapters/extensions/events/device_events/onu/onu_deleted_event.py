@@ -17,14 +17,14 @@ from voltha_protos.events_pb2 import EventCategory, EventSubCategory, EventType
 from pyvoltha.adapters.extensions.events.adapter_events import DeviceEventBase
 
 
-class OnuActiveEvent(DeviceEventBase):
+class OnuDeletedEvent(DeviceEventBase):
     def __init__(self, event_mgr, device_id, pon_id, onu_serial_number,
                  reg_id, olt_serial_number, raised_ts, ipv4_address=None,
                  onu_id=None):
-        super(OnuActiveEvent, self).__init__(event_mgr, raised_ts, object_type='ONU',
-                                             event='ONU_ACTIVATED',
+        super(OnuDeletedEvent, self).__init__(event_mgr, raised_ts, object_type='ONU',
+                                             event='ONU_DELETED',
                                              resource_id=pon_id,
-                                             category=EventCategory.EQUIPMENT,
+                                             category=EventCategory.COMMUNICATION,
                                              sub_category=EventSubCategory.PON,
                                              )
 
