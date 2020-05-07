@@ -41,9 +41,9 @@ class OnuDisabledEvent(DeviceEventBase):
             'pon-id': self._pon_id,
             'onu-id': self._onu_id,
             'serial-number': self._onu_serial_number,
-            'olt_serial_number': self._olt_serial_number,
-            'device_id': self._device_id,
-            'registration_id': self._reg_id
+            'olt-serial-number': self._olt_serial_number,
+            'device-id': self._device_id,
+            'registration-id': self._reg_id
         }
         if self._host is not None:
             data['host'] = self._host
