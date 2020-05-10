@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13ff8390_5d562c42",
+        "filename": "pyvoltha/adapters/extensions/events/device_events/onu/onu_deleted_event.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000513
+      },
+      "writtenOn": "2020-05-10T20:17:46Z",
+      "side": 1,
+      "message": "What is \"host\" mean?",
+      "revId": "252f8d9a6a4dfb81cb50d127d2f62f1f386f0519",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
