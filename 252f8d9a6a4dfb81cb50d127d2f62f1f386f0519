@@ -16,6 +16,24 @@
       "revId": "252f8d9a6a4dfb81cb50d127d2f62f1f386f0519",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb653c95_43f58fbc",
+        "filename": "pyvoltha/adapters/extensions/events/device_events/onu/onu_deleted_event.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000564
+      },
+      "writtenOn": "2020-05-12T17:52:54Z",
+      "side": 1,
+      "message": "TBH, I am not exactly sure what it refers to and it is none in most of the alarm events. It is here just to maintain parity with other alarm events.",
+      "parentUuid": "13ff8390_5d562c42",
+      "revId": "252f8d9a6a4dfb81cb50d127d2f62f1f386f0519",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
     }
   ]
 }
