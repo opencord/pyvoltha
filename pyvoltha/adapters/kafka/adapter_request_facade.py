@@ -376,7 +376,10 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="msg-invalid")
 
-        return (True, self.adapter.process_inter_adapter_message(m))
+        max_retry = 0
+        if msg.header.type == 6:
+            max_retry = 10
+        return (True, self.adapter.process_inter_adapter_message(m, max_retry=max_retry))
 
 
     def receive_packet_out(self, deviceId, outPort, packet, **kwargs):
