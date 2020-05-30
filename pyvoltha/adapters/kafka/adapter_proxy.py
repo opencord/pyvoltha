@@ -34,9 +34,9 @@ log = structlog.get_logger()
 
 class AdapterProxy(ContainerProxy):
 
-    def __init__(self, kafka_proxy, core_topic, my_listening_topic):
+    def __init__(self, kafka_proxy, adapter_topic, my_listening_topic):
         super(AdapterProxy, self).__init__(kafka_proxy,
-                                           core_topic,
+                                           adapter_topic,
                                            my_listening_topic)
 
     def _to_string(self, unicode_str):
@@ -88,7 +88,7 @@ class AdapterProxy(ContainerProxy):
             h = InterAdapterHeader()
             h.type = type
             h.from_topic = self._to_string(from_adapter)
-            h.to_topic = self._to_string(to_adapter)
+            h.to_topic = self.remote_topic
             h.to_device_id = self._to_string(to_device_id)
             h.proxy_device_id = self._to_string(proxy_device_id)
 
