@@ -376,7 +376,12 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="msg-invalid")
 
-        return (True, self.adapter.process_inter_adapter_message(m))
+        max_retry = 0
+        # NOTE as per VOL-3223 a race condition on ONU_IND_REQUEST may occur,
+        # so if that's the message retry up to 10 times
+        if m.header.type == 6:
+            max_retry = 10
+        return (True, self.adapter.process_inter_adapter_message(m, max_retry=max_retry))
 
 
     def receive_packet_out(self, deviceId, outPort, packet, **kwargs):
