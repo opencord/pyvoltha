@@ -27,7 +27,7 @@ from twisted.internet import reactor
 from afkak.consumer import OFFSET_LATEST, OFFSET_EARLIEST
 from pyvoltha.adapters.interface import IAdapterInterface
 from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrType, Error, ErrorCode
-from voltha_protos.device_pb2 import Device, Port, ImageDownload, SimulateAlarmRequest
+from voltha_protos.device_pb2 import Device, Port, ImageDownload, SimulateAlarmRequest, PmConfigs
 from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
 from voltha_protos.voltha_pb2 import OmciTestRequest
@@ -184,6 +184,19 @@ class AdapterRequestFacade(object):
         else:
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="device-invalid")
+
+    def update_pm_config(self, device, pm_configs, **kwargs):
+        d = Device()
+        if device:
+            device.Unpack(d)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="device-invalid")
+        pm = PmConfigs()
+        if pm_configs:
+            pm_configs.Unpack(pm)
+
+        return (True, self.adapter.update_pm_config(d, pm))
 
     def download_image(self, device, request, **kwargs):
         d = Device()
