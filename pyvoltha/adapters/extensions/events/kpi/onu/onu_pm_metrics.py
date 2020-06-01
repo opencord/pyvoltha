@@ -88,8 +88,8 @@ class OnuPmMetrics(AdapterPmMetrics):
             if self.default_freq != pm_config.default_freq:
                 # Update the callback to the new frequency.
                 self.default_freq = pm_config.default_freq
-                self.lc.stop()
-                self.lc.start(interval=self.default_freq / 10)
+                self.stop_collector()
+                self.start_collector()
 
             if pm_config.grouped:
                 for group in pm_config.groups:
