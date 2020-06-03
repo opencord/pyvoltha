@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5144764_786e9b86",
+        "filename": "pyvoltha/adapters/extensions/events/device_events/onu/onu_deleted_event.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-06-03T19:45:56Z",
+      "side": 1,
+      "message": "We need to have consistent key formatting.\nWe have mix of \u0027-\u0027 and \u0027_\u0027. From what I saw in other files, they seem to use \u0027-\u0027. So, please change this accordingly.",
+      "range": {
+        "startLine": 43,
+        "startChar": 1,
+        "endLine": 46,
+        "endChar": 43
+      },
+      "revId": "af6d2ddd3e660b97daaa8b33bc365f3e33612467",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": false
+    }
+  ]
+}
