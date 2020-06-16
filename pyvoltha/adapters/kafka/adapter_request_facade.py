@@ -130,22 +130,6 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="device-invalid")
 
-    def get_ofp_port_info(self, device, port_no, **kwargs):
-        d = Device()
-        if device:
-            device.Unpack(d)
-        else:
-            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
-                                reason="device-invalid")
-        p = IntType()
-        if port_no:
-            port_no.Unpack(p)
-        else:
-            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
-                                reason="port-no-invalid")
-
-        return True, self.adapter.get_ofp_port_info(d, p.val)
-
     def reconcile_device(self, device, **kwargs):
         d = Device()
         if device:

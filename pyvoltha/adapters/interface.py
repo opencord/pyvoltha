@@ -271,17 +271,6 @@ class IAdapterInterface(Interface):
         :return: Proto Message (TBD)
         """
 
-    def get_ofp_port_info(device, port_no):
-        """
-        Retrieve the port info. This includes the ofp_port. The existing ofp
-        structure can be used, or all the attributes get added to the Port
-        definitions or a new proto definition gets created.  This API will allow
-        the Core to create a LogicalPort associated with this device.
-        :param device: device
-        :param port_no: port number
-        :return: Proto Message (TBD)
-        """
-
     def process_inter_adapter_message(msg):
         """
         Called when the adapter receives a message that was sent to it directly

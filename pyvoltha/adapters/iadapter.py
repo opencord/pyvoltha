@@ -98,15 +98,6 @@ class IAdapter(object):
         log.debug('get_ofp_device_info_ends', device_id=device.id)
         return ofp_device_info
 
-    def get_ofp_port_info(self, device, port_no):
-        log.debug('get_ofp_port_info_start', device_id=device.id,
-                  port_no=port_no)
-        ofp_port_info = self.devices_handlers[device.id].get_ofp_port_info(
-            device, port_no)
-        log.debug('get_ofp_port_info_ends', device_id=device.id,
-                  port_no=port_no)
-        return ofp_port_info
-
     def adopt_device(self, device):
         log.debug('adopt_device', device_id=device.id)
         self.devices_handlers[device.id] = self.device_handler_class(self,
