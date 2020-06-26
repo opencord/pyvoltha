@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93e53468_d42eb24b",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-06-26T13:42:00Z",
+      "side": 1,
+      "message": "You may want to fix the port here as well.  There are a few places where the wrong arguments are passed - indicative that these methods are not used any more.",
+      "revId": "9de7b0c565234c5c8d9fc58315cb157fb68ad9ab",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
