@@ -196,7 +196,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-no-invalid")
 
-        return True, self.adapter.download_image(device, request)
+        return True, self.adapter.download_image(d, img)
 
     def get_image_download_status(self, device, request, **kwargs):
         d = Device()
@@ -212,7 +212,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-no-invalid")
 
-        return True, self.adapter.get_image_download_status(device, request)
+        return True, self.adapter.get_image_download_status(d, img)
 
     def cancel_image_download(self, device, request, **kwargs):
         d = Device()
@@ -228,7 +228,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-no-invalid")
 
-        return True, self.adapter.cancel_image_download(device, request)
+        return True, self.adapter.cancel_image_download(d, img)
 
     def activate_image_update(self, device, request, **kwargs):
         d = Device()
@@ -244,7 +244,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-no-invalid")
 
-        return True, self.adapter.activate_image_update(device, request)
+        return True, self.adapter.activate_image_update(d, img)
 
     def revert_image_update(self, device, request, **kwargs):
         d = Device()
@@ -260,7 +260,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-no-invalid")
 
-        return True, self.adapter.revert_image_update(device, request)
+        return True, self.adapter.revert_image_update(d, img)
 
     def enable_port(self, device_id, port, **kwargs):
         if not device_id:
@@ -273,7 +273,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-invalid")
 
-        return (True, self.adapter.enable_port(device_id, port))
+        return (True, self.adapter.enable_port(device_id, p))
 
     def disable_port(self, device_id, port, **kwargs):
         if not device_id:
@@ -286,7 +286,7 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="port-invalid")
 
-        return (True, self.adapter.disable_port(device_id, port))
+        return (True, self.adapter.disable_port(device_id, p))
 
     def self_test(self, device, **kwargs):
         return self.adapter.self_test_device(device)

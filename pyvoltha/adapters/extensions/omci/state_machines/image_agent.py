@@ -46,7 +46,7 @@ class ImageDownloadeSTM(object):
     DEFAULT_TIMEOUT_RETRY = 1000      # Seconds to delay after task failure/timeout
 
     # def __init__(self, omci_agent, dev_id, local_name, local_dir, remote_url, download_task, 
-    def __init__(self, omci_agent, image_download, 
+    def __init__(self, omci_agent, image_download,
                      download_task_cls, 
                      states=DEFAULT_STATES,
                      transitions=DEFAULT_TRANSITIONS,
@@ -69,7 +69,7 @@ class ImageDownloadeSTM(object):
         # self._imgdw.url  = remote_url
         # self._imgdw.local_dir = local_dir
         self._imgdw = image_download
-        # self._imgdw.state = ImageDownload.DOWNLOAD_UNKNOWN   # voltha_pb2
+        # self._imgdw.download_state = ImageDownload.DOWNLOAD_UNKNOWN   # voltha_pb2
 
         self._download_task_cls = download_task_cls
         self._timeout_delay   = timeout_delay
@@ -130,7 +130,7 @@ class ImageDownloadeSTM(object):
     #         self._ret_deferred = None
 
     #     self.stop()
-    #     self._imgdw.state = ImageDownload.DOWNLOAD_UNKNOWN
+    #     self._imgdw.download_state = ImageDownload.DOWNLOAD_UNKNOWN
         
     def get_file(self):
         """
@@ -141,18 +141,18 @@ class ImageDownloadeSTM(object):
         if self._ret_deferred is None or self._ret_deferred.called:
             self._ret_deferred = Deferred()
             
-        if self._imgdw.state == ImageDownload.DOWNLOAD_SUCCEEDED:
+        if self._imgdw.download_state == ImageDownload.DOWNLOAD_SUCCEEDED:
             self.log.debug('Image Available')
             self.reactor.callLater(0, self._ret_deferred.callback, self._imgdw)
-        elif self._imgdw.state == ImageDownload.DOWNLOAD_FAILED or self._imgdw.state == ImageDownload.DOWNLOAD_UNSUPPORTED:
+        elif self._imgdw.download_state == ImageDownload.DOWNLOAD_FAILED or self._imgdw.download_state == ImageDownload.DOWNLOAD_UNSUPPORTED:
             self.log.debug('Image not exist')
             self.reactor.callLater(0, self._ret_deferred.errback, failure.Failure(Exception('Image Download Failed ' + self._imgdw.name)))
-        elif self._imgdw.state == ImageDownload.DOWNLOAD_UNKNOWN or self._imgdw.state == ImageDownload.DOWNLOAD_REQUESTED:
+        elif self._imgdw.download_state == ImageDownload.DOWNLOAD_UNKNOWN or self._imgdw.download_state == ImageDownload.DOWNLOAD_REQUESTED:
             self.log.debug('Start Image STM')
-            self._imgdw.state = ImageDownload.DOWNLOAD_STARTED
+            self._imgdw.download_state = ImageDownload.DOWNLOAD_STARTED
             self.reactor.callLater(0, self.start)
         else:
-            self.log.debug('NO action', state=self._imgdw.state)
+            self.log.debug('NO action', state=self._imgdw.download_state)
             
         return self._ret_deferred
             
@@ -171,7 +171,8 @@ class ImageDownloadeSTM(object):
         self.advertise(OpenOmciEventType.state_change, self.state)
         def success(results):
             self.log.debug('image-download-success', results=results)
-            self._imgdw.state = ImageDownload.DOWNLOAD_SUCCEEDED
+            self._imgdw.download_state = ImageDownload.DOWNLOAD_SUCCEEDED
+            self._imgdw.image_state = ImageDownload.IMAGE_INACTIVE
             self._imgdw.reason = ImageDownload.NO_ERROR
             self._current_task = None
             self._task_deferred = None
@@ -179,8 +180,10 @@ class ImageDownloadeSTM(object):
 
         def failure(reason):
             self.log.info('image-download-failure', reason=reason)
-            if self._imgdw.state == ImageDownload.DOWNLOAD_STARTED:
-                self._imgdw.state = ImageDownload.DOWNLOAD_FAILED
+            if self._imgdw.download_state == ImageDownload.DOWNLOAD_STARTED:
+                self._imgdw.download_state = ImageDownload.DOWNLOAD_FAILED
+                self._imgdw.image_state = ImageDownload.IMAGE_UNKNOWN
+                self._imgdw.reason = ImageDownload.UNKNOWN_ERROR
             if isinstance(reason, CancelledError): 
                 self._imgdw.reason = ImageDownload.CANCELLED
             self._current_task = None
@@ -192,7 +195,7 @@ class ImageDownloadeSTM(object):
 
         self._task_deferred = self._device.task_runner.queue_task(self._current_task)
         self._task_deferred.addCallbacks(success, failure)
-        self._imgdw.state = ImageDownload.DOWNLOAD_STARTED
+        self._imgdw.download_state = ImageDownload.DOWNLOAD_STARTED
 
         if self._timeout_delay > 0:
             self._timeout_dc = self.reactor.callLater(self._timeout_delay, self.timeout)
@@ -209,13 +212,13 @@ class ImageDownloadeSTM(object):
 
         d, self._ret_deferred = self._ret_deferred, None
         if d is not None:
-            if self._imgdw.state == ImageDownload.DOWNLOAD_SUCCEEDED:
+            if self._imgdw.download_state == ImageDownload.DOWNLOAD_SUCCEEDED:
                 self.reactor.callLater(0, d.callback, self._imgdw)
             else:  # failed
                 if self._imgdw.reason == ImageDownload.CANCELLED:
                     self.reactor.callLater(0, d.cancel)
                 else:
-                    self.reactor.callLater(0, d.errback, failure.Failure(Exception('Image Download Failed ' + self._imgdw.name)))
+                    self.reactor.callLater(0, d.errback, self._imgdw)
             
     def on_enter_disabled(self):
         self.log.debug("on_enter_disabled")
@@ -232,9 +235,9 @@ class ImageDownloadeSTM(object):
             
         # remove local file fragments if download failed
         file_path = self._imgdw.local_dir + '/' + self._imgdw.name
-        if self._imgdw.state != ImageDownload.DOWNLOAD_SUCCEEDED and os.path.exists(file_path):
+        if self._imgdw.download_state != ImageDownload.DOWNLOAD_SUCCEEDED and os.path.exists(file_path):
             os.remove(file_path)            
-        self._imgdw.state = ImageDownload.DOWNLOAD_UNKNOWN
+        self._imgdw.download_state = ImageDownload.DOWNLOAD_UNKNOWN
 
 ###################################################################################
 ##              OMCI Software Image Download Procedure
@@ -399,7 +402,7 @@ class OmciSoftwareImageDownloadSTM(object):
         self.download_fail()
     
     def __omci_send_window_resp_success(self, rx_frame, cur_state, datasize):
-        # self.log.debug("__omci_send_window_resp_success", current_state=cur_state)
+        self.log.debug("__omci_send_window_resp_success", current_state=cur_state)
         self._offset += datasize
         self._image_download.downloaded_bytes += datasize
         self.rx_ack_success()
@@ -490,12 +493,12 @@ class OmciSoftwareImageDownloadSTM(object):
                                             # callbackArgs=(self.state,), errbackArgs=(self.state,))
 
     def on_enter_dwin_init_window(self):
-        # self.log.debug("on_enter_dwin_init_window", offset=self._offset, image_size=self._image_size)
+        self.log.debug("on_enter_dwin_init_window", offset=self._offset, image_size=self._image_size)
         if self._offset < self._image_size:
             self.send_sections()
 
     def on_enter_dwin_sending_sections(self):
-        # self.log.debug("on_enter_dwin_sending_sections", offset=self._offset)
+        self.log.debug("on_enter_dwin_sending_sections", offset=self._offset)
 
         if (self._offset + self._window_size * OmciSectionDataSize) <= self._image_size:
             sections = self._window_size
@@ -507,18 +510,18 @@ class OmciSoftwareImageDownloadSTM(object):
             mod = datasize % OmciSectionDataSize
             sections = sections + 1 if mod > 0 else sections
 
-        # self.log.debug("on_enter_dwin_sending_sections", offset=self._offset, datasize=datasize, sections=sections)
+        self.log.debug("on_enter_dwin_sending_sections", offset=self._offset, datasize=datasize, sections=sections)
         if self._win_retry == 0:
             self._win_data = self._image_obj.read(datasize)
             self._win_crc32 = self.crc32(self._crc32, self._win_data)
-            # self.log.debug("CRC32", crc32=self._win_crc32, offset=self._offset)
+            self.log.debug("CRC32", crc32=self._win_crc32, offset=self._offset)
         else:
             self.log.debug("Retry download window with crc32", offset=self._offset)
             
         sent = 0
         for i in range(0, sections):
             if i < sections - 1:
-                # self.log.debug("section data", data=hexlify(data[(self._offset+sent):(self._offset+sent+OmciSectionDataSize)]))
+                self.log.debug("section data", data=hexlify(data[(self._offset+sent):(self._offset+sent+OmciSectionDataSize)]))
                 self._device.omci_cc.send_download_section(self._image_id, i,
                                                            self._win_data[sent:sent+OmciSectionDataSize])
                 sent += OmciSectionDataSize
@@ -538,7 +541,7 @@ class OmciSoftwareImageDownloadSTM(object):
     #                                         callbackArgs=(self.state,), errbackArgs=(self.state,))
 
     def on_enter_dwin_window_success(self):
-        # self.log.debug("on_enter_dwin_window_success")
+        self.log.debug("on_enter_dwin_window_success")
         self._crc32 = self._win_crc32 if self._win_crc32 != 0 else self._crc32
         self._win_crc32 = 0
         self._win_retry = 0
@@ -978,7 +981,7 @@ class ImageAgent(object):
                                                                   self._omci_agent, 
                                                                   image_dnld_sm.status, clock=self.reactor)
             self.log.debug("task created but not started")
-            # self._device.task_runner.start()
+            self._device.task_runner.start()
             self._omci_upgrade_deferred = self._device.task_runner.queue_task(self._omci_upgrade_task)
             self._omci_upgrade_deferred.addBoth(self.__clear_task)
         return self._omci_upgrade_deferred
