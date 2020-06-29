@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57f7b513_5d63e5fe",
+        "filename": "pyvoltha/adapters/extensions/events/kpi/adapter_pm_metrics.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-06-29T17:36:53Z",
+      "side": 1,
+      "message": "This is not making the skew configurable as per the commit message.",
+      "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
