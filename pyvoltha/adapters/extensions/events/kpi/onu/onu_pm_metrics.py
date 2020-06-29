@@ -91,11 +91,15 @@ class OnuPmMetrics(AdapterPmMetrics):
                 self.stop_collector()
                 self.start_collector()
 
+            if self.max_skew != pm_config.max_skew:
+                self.max_skew = pm_config.max_skew
+
             if pm_config.grouped:
                 for group in pm_config.groups:
                     group_config = self.pm_group_metrics.get(group.group_name)
                     if group_config is not None:
                         group_config.enabled = group.enabled
+
             else:
                 msg = 'There are no independent ONU metrics, only group metrics at this time'
                 raise NotImplemented(msg)
@@ -111,7 +115,8 @@ class OnuPmMetrics(AdapterPmMetrics):
             pm_config = PmConfigs(id=self.device_id,
                                   default_freq=self.default_freq,
                                   grouped=self.grouped,
-                                  freq_override=self.freq_override)
+                                  freq_override=self.freq_override,
+                                  max_skew=self.max_skew)
         metrics = set()
 
         if self._heartbeat is not None:
