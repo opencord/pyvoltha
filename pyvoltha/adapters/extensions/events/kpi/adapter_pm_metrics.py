@@ -68,6 +68,7 @@ class AdapterPmMetrics(object):
         self.freq_override = grouped and freq_override
         self.lc = None
         self.pm_group_metrics = dict()      # name -> PmGroupConfig
+        self.max_skew = 5
 
     def update(self, pm_config):
         # TODO: Move any common steps into base class
