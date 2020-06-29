@@ -40,7 +40,7 @@ class AdapterPmMetrics(object):
     TIMESTAMP_ATTRIBUTE = 'timestamp'
 
     def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
-                 grouped=False, freq_override=False, **kwargs):
+                 grouped=False, freq_override=False, max_skew=5, **kwargs):
         """
         Initializer for shared Device Adapter PM metrics manager
 
@@ -68,6 +68,7 @@ class AdapterPmMetrics(object):
         self.freq_override = grouped and freq_override
         self.lc = None
         self.pm_group_metrics = dict()      # name -> PmGroupConfig
+        self.max_skew = max_skew
 
     def update(self, pm_config):
         # TODO: Move any common steps into base class
