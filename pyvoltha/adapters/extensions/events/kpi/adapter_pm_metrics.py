@@ -31,6 +31,7 @@ class AdapterPmMetrics(object):
     """
     DEFAULT_FREQUENCY_KEY = 'default-collection-frequency'
     DEFAULT_COLLECTION_FREQUENCY = 15 * 10      # 1/10ths of a second
+    DEFAULT_MAX_SKEW = 5
 
     # If the collection object has a property of the following name, it will be used
     # to retrieve the UTC Collection Timestamp (UTC seconds since epoch). If the collection
@@ -68,6 +69,7 @@ class AdapterPmMetrics(object):
         self.freq_override = grouped and freq_override
         self.lc = None
         self.pm_group_metrics = dict()      # name -> PmGroupConfig
+        self.max_skew = AdapterPmMetrics.DEFAULT_MAX_SKEW
 
     def update(self, pm_config):
         # TODO: Move any common steps into base class
