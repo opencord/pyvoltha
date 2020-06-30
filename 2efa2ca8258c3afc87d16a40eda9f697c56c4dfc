@@ -16,6 +16,24 @@
       "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0155824_70e9e483",
+        "filename": "pyvoltha/adapters/extensions/events/kpi/adapter_pm_metrics.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-06-30T12:50:48Z",
+      "side": 1,
+      "message": "skew has been initialized here. I has been made configurable through voltctl. Please have a look at other patches as well  https://gerrit.opencord.org/c/voltctl/+/19506 https://gerrit.opencord.org/c/voltha-openonu-adapter/+/19505 https://gerrit.opencord.org/c/voltha-protos/+/19504 .",
+      "parentUuid": "57f7b513_5d63e5fe",
+      "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
