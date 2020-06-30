@@ -52,6 +52,24 @@
       "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0fd9064d_09ec9164",
+        "filename": "pyvoltha/adapters/extensions/events/kpi/adapter_pm_metrics.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-06-30T17:44:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5dda39c8_a95b2e6c",
+      "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
