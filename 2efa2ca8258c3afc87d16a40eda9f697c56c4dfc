@@ -34,6 +34,24 @@
       "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5dda39c8_a95b2e6c",
+        "filename": "pyvoltha/adapters/extensions/events/kpi/adapter_pm_metrics.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-06-30T13:02:07Z",
+      "side": 1,
+      "message": "Is this a default value then?  If yes, then you may want to follow the same pattern as DEFAULT_COLLECTION_FREQUENCY when specifying a default value.",
+      "parentUuid": "c0155824_70e9e483",
+      "revId": "2efa2ca8258c3afc87d16a40eda9f697c56c4dfc",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
