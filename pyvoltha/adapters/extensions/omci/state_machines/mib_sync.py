@@ -60,6 +60,7 @@ class MibSynchronizer(object):
         {'trigger': 'mismatch', 'source': 'examining_mds', 'dest': 'resynchronizing'},
 
         {'trigger': 'audit_mib', 'source': 'in_sync', 'dest': 'auditing'},
+        {'trigger': 'force_resync', 'source': 'in_sync', 'dest': 'resynchronizing'},
 
         {'trigger': 'success', 'source': 'out_of_sync', 'dest': 'in_sync'},
         {'trigger': 'audit_mib', 'source': 'out_of_sync', 'dest': 'auditing'},
@@ -636,7 +637,7 @@ class MibSynchronizer(object):
             response = msg[RX_RESPONSE_KEY]
 
             # Check if expected in current mib_sync state
-            if self.state not in ['uploading', 'loading_mib_template'] or \
+            if self.state not in ['uploading', 'loading_mib_template', 'in_sync'] or \
                     self._omci_cc_subscriptions[RxEvent.MIB_Reset] is None:
                 self.log.error('rx-in-invalid-state', state=self.state)
 

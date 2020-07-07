@@ -25,6 +25,7 @@ from pyvoltha.common.event_bus import EventBusClient
 from pyvoltha.adapters.extensions.omci.tasks.task_runner import TaskRunner
 from pyvoltha.adapters.extensions.omci.onu_configuration import OnuConfiguration
 from pyvoltha.adapters.extensions.omci.tasks.reboot_task import OmciRebootRequest, RebootFlags
+from pyvoltha.adapters.extensions.omci.tasks.mib_reset import OmciMibResetRequest
 from pyvoltha.adapters.extensions.omci.tasks.omci_modify_request import OmciModifyRequest
 from pyvoltha.adapters.extensions.omci.omci_me import OntGFrame
 from pyvoltha.adapters.extensions.omci.state_machines.image_agent import ImageAgent
@@ -592,6 +593,17 @@ class OnuDeviceEntry(object):
                                                              self.device_id,
                                                              flags=flags,
                                                              timeout=timeout))
+
+    def mib_reset(self):
+        """
+        Request a mib reset of the ONU
+
+        :return: (deferred) Fires upon completion or error
+        """
+        assert self.active, 'This device is not active'
+
+        return self.task_runner.queue_task(OmciMibResetRequest(self._omci_agent,
+                                                               self.device_id))
 
     # def get_imagefile(self, local_name, local_dir, remote_url=None):
     #     """
