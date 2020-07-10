@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fb0b03f_02fb8195",
+        "filename": "pyvoltha/adapters/extensions/events/kpi/adapter_pm_metrics.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2020-07-10T14:42:25Z",
+      "side": 1,
+      "message": "should max skew be included as a named, optional parameter?",
+      "range": {
+        "startLine": 43,
+        "startChar": 17,
+        "endLine": 44,
+        "endChar": 61
+      },
+      "revId": "f3e67eba3502e852c45913e90b6842942d63e1c8",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
