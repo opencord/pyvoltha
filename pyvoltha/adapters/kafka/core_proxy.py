@@ -415,10 +415,13 @@ class CoreProxy(ContainerProxy):
     @inlineCallbacks
     def ports_state_update(self,
                           device_id,
+                          port_type_filter,
                           oper_status):
         log.debug("ports_state_update", device_id=device_id, oper_status=oper_status)
         id = ID()
         id.id = device_id
+        t_filter = IntType()
+        t_filter.val = port_type_filter
         o_status = IntType()
         o_status.val = oper_status
 
@@ -431,8 +434,9 @@ class CoreProxy(ContainerProxy):
                                 to_topic=to_topic,
                                 reply_topic=reply_topic,
                                 device_id=id,
+                                port_type_filter=t_filter,
                                 oper_status=o_status)
-        log.debug("ports_state_update_response", device_id=device_id, oper_status=oper_status, response=res)
+        log.debug("ports_state_update_response", device_id=device_id, port_type_filter=port_type_filter, oper_status=oper_status, response=res)
         returnValue(res)
 
     def port_removed(device_id, port):
