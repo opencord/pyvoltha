@@ -22,6 +22,30 @@
       "revId": "89e41792c59db5a12c80db7358edc9862f39f5ac",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99f62350_3461a5ad",
+        "filename": "requirements.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000127
+      },
+      "writtenOn": "2020-07-15T17:18:21Z",
+      "side": 1,
+      "message": "I have the same question. Why do we need this?",
+      "parentUuid": "2ef53b5a_4707d22e",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "89e41792c59db5a12c80db7358edc9862f39f5ac",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
