@@ -1,0 +1,9 @@
+Verified+1: Jenkins Jenkins <do-not-reply@opencord.org>
+Code-Review+1: Kent Hagerman <khagerma@ciena.com>
+Code-Review+1: Girish Gowdra <girish@opennetworking.org>
+Code-Review+2: Scott Baker <scottb@opennetworking.org>
+Submitted-by: Scott Baker <scottb@opennetworking.org>
+Submitted-at: Wed, 15 Jul 2020 18:43:08 +0000
+Reviewed-on: https://gerrit.opencord.org/c/pyvoltha/+/19709
+Project: pyvoltha
+Branch: refs/heads/master
