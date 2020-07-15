@@ -46,6 +46,30 @@
       "revId": "89e41792c59db5a12c80db7358edc9862f39f5ac",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cf9d9a5_11faaa67",
+        "filename": "requirements.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000612
+      },
+      "writtenOn": "2020-07-15T17:35:16Z",
+      "side": 1,
+      "message": "As I can recall, when I was testing my changes the voltha-openonu-adapter container was failing while using the latest protos version with below error :-\n\nTraceback (most recent call last):\n  File \"/voltha/adapters/brcm_openomci_onu/main.py\", line 44, in \u003cmodule\u003e\n    from pyvoltha.adapters.kafka.adapter_proxy import AdapterProxy\n  File \"/usr/local/lib/python3.6/site-packages/pyvoltha/adapters/kafka/adapter_proxy.py\", line 26, in \u003cmodule\u003e\n    from voltha_protos.inter_container_pb2 import InterAdapterHeader, \\\n  File \"/usr/local/lib/python3.6/site-packages/voltha_protos/inter_container_pb2.py\", line 15, in \u003cmodule\u003e\n    from voltha_protos import common_pb2 as voltha__protos_dot_common__pb2\n  File \"/usr/local/lib/python3.6/site-packages/voltha_protos/common_pb2.py\", line 22, in \u003cmodule\u003e\n    create_key\u003d_descriptor._internal_create_key,\nAttributeError: module \u0027google.protobuf.descriptor\u0027 has no attribute \u0027_internal_create_key\u0027\n\nI did some search and found the issue could be because of the protobuf version, so I tried with the updated version 3.12.0 (instead of 3.7.0), which worked for me. I not really sure though if this the right thing to do. And if you see the patch which I submitted prior to this, Jenkins job unit test failed for it with the same error https://jenkins.opencord.org/job/verify_pyvoltha_unit-test/327/ .",
+      "parentUuid": "99f62350_3461a5ad",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "89e41792c59db5a12c80db7358edc9862f39f5ac",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
