@@ -18,7 +18,7 @@
 
 from __future__ import absolute_import
 import builtins # bring in python 2 to 3 compat imports: https://python-future.org/imports.html
-
+import json
 import logging
 import logging.config
 from collections import OrderedDict
@@ -40,6 +40,40 @@ class StructuredLogRenderer(object):
         args = (event_dict,)
         kwargs = {}
         return args, kwargs
+
+
+class EncoderFix(json.JSONEncoder):
+    def default(self, obj):
+        return str(obj)
+
+
+class JsonRenderedOrderedDict(OrderedDict):
+    """Our special version of OrderedDict that renders into string as a dict,
+       to make the log stream output cleaner.
+    """
+    def __repr__(self, _repr_running=None):
+        # od.__repr__() <==> repr(od)
+        call_key = id(self), _get_ident()
+        _repr_running = _repr_running or dict()
+
+        if call_key in _repr_running:
+            return '...'
+
+        _repr_running[call_key] = 1
+        try:
+            if not self:
+                return ''
+
+            # Convert to JSON but strip off outside '{}'
+            msg = '"msg":"{}",'.format(self.pop('event'))
+            json_msg = json.dumps(self, indent=None,
+                                  cls=EncoderFix,
+                                  separators=(', ', ': '),
+                                  sort_keys=True)[1:-1]
+            return msg + json_msg
+
+        finally:
+            del _repr_running[call_key]
 
 
 class PlainRenderedOrderedDict(OrderedDict):
@@ -87,10 +121,11 @@ def setup_logging(log_config, instance_id, verbosity_adjust=0):
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         add_instance_id,
-        StructuredLogRenderer(),
+        structlog.processors.UnicodeDecoder(),
+        structlog.processors.JSONRenderer()
     ]
     structlog.configure(logger_factory=structlog.stdlib.LoggerFactory(),
-                        context_class=PlainRenderedOrderedDict,
+                        context_class=JsonRenderedOrderedDict,
                         wrapper_class=BoundLogger,
                         processors=processors)
 
@@ -110,7 +145,7 @@ def string_to_int(loglevel):
     else: return 0
 
 
-def update_logging(instance_id, vcore_id, verbosity_adjust=0):
+def update_logging(instance_id, _vcore_id, verbosity_adjust=0):
     """
     Add the vcore id to the structured logger
     :param vcore_id:  The assigned vcore id
@@ -125,10 +160,6 @@ def update_logging(instance_id, vcore_id, verbosity_adjust=0):
         event_dict['instance_id'] = instance_id
         return event_dict
 
-    def add_vcore_id(_, __, event_dict):
-        event_dict['vcore_id'] = vcore_id
-        return event_dict
-
     logging.root.level = verbosity_adjust
 
     processors = [
@@ -136,7 +167,6 @@ def update_logging(instance_id, vcore_id, verbosity_adjust=0):
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         add_instance_id,
-        add_vcore_id,
         StructuredLogRenderer(),
     ]
     structlog.configure(processors=processors)
