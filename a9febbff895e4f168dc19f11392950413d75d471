@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6ad2533_ee059607",
+        "filename": "pyvoltha/common/structlog_setup.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2020-08-07T16:27:36Z",
+      "side": 1,
+      "message": "why not just remove it?",
+      "range": {
+        "startLine": 148,
+        "startChar": 32,
+        "endLine": 148,
+        "endChar": 41
+      },
+      "revId": "a9febbff895e4f168dc19f11392950413d75d471",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
