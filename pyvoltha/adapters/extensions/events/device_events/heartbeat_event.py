@@ -21,7 +21,7 @@ class HeartbeatEvent(DeviceEventBase):
         super(HeartbeatEvent, self).__init__(event_mgr, raised_ts, object_type,
                                              event='Heartbeat',
                                              category=EventCategory.EQUIPMENT,
-                                             sub_category=ventSubCategory.PON)
+                                             sub_category=EventSubCategory.PON)
         self._misses = heartbeat_misses
 
     def get_context_data(self):
