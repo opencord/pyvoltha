@@ -294,7 +294,7 @@ class IKafkaMessagingProxy(object):
         while True:
             try:
                 message = yield self.received_msg_queue.get()
-                yield self._process_message(message)
+                reactor.callLater(0, self._process_message, message)
                 if self.stopped:
                     break
             except Exception as e:
