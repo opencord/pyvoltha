@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3cf24208_03748795",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-11-19T13:31:00Z",
+      "side": 1,
+      "message": "single_omci_get_value_request",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59c27e38_2ed185de",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-11-19T13:31:00Z",
+      "side": 1,
+      "message": "single_omci_set_value_request",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d633658_5e902afd",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1000116
+      },
+      "writtenOn": "2020-11-19T13:31:00Z",
+      "side": 1,
+      "message": "why the set is not done here ?",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
