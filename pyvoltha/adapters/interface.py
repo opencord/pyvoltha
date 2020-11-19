@@ -282,6 +282,20 @@ class IAdapterInterface(Interface):
         :return: Proto Message Response
         """
 
+    def single_get_value_request(msg):
+        """
+        Retrive a single type of attribute from a device.
+        :param msg: Proto Message (any)
+        :return: Proto Message Response
+        """
+
+    def single_set_value_request(msg):
+        """
+        Set a single type of attribute of a device.
+        :param msg: Proto Message (any)
+        :return: Proto Message Response
+        """
+
 
 class ICoreSouthBoundInterface(Interface):
     """

@@ -207,6 +207,12 @@ class IAdapter(object):
     def unsuppress_alarm(self, filter):
         raise NotImplementedError()
 
+    def single_get_value_request(self, request):
+        raise NotImplementedError()
+
+    def single_set_value_request(self, request):
+        raise NotImplementedError()
+
     def _get_handler(self, device):
         if device.id in self.devices_handlers:
             handler = self.devices_handlers[device.id]

@@ -20,7 +20,7 @@ formatting and forwards the request to the concrete handler.
 """
 from __future__ import absolute_import
 import structlog
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 from zope.interface import implementer
 from twisted.internet import reactor
 
@@ -30,6 +30,7 @@ from voltha_protos.inter_container_pb2 import IntType, InterAdapterMessage, StrT
 from voltha_protos.device_pb2 import Device, Port, ImageDownload, SimulateAlarmRequest, PmConfigs
 from voltha_protos.openflow_13_pb2 import FlowChanges, FlowGroups, Flows, \
     FlowGroupChanges, ofp_packet_out
+from voltha_protos.extensions_pb2 import SingleGetValueRequest
 from voltha_protos.voltha_pb2 import OmciTestRequest
 from pyvoltha.adapters.kafka.kafka_inter_container_library import IKafkaMessagingProxy, \
     get_messaging_proxy, KAFKA_OFFSET_LATEST, KAFKA_OFFSET_EARLIEST, ARG_FROM_TOPIC
@@ -409,5 +410,16 @@ class AdapterRequestFacade(object):
             return False, Error(code=ErrorCode.INVALID_PARAMETERS,
                                 reason="simulate-alarm-request-invalid")
 
-        return True, self.adapter.simulate_alarm(d, req) 
+        return True, self.adapter.simulate_alarm(d, req)
 
+    @inlineCallbacks
+    def single_get_value_request(self, request, **kwargs):
+        req = SingleGetValueRequest()
+        if request:
+            request.Unpack(req)
+        else:
+            return False, Error(code=ErrorCode.INVALID_PARAMETERS,
+                                reason="request-invalid")
+        result = yield self.adapter.single_get_value_request(req)
+        res = yield result
+        return (True, res)
