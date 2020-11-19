@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "eeb98eec_5496f71b",
+        "filename": "pyvoltha/adapters/interface.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2020-11-19T13:37:34Z",
+      "side": 1,
+      "message": "This is the API between the adapters and the core. So we can\u0027t use the OMCI word here. I followed what we defined in the protos (https://github.com/opencord/voltha-protos/blob/master/protos/voltha_protos/extensions.proto#L139) Ideally we would have wanted to keep it GetExtValue, but because we have not removed the old one yet (idea would be deprecate it and then remove it) we can\u0027t use it.\n\nFor ONU Adapters OMCI might make sense but not necessary that all attributes need to be fetched over OMCI only, there could be attributes specific to the adapter instance itself as well",
+      "parentUuid": "3cf24208_03748795",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "59c27e38_2ed185de",
         "filename": "pyvoltha/adapters/interface.py",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2020-11-19T13:31:00Z",
       "side": 1,
       "message": "why the set is not done here ?",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3596b9e1_7f7d74ce",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2020-11-19T13:37:34Z",
+      "side": 1,
+      "message": "We don\u0027t have a use case for SetValue right now. We can add it when we have one.",
+      "parentUuid": "4d633658_5e902afd",
       "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
