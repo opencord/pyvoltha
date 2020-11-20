@@ -109,6 +109,23 @@
       "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
       "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c78c5d98_3aa1f4a9",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-11-20T16:00:51Z",
+      "side": 1,
+      "message": "Why not use returnvalue() instead or yield result and then return?",
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
     }
   ]
 }
