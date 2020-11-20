@@ -54,6 +54,29 @@
     },
     {
       "key": {
+        "uuid": "3b3e6ace_f578c9a0",
+        "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2020-11-20T15:37:15Z",
+      "side": 1,
+      "message": "This message is always sent to an OLT and the OLT forwards on to the ONU? Presumably in the `req` object the ID of the target device (OLT/ONU) resides. Where is this getting routed to the correct device?",
+      "range": {
+        "startLine": 423,
+        "startChar": 61,
+        "endLine": 423,
+        "endChar": 64
+      },
+      "revId": "1b7b454bba7a6cb3309ec293890b7b84f368748f",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4d633658_5e902afd",
         "filename": "pyvoltha/adapters/kafka/adapter_request_facade.py",
         "patchSetId": 1
