@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "383f04fd_e6278487",
+        "filename": "pyvoltha/common/tech_profile/tech_profile.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1000056
+      },
+      "writtenOn": "2020-11-24T19:20:32Z",
+      "side": 1,
+      "message": "Since we are using python3, another way to write this is:\n    KV_STORE_TECH_PROFILE_PATH_PREFIX \u003df\u0027{kv_store_prefix}/technology_profiles\u0027",
+      "revId": "013426bbad55fd28f6eb46fdfb16ae864bce66c8",
+      "serverId": "2a2bfe1b-c5c2-48ed-9ac8-16438ab24388",
+      "unresolved": true
+    }
+  ]
+}
