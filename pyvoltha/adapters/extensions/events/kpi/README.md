@@ -173,7 +173,7 @@ _voltha.kpi_ topic.
   "slice_data": [
     {
       "metadata": {
-        "title": "Ethernet",
+        "title": "ETHERNET_NNI",
         "ts": 1534440704.0,
         "logical_device_id": "000000139521a269",
         "device_id": "000115929ed71696",
@@ -200,7 +200,7 @@ _voltha.kpi_ topic.
     },
     {
       "metadata": {
-        "title": "PON",
+        "title": "PON_OLT",
         "logical_device_id": "000000139521a269",
         "device_id": "000115929ed71696",
         "serial_no": "dummy_sn2209199",

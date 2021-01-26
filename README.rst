@@ -31,7 +31,17 @@ Release History
 +---------+------------+-----------------------------------------------+
 
 Detailed Release History
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+v2.7.0 (2021-01-27)
+^^^^^^^^^^^^^^^^^^^
+
+-  Changed KPI frequency units from 1/10 second to 1 second to match
+   what is implemented in the voltha-lib-go library.
+
+-  Changed KPI Event titles from "Ethernet" and "PON" to "ETHERNET_NNI"
+   and "PON_OLT" to match what is implemented in the voltha-lib-go
+   library.
 
 v0.1.0 (2019-02-01)
 ^^^^^^^^^^^^^^^^^^^

@@ -29,12 +29,12 @@ class OnuPmMetrics(AdapterPmMetrics):
 
     # Metric default settings
     DEFAULT_HEARTBEAT_ENABLED = False
-    DEFAULT_HEARTBEAT_FREQUENCY = 1200  # 1/10ths of a second
+    DEFAULT_HEARTBEAT_FREQUENCY = 12  # Units of 1 second
     #
     # Currently only a single KPI metrics collection occurs (individual group
     # frequency not supported). The next value defines this single frequency until
     # the KPI shared library supports individual collection.
-    DEFAULT_ONU_COLLECTION_FREQUENCY = 60 * 10      # 1 minute
+    DEFAULT_ONU_COLLECTION_FREQUENCY = 60      # 1 minute
 
     def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):

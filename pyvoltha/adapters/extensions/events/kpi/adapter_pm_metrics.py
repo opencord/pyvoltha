@@ -30,7 +30,7 @@ class AdapterPmMetrics(object):
     start, and stop statistics collection.
     """
     DEFAULT_FREQUENCY_KEY = 'default-collection-frequency'
-    DEFAULT_COLLECTION_FREQUENCY = 15 * 10      # 1/10ths of a second
+    DEFAULT_COLLECTION_FREQUENCY = 15          # units of a second
 
     # If the collection object has a property of the following name, it will be used
     # to retrieve the UTC Collection Timestamp (UTC seconds since epoch). If the collection
@@ -91,7 +91,7 @@ class AdapterPmMetrics(object):
             self.lc = LoopingCall(callback)
 
         if self.default_freq > 0:
-            self.lc.start(interval=self.default_freq / 10)
+            self.lc.start(interval=self.default_freq)
 
     def stop_collector(self):
         """ Stop the collection loop"""

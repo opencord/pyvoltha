@@ -125,7 +125,7 @@ class OltPmMetrics(AdapterPmMetrics):
                 # Update the callback to the new frequency.
                 self.default_freq = pm_config.default_freq
                 self.lc.stop()
-                self.lc.start(interval=self.default_freq / 10)
+                self.lc.start(interval=self.default_freq)
 
             if pm_config.grouped:
                 for group in pm_config.groups:
@@ -151,7 +151,7 @@ class OltPmMetrics(AdapterPmMetrics):
 
         if self.grouped:
             if have_nni:
-                pm_ether_stats = PmGroupConfig(group_name='Ethernet',
+                pm_ether_stats = PmGroupConfig(group_name='ETHERNET_NNI',
                                                group_freq=self.default_freq,
                                                enabled=True)
                 self.pm_group_metrics[pm_ether_stats.group_name] = pm_ether_stats
@@ -160,7 +160,7 @@ class OltPmMetrics(AdapterPmMetrics):
                 pm_ether_stats = None
 
             if have_pon:
-                pm_pon_stats = PmGroupConfig(group_name='PON',
+                pm_pon_stats = PmGroupConfig(group_name='PON_OLT',
                                              group_freq=self.default_freq,
                                              enabled=True)
 
@@ -255,7 +255,7 @@ class OltPmMetrics(AdapterPmMetrics):
         if data is None:
             data = list()
 
-        group_name = 'Ethernet'
+        group_name = 'ETHERNET_NNI'
         if self.pm_group_metrics[group_name].enabled:
             for port in self._nni_ports:
                 group_data = self.collect_group_metrics(group_name,
@@ -266,7 +266,7 @@ class OltPmMetrics(AdapterPmMetrics):
                     data.append(group_data)
 
         for port in self._pon_ports:
-            group_name = 'PON'
+            group_name = 'PON_OLT'
             if self.pm_group_metrics[group_name].enabled:
                 group_data = self.collect_group_metrics(group_name,
                                                         port,

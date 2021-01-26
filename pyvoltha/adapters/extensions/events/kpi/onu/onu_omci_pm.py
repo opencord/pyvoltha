@@ -27,20 +27,20 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
 
     # Metric default settings
     #
-    #  Frequency values are in 1/10ths of a second
+    #  Frequency values are in units of one second
     #
     OMCI_DEV_KEY = 'omci-onu-dev'
     OMCI_CC_GROUP_NAME = 'OMCI_CC'
     DEFAULT_OMCI_CC_ENABLED = False
-    DEFAULT_OMCI_CC_FREQUENCY = (2 * 60) * 10
+    DEFAULT_OMCI_CC_FREQUENCY = (2 * 60)
 
     OPTICAL_GROUP_NAME = 'PON_Optical'
     DEFAULT_OPTICAL_ENABLED = True
-    DEFAULT_OPTICAL_FREQUENCY = (15 * 60 * 10)
+    DEFAULT_OPTICAL_FREQUENCY = (15 * 60)
 
     UNI_STATUS_GROUP_NAME = 'UNI_Status'
     DEFAULT_UNI_STATUS_ENABLED = True
-    DEFAULT_UNI_STATUS_FREQUENCY = (15 * 60 * 10)
+    DEFAULT_UNI_STATUS_FREQUENCY = (15 * 60)
 
     def __init__(self, event_mgr, core_proxy, device_id, logical_device_id, serial_number,
                  grouped=False, freq_override=False, **kwargs):
@@ -227,7 +227,7 @@ class OnuOmciPmMetrics(AdapterPmMetrics):
         # and the collection interval may be more often than the group interval,
         # check and make sure these metrics are actually due at this time.
         if self.last_collect_optical_metrics:
-            elapsed_tenths = (now-self.last_collect_optical_metrics)*10
+            elapsed_tenths = now - self.last_collect_optical_metrics
             if elapsed_tenths < self.pm_group_metrics[group_name].group_freq:
                 self.log.info("collect-optical-metrics-not-time-yet", elapsed_tenths=elapsed_tenths)
                 return []
