@@ -1,3 +1,11 @@
+DEPRECATED
+==========
+
+`No Maintenance Intended <http://unmaintained.tech/badge.svg)](http://unmaintained.tech/>`_
+
+`VOLTHA 2.6` was the last release that officially used the `pyvoltha` library in any of the VOLTHA components.
+From `2.7` onwards no VOLTHA component is in python, thus the repo has been deprecated, the go equivalent is `voltha-lib-go <https://github.com/opencord/voltha-lib-go>`_. This codebase is going to be removed after the VOLTHA 2.8 release LTS support ends in December 2022.
+
 PyVOLTHA
 ========
 
