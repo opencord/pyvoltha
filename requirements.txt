@@ -1,5 +1,5 @@
 PyYAML==3.12
-Twisted==19.10.0
+Twisted==22.2.0
 argparse==1.2.1
 arrow==0.10.0
 bitstring==3.1.5
